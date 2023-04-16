@@ -5,6 +5,9 @@ import Router, { useRouter  } from 'next/router';
 import Layout from '../components/shared/Layout';
 import Loader from '../components/shared/loader';
 
+import { store } from '../redux/store';
+import { Provider } from 'react-redux';
+
 //Styles Imports
 import '../../styles/globals.css'
 
@@ -21,16 +24,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return( 
     <>
-      { (router.pathname !='/signin' && router.pathname != '/signup') &&
+      { (router.pathname !='/auth') &&
+        <Provider store={store}>
          <Layout>
               { loading && <Loader/> }
               { !loading &&  <Component {...pageProps} /> }
          </Layout> 
+         </Provider>
       }
-      { (router.pathname =='/signin' || router.pathname == '/signup') &&
+      { (router.pathname =='/auth') &&
         <>
+        <Provider store={store}>
          { loading && <Loader/> }
          { !loading &&  <Component {...pageProps} /> }
+         </Provider>
         </>
       }
    </>

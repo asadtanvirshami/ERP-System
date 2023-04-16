@@ -1,11 +1,11 @@
-import React from 'react'
+import { configureStore } from '@reduxjs/toolkit';
 
-type Props = {}
+import invoiceReducer from '../redux/invoices/index'
+import userReducer from '../redux/user/index'
 
-const store = (props: Props) => {
-  return (
-    <div>store</div>
-  )
-}
-
-export default store
+export const store = configureStore({
+  reducer: {
+    invoice: invoiceReducer,
+    user: userReducer
+  },
+})
