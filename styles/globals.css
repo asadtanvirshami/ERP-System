@@ -9,6 +9,9 @@ body {
     flex-direction: column;
     min-height: 100vh;
     transition: all .5s ease;
+    font-family: 'Nunito', sans-serif;
+    color:#676767;
+    /* background-color: #1e1e1e; */
   }
   
   main {

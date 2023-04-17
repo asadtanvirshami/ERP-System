@@ -7,7 +7,13 @@ const colors = {
   ...{
       "custom-red": {
         "500": "#ED213A",
-        "700": "#93291E"
+        "700": "#93291E",
+      },
+      "theme": {
+        "700": "#2c3138",
+      },
+      "hover": {
+        "700": "1e1e1e",
       },
   },
 }
@@ -26,7 +32,7 @@ module.exports = withMT({
     theme: {
       fontFamily: {
         'display': ['Oswald'],
-        'body': ['Montserrat']
+        'body': ['Montserrat'],
       },
       "colors": colors,
     }

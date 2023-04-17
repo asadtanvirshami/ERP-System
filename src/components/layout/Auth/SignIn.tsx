@@ -47,10 +47,7 @@ const Signin = (props: Props) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
     await axios
-      .post(process.env.NEXT_PUBLIC_ERP_POST_LOGIN as string, {
-        data,
-        type: "admin",
-      })
+      .post(process.env.NEXT_PUBLIC_ERP_POST_LOGIN as string, {data})
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
           setLoading(false);
