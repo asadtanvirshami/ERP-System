@@ -1,12 +1,12 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios, { AxiosResponse } from "axios";
 //Components
-import Input from "../../shared/Form/Inputs/Large/Input";
-import Button from "../../shared/Buttons/Large/Button"
-import Loading from "../../shared/Buttons/Large/Loading"
+import Input from "../../shared/Form/Input";
+import Button from "../../shared/Buttons/Button";
+import Loading from "../../shared/Buttons/Loading";
 //Redux
 import { user_ } from "@/src/redux/user";
 import { useDispatch } from "react-redux";
@@ -22,17 +22,21 @@ const SignupSchema = yup.object().shape({
   //Yup schema to set the values
   fname: yup.string().required("Required"),
   lname: yup.string().required("Required"),
-  email: yup.string().email('Must be an E-mail!').required("Required"),
-  phone: yup.string().min(11, 'Must be 11 Digits!').max(11, 'Must be 11 Digits!').required("Required"),
-  password: yup.string().required("Required")
+  email: yup.string().email("Must be an E-mail!").required("Required"),
+  phone: yup
+    .string()
+    .min(11, "Must be 11 Digits!")
+    .max(11, "Must be 11 Digits!")
+    .required("Required"),
+  password: yup.string().required("Required"),
 });
 
 const Signup = (props: Props) => {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   //redux initialize
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -45,20 +49,23 @@ const Signup = (props: Props) => {
   });
 
   const onSubmit = async (data: object) => {
-    setLoading(true)
+    setLoading(true);
     //submiting the values to the API and saving in the db
     axios
-    .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string,{data,type:"admin"})
-    .then((r:AxiosResponse)=>{
-      if(r.data.status == 'success'){
-        setLoading(false)
-        dispatch(user_({id:r.data.payload.id}))
-        props.setCompanyReg(true)
-      }else if(r.data.status == 'exists'){
-        setLoading(false)
-        setMessage('Account already exits!')
-      }
-    })
+      .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
+        data,
+        type: "admin",
+      })
+      .then((r: AxiosResponse) => {
+        if (r.data.status == "success") {
+          setLoading(false);
+          dispatch(user_({ id: r.data.payload.id }));
+          props.setCompanyReg(true);
+        } else if (r.data.status == "exists") {
+          setLoading(false);
+          setMessage("Account already exits!");
+        }
+      });
   };
 
   return (
@@ -73,6 +80,8 @@ const Signup = (props: Props) => {
             name="fname"
             control={control}
             label="First Name"
+            width={'w-full'}
+            color={'text-white'}
           />
 
           <Input
@@ -80,6 +89,8 @@ const Signup = (props: Props) => {
             name="lname"
             control={control}
             label="Last Name"
+            width={'w-full'}
+            color={'text-white'}
           />
 
           <Input
@@ -87,6 +98,8 @@ const Signup = (props: Props) => {
             name="email"
             control={control}
             label="Email"
+            width={'w-full'}
+            color={'text-white'}
           />
 
           <Input
@@ -94,6 +107,8 @@ const Signup = (props: Props) => {
             name="phone"
             control={control}
             label="Phone Number"
+            width={'w-full'}
+            color={'text-white'}
           />
 
           <Input
@@ -101,12 +116,18 @@ const Signup = (props: Props) => {
             name="password"
             control={control}
             label="Password"
+            width={'w-full'}
+            color={'text-white'}
           />
-           <div className="text-center mb-4 ">
-             {loading ? <Loading/> : <Button type='submit' label="Register"/> }
+          <div className="text-center mb-4 ">
+            {loading ? (
+              <Loading style={"btn-primary"} />
+            ) : (
+              <Button style={"btn-primary"} type="submit" label="Register" />
+            )}
           </div>
         </form>
-          <p className="text-white">{message}</p>
+        <p className="text-white">{message}</p>
         <span className="mt-4 flex w-100">
           <p className="text-white font-extralight text-sm mx-1">
             Already have an account?

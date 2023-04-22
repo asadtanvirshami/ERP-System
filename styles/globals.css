@@ -5,15 +5,26 @@
 
 /* ======Custom CSS===== */
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    transition: all .5s ease;
-    font-family: 'Nunito', sans-serif;
-    color:#676767;
-    /* background-color: #1e1e1e; */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: all .5s ease;
+  font-family: 'Nunito', sans-serif;
+  color: #676767;
+  /* background-color: #1e1e1e; */
+}
+
+main {
+  flex: 1;
+  /* Or flex-grow: 1;*/
+}
+
+@layer components {
+  .btn-primary {
+    @apply border border-white w-full py-2 px-4 bg-transparent text-white font-body rounded-lg;
   }
-  
-  main {
-    flex: 1; /* Or flex-grow: 1;*/
+
+  .btn-secondary {
+    @apply border border-custom-red-500 w-24 py-2 px-4 bg-transparent text-custom-red-500 font-body rounded-full;
   }
+}

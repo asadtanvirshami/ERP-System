@@ -3,7 +3,7 @@ import {GetServerSideProps} from 'next'
 import Cookies from "cookies";
 import axios, { AxiosResponse } from 'axios';
 
-import Dashboard from '../components/layout/Dashboard/'
+import Dashboard from '../components/layout/Dashboard/';
 
 type Props = {
   sessionData:object

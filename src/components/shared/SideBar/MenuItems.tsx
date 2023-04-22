@@ -1,10 +1,10 @@
-import Image from "next/image";
-import React, { useEffect } from "react";
-import { FunctionExpression } from "typescript";
+import React from "react";
 import { useRouter } from "next/router";
+import classNames from "classnames";
 
 type Props = {
   menu_: any;
+  collapsed:boolean
 };
 
 const color = {
@@ -19,31 +19,34 @@ const MenuItems = (props: Props) => {
     <>
       <a
         href={props.menu_.link}
-        className=" text-base font-normal rounded-lg flex items-center p-2"
+        className={classNames({
+          "text-indigo-100 hover:bg-red-700 flex": true, //colors
+          "transition-colors duration-300": true, //animation
+          "rounded-md p-2 mx-3 gap-2": !props.collapsed,
+          "rounded-full p-2 mx-3 w-10 h-10": props.collapsed,
+        })}
       >
         {router.route == props.menu_.link ? (
           <props.menu_.svg
             className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
             fill={"white"}
             alt={props.menu_.text}
-            src={props.menu_.svg}
           />
         ) : (
           <props.menu_.svg
             className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
             fill={"#9e9e9e"}
             alt={props.menu_.text}
-            src={props.menu_.svg}
           />
         )}
         <span
           className={
             router.route == props.menu_.link
-              ? `${color.inctive_text} ml-3`
-              : `${color.active_text} ml-3`
+              ? `${color.inctive_text} `
+              : `${color.active_text}`
           }
         >
-          {props.menu_.text}
+          {!props.collapsed && props.menu_.text}
         </span>
       </a>
     </>

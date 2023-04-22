@@ -2,15 +2,15 @@ import React,{ useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import Cookies from "js-cookie";
 
-import Admin from '../Dashboard/Admin/index'
-import Agents from '../Dashboard/Agents/index'
-import Manager from '../Dashboard/Manager/index'
+import Admin from './Admin/index'
+import Agent from './Agent/index'
+// import Manager from './Manager/index'
 
 type Props = {
     sessionData:any
 }
 
-const index = (props: Props) => {
+const Dashboard = (props: Props) => {
 const [type, setType] = useState<string | undefined>('')
 const router = useRouter();
   useEffect(() => {
@@ -25,12 +25,12 @@ const router = useRouter();
 
   console.log(props.sessionData)
     return (
-    <div>
+    <div className=''>
       {type == 'admin' && <><Admin/></>}
-      {type == 'agent' && <><Agents/></>}
-      {type == 'manager' && <><Manager/></>}
+      {type == 'agent' && <><Agent/></>}
+      {/* {type == 'manager' && <><Manager/></>} */}
     </div>
   )
 }
 
-export default index
+export default Dashboard

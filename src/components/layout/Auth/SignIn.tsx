@@ -7,14 +7,19 @@ import jwt_decode from "jwt-decode";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 //Components
-import Input from "../../shared/Form/Inputs/Large/Input";
-import Button from "../../shared/Buttons/Large/Button";
-import Loading from "../../shared/Buttons/Large/Loading";
+import Input from "../../shared/Form/Input";
+import Button from "../../shared/Buttons/Button";
+import Loading from "../../shared/Buttons/Loading";
+//Redux
+import { user_ } from "@/src/redux/user";
+import { useDispatch } from "react-redux";
 
 type Props = {
   setSignUp: (active: boolean) => void;
+  setLoading: (active: boolean) => void;
   signUp: boolean;
   sessionData: any;
+  loading:boolean;
 };
 
 const SignupSchema = yup.object().shape({
@@ -24,8 +29,9 @@ const SignupSchema = yup.object().shape({
 });
 
 const Signin = (props: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  //redux initialize
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (props.sessionData.isLoggedIn == true) {
@@ -44,22 +50,23 @@ const Signin = (props: Props) => {
   });
 
   const onSubmit = async (data: object) => {
-    setLoading(true);
+    props.setLoading(true);
     //submiting the values to the API and saving in the db
     await axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_LOGIN as string, {data})
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
-          setLoading(false);
+          props.setLoading(false);
           const token: any = jwt_decode(r.data.token);
           Cookies.set("token", r.data.token, { expires: 1 });
           Cookies.set("user", token.name, { expires: 1 });
           Cookies.set("designation", token.role, { expires: 1 });
           Cookies.set("loginId", token.loginId, { expires: 1 });
           Cookies.set("type", token.type, { expires: 1 });
+          dispatch(user_({name:token.name}))
           Router.push("/");
         } else if (r.data.message == "invalid") {
-          setLoading(false);
+          props.setLoading(false);
           setMessage("Invalid email or password!");
         }
       });
@@ -77,15 +84,19 @@ const Signin = (props: Props) => {
             name="email"
             control={control}
             label="Email"
+            width={'w-full'}
+            color={'text-white'}
           />
           <Input
             register={register}
             name="password"
             control={control}
             label="Password"
+            width={'w-full'}
+            color={'text-white'}
           />
           <div className="text-center mb-4 ">
-            {loading ? <Loading /> : <Button type="submit" label="Register" />}
+            {props.loading ? <Loading style={"btn-primary"} /> : <Button style={"btn-primary"} type="submit" label="Login" />}
           </div>
           <p className="text-white">{message}</p>
         </form>

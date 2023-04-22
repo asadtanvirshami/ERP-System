@@ -6,6 +6,7 @@ import axios, { AxiosResponse } from "axios";
 import Signin from "../components/layout/Auth/SignIn";
 import Signup from "../components/layout/Auth/SignUp";
 import CompanyReg from "../components/layout/Auth/CompanyReg";
+import Loader from "../components/shared/Loader/ThreeDots";
 
 type Props = {
   sessionData: object;
@@ -14,6 +15,7 @@ type Props = {
 const auth = (props: Props) => {
   const [signUp, setSignUp] = React.useState<boolean>(false);
   const [companyReg, setCompanyReg] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
     <div
@@ -24,15 +26,16 @@ const auth = (props: Props) => {
         <div className="hidden sm:flex h-screen align-middle justify-center items-center xl:col-span-2">
           <div className="justify-center align-middle items-center">
             <h1 className="mx-auto text-8xl font-body font-bold text-red-500">
-              ManagementX
+             ManagementX
             </h1>
             <div className="flex inline-block align-middle justify-center mt-5">
-              <p className="p-2 font-body text-2xl">
+              <div className="p-2 font-body text-2xl">
+                {loading && <Loader/>}
                 ERP System by{" "}
                 <a href={"https://raloxsoft.com/"} className="">
                   Raloxsoft.com
                 </a>
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -40,6 +43,8 @@ const auth = (props: Props) => {
           <Signin
             signUp={signUp}
             setSignUp={setSignUp}
+            setLoading={setLoading}
+            loading={loading}
             sessionData={props.sessionData}
           />
         )}

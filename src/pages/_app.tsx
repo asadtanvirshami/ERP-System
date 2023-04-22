@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import Router, { useRouter } from "next/router";
 
-import Layout from "../components/shared/Layout";
-import Loader from "../components/shared/Loader";
+import MainLayout from "../components/shared/MainLayout";
+import ThreeDots from "../components/shared/Loader/ThreeDots";
 
 import { store } from "../redux/store";
 import { Provider } from "react-redux";
@@ -22,16 +22,16 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       {(router.pathname != "/auth")&& 
         <Provider store={store}>
-          <Layout>
-            {loading && <Loader />}
+          <MainLayout>
+            {loading && <ThreeDots />}
             {!loading && <Component {...pageProps} />}
-          </Layout>
+          </MainLayout>
         </Provider>
       }
       {(router.pathname == "/auth")&&
         <>
           <Provider store={store}>
-            {loading && <Loader />}
+            {loading && <ThreeDots />}
             {!loading && <Component {...pageProps} />}
           </Provider>
         </>

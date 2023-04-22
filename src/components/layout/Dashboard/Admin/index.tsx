@@ -1,44 +1,83 @@
-import React from "react";
+import React, { Fragment } from "react";
+//COMPONENTS
+import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
+import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
+import InfoCard from "@/src/components/shared/Cards/InfoCard";
+import ViewCard from "@/src/components/shared/Cards/ViewCard";
+import CreateCard from "@/src/components/shared/Cards/CreateCard";
+import Graph from "@/src/components/shared/Graph/Graph";
+//EDIT OR CREATE FORMS
+import InvoiceCE from "./CreateOrEdit/InvoiceCE";
+import AgentCE from "./CreateOrEdit/AgentCE";
+import TaskCE from "./CreateOrEdit/TaskCE";
+
+import Agents from '../../../../mock/Agents.json'
+import Clients from '../../../../mock/Clients.json'
+import Sales from '../../../../mock/Sales.json'
 
 type Props = {};
 
 const index = (props: Props) => {
   return (
-    <div>
-      <div className="flex p-4 flex-col h-full">
-        <div className="flex justify-between items-center">
-          <div className="text-white font-bold">Top Countries</div>
-          {/* <Icon path="res-react-dash-plus" className="w-5 h-5" /> */}
-        </div>
-        <div className="">favourites</div>
-        {/* {Countrydata.map(({ name, rise, value, id }) => (
-          <div className="flex items-center mt-3" key={id}>
-            <div className="">{id}</div>
+    <Fragment>
+      <Container>
+        <ProgressCard />
+        <ProgressCard />
+        <ProgressCard />
 
-            <Image
-              path={`res-react-dash-flag-${id}`}
-              className="ml-2 w-6 h-6"
-            />
-            <div className="ml-2">{name}</div>
-            <div className="flex-grow" />
-            <div className="">{`$${value.toLocaleString()}`}</div>
-            <Icon
-              path={
-                rise
-                  ? "res-react-dash-country-up"
-                  : "res-react-dash-country-down"
-              }
-              className="w-4 h-4 mx-3"
-            />
-            <Icon path="res-react-dash-options" className="w-2 h-2" />
+        <div className="w-full p-2 lg:w-2/3">
+          <div className="rounded-lg bg-card sm:h-80 h-60">
+            <Graph />
           </div>
-        ))} */}
-        <div className="flex-grow" />
-        <div className="flex justify-center">
-          <div className="">Check All</div>
         </div>
-      </div>
-    </div>
+        <div className="w-full p-2 lg:w-1/3 ">
+          <div className="rounded-lg bg-card h-80">
+            <InfoCard
+              renderModalComponent={<AgentCE />}
+              label="List of Agents"
+              title="Agents"
+              modalTitle="Agent Info"
+              data={Agents}
+            />
+          </div>
+        </div>
+
+        <div className="w-full p-2 lg:w-1/3 ">
+          <div className="rounded-lg bg-card h-80">
+            <ViewCard
+              renderModalComponent={<InvoiceCE />}
+              label="List of Sales"
+              title="Sales"
+              modalTitle="Sales Info"
+              data={Sales}
+            />
+          </div>
+        </div>
+        <div className="w-full p-2 lg:w-1/3 ">
+          <div className="rounded-lg bg-card h-80">
+          <ViewCard
+              renderModalComponent={<InvoiceCE />}
+              label="List of Clients"
+              title="Clients"
+              modalTitle="Clients Info"
+              data={Clients}
+            />
+          </div>
+        </div>
+        <div className="w-full p-2 lg:w-1/3">
+          <div className="rounded-lg bg-white shad h-80">
+            <CreateCard
+              renderModalComponent={<TaskCE />}
+              label="Create Task"
+              description="Create a task for agents."
+              title="Tasks"
+              modalTitle="Create Task"
+              // data={Clients}
+            />
+          </div>
+        </div>
+      </Container>
+    </Fragment>
   );
 };
 
