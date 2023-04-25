@@ -30,7 +30,9 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
                   {
                     <li key={data[0][Keys[0]]} className=" p-3">
                       {Keys.map((key: any, i) => (
-                        <td key={i}>{index+1} {data[0][key]}</td>
+                        <td key={i}>
+                          {index + 1} {data[0][key]}
+                        </td>
                       ))}
                     </li>
                   }
@@ -41,8 +43,9 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
           </ul>
         </div>
         <div className="flex-grow" />
+        <hr />
         <div className="flex justify-center">
-          <div className="font-body" onClick={() => setShowModal(true)}>
+          <div className="font-body cursor-pointer" onClick={() => setShowModal(true)}>
             View More
           </div>
         </div>

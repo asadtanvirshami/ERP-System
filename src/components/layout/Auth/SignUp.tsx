@@ -55,6 +55,7 @@ const Signup = (props: Props) => {
       .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
         data,
         type: "admin",
+        designation:"owner"
       })
       .then((r: AxiosResponse) => {
         if (r.data.status == "success") {

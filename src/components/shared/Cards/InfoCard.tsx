@@ -48,6 +48,7 @@ const InfoCard: React.FunctionComponent<Props> = (props) => {
           </ul>
         </div>
         <div className="flex-grow" />
+        <hr />
         <div className="flex justify-center">
           <div
             className="font-body cursor-pointer"

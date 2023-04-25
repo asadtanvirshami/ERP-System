@@ -13,7 +13,7 @@ import Logout from "../../../../public/Image/Icons/svgs/Logout.svg";
 //Component imports
 import MenuItems from "./MenuItems";
 //UTILs Imports
-import { adminMenu } from "@/src/utils/Menus/Admin";
+import { adminMenu, agentMenu  } from "@/src/utils/Menus/";
 
 // add NavItem prop to component prop
 type Props = {

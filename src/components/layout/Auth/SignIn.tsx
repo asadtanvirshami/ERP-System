@@ -60,7 +60,7 @@ const Signin = (props: Props) => {
           const token: any = jwt_decode(r.data.token);
           Cookies.set("token", r.data.token, { expires: 1 });
           Cookies.set("user", token.name, { expires: 1 });
-          Cookies.set("designation", token.role, { expires: 1 });
+          Cookies.set("designation", token.designation, { expires: 1 });
           Cookies.set("loginId", token.loginId, { expires: 1 });
           Cookies.set("type", token.type, { expires: 1 });
           dispatch(user_({name:token.name}))
