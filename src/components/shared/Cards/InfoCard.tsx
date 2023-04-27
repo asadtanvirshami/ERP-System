@@ -1,8 +1,11 @@
 import React, { Fragment, useState } from "react";
+//Component Imports
 import Modal from "../Modal";
-import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
-import { Agents } from "../../../interfaces/Agents";
 import Table from "../Table";
+//SVGs Imports
+import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
+import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
+import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 
 type Props = {
   label: string;
@@ -38,9 +41,28 @@ const InfoCard: React.FunctionComponent<Props> = (props) => {
             {props.data.map((items, index) => {
               return (
                 <Fragment>
-                  <li className=" p-3">
-                    {items.name} {items.designation} {items.role}
-                  </li>
+                  <div className="flex ">
+                    <li className="w-full p-3">
+                      {items.name} {items.designation}
+                    </li>
+                    <div className="w-full p-3 justify-end flex text-right">
+                      <li className="px-5">
+                        <EditIcon
+                          onClick={() => {
+                            setShowModal(true);
+                          }}
+                          fill={"gray"}
+                          className="w-5 h-5 cursor-pointer"
+                        />
+                      </li>
+                      <li className="">
+                        <TrashIcon
+                          fill={"gray"}
+                          className="w-5 h-5 cursor-pointer"
+                        />
+                      </li>
+                    </div>
+                  </div>
                   <hr />
                 </Fragment>
               );

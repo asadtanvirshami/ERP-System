@@ -8,6 +8,7 @@ const adminMenu = [
   { id: 1, text: "Sales", link: "/sales", svg: Agents },
   { id: 1, text: "Clients", link: "/clients", svg: Agents },
   { id: 1, text: "Tasks", link: "/tasks", svg: Agents },
+  { id: 1, text: "Info", link: "/info", svg: Agents },
 ];
 
 const agentMenu = [

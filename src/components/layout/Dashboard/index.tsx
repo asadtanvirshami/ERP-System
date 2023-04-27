@@ -1,10 +1,9 @@
-import React,{ useEffect, useState } from 'react'
+import React,{ Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import Cookies from "js-cookie";
-
+//Components Imports
 import Admin from './Admin/index'
 import Agent from './Agent/index'
-// import Manager from './Manager/index'
 
 type Props = {
     sessionData:any
@@ -25,11 +24,10 @@ const router = useRouter();
 
   console.log(props.sessionData)
     return (
-    <div className=''>
-      {type == 'admin' && <><Admin/></>}
-      {type == 'agent' && <><Agent/></>}
-      {/* {type == 'manager' && <><Manager/></>} */}
-    </div>
+    <Fragment>
+      {type == 'admin' && <Fragment><Admin/></Fragment>}
+      {type == 'agent' && <Fragment><Agent/></Fragment>}
+    </Fragment>
   )
 }
 

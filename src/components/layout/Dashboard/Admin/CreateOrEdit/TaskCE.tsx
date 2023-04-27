@@ -11,15 +11,10 @@ type Props = {};
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
-  name: yup.string().required("Required"),
-  f_name: yup.string().required("Required"),
-  designation: yup.string().required("Required"),
+  description: yup.string().required("Required"),
   type: yup.string().required("Required"),
-  address: yup.string().required("Required"),
-  phone: yup.number().max(11).required("Required"),
-  cnic: yup.number().max(16).required("Required"),
-  email: yup.string().email("Must be an email").required("Required"),
-  password: yup.string().required("Required"),
+  priority: yup.string().required("Required"),
+  assignedTo: yup.string().required("Required"),
 });
 
 const TaskCE = (props: Props) => {
@@ -43,65 +38,25 @@ const TaskCE = (props: Props) => {
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
             register={register}
-            name="name"
+            name="description"
             control={control}
-            label="Full name"
+            label="Description"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="f_name"
+            name="assignedTo"
             control={control}
-            label="Father name"
+            label="Assigned To"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="phone"
+            name="priority"
             control={control}
-            label="Phone No."
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="designation"
-            control={control}
-            label="Designation"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="cnic"
-            control={control}
-            label="Cnic"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="address"
-            control={control}
-            label="Address"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="email"
-            control={control}
-            label="Email"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="password"
-            control={control}
-            label="Password"
+            label="Priority"
             width={"w-30"}
             color={"text-gray"}
           />

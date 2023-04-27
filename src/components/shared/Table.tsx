@@ -62,10 +62,10 @@ const Table = ({ data }: Props) => {
           </div>
         </div>
 
-        <div className="p-1.5 w-full inline-block align-middle">
+        <div className="p-1.5 w-full align-middle">
           <div className="overflow-hidden border rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 ">
                 <tr>
                   {/* <th scope="col" className="py-3 pl-4">
                     <div className="flex items-center h-5">
@@ -82,7 +82,7 @@ const Table = ({ data }: Props) => {
                  <th></th> */}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 ">
                 {data.map((index) => {
                   return (
                     <React.Fragment>

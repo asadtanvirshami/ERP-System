@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { useEffect,Fragment } from "react";
+import axios,{AxiosResponse} from "axios";
 //COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
@@ -18,6 +19,12 @@ import Sales from '../../../../mock/Sales.json'
 type Props = {};
 
 const index = (props: Props) => {
+  useEffect(() => {
+    axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string).then((x:AxiosResponse)=>{
+      console.log(x.data.payload)
+    })
+  }, [])
+  
   return (
     <Fragment>
       <Container>

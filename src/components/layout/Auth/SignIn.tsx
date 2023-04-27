@@ -110,7 +110,7 @@ const Signin = (props: Props) => {
             }}
             className="bg-transparent text-white font-semibold text-sm"
           >
-            <p> Create a new account.</p>
+            <p> Create a company account.</p>
           </button>
         </span>
       </div>

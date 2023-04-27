@@ -43,6 +43,6 @@ main {
   }
 
   .btn-secondary {
-    @apply border border-custom-red-500 w-24 py-2 px-4 bg-transparent text-custom-red-500 font-body rounded-full;
+    @apply border border-custom-red-500 w-24 h-9 px-4 bg-transparent text-custom-red-500 font-body rounded-full;
   }
 }
