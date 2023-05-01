@@ -85,7 +85,7 @@ const Table = ({ data }: Props) => {
               <tbody className="divide-y divide-gray-200 ">
                 {data.map((index) => {
                   return (
-                    <React.Fragment>
+                    <React.Fragment >
                       {
                         <tr key={data[0][Keys[0]]} className=" ">
                           <td className="py-3 pl-4">
