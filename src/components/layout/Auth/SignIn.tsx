@@ -63,6 +63,7 @@ const Signin = (props: Props) => {
           Cookies.set("designation", token.designation, { expires: 1 });
           Cookies.set("loginId", token.loginId, { expires: 1 });
           Cookies.set("type", token.type, { expires: 1 });
+          Cookies.set("company", token.companyId, { expires: 1 });
           dispatch(user_({name:token.name}))
           Router.push("/");
         } else if (r.data.message == "invalid") {

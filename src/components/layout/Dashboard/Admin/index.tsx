@@ -19,11 +19,11 @@ import Sales from '../../../../mock/Sales.json'
 type Props = {};
 
 const index = (props: Props) => {
-  useEffect(() => {
-    axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string).then((x:AxiosResponse)=>{
-      console.log(x.data.payload)
-    })
-  }, [])
+  // useEffect(() => {
+  //   axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string).then((x:AxiosResponse)=>{
+  //     console.log(x.data.payload)
+  //   })
+  // }, [])
   
   return (
     <Fragment>

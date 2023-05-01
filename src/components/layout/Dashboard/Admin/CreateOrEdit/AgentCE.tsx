@@ -2,27 +2,29 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
 import * as yup from "yup";
+import Cookies from "js-cookie";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+//Components Import
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
+import Loader from "@/src/components/shared/Buttons/Loading";
 
 type Props = {};
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
   name: yup.string().required("Required"),
-  f_name: yup.string().required("Required"),
   designation: yup.string().required("Required"),
-  type: yup.string().required("Required"),
   address: yup.string().required("Required"),
-  phone: yup.number().max(11).required("Required"),
-  cnic: yup.number().max(16).required("Required"),
+  phone: yup.string().max(11).required("Required"),
   email: yup.string().email("Must be an email").required("Required"),
   password: yup.string().required("Required"),
 });
 
 const AgentCE = (props: Props) => {
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState("")
+
   const {
     register,
     control,
@@ -33,7 +35,26 @@ const AgentCE = (props: Props) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: object) => {
+    setLoading(true);
+    let companyId = Cookies.get('company')
+    console.log(companyId)
+    //submiting the values to the API and saving in the db
+    axios
+      .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
+        data,
+        type: "agent",
+        id:companyId
+      })
+      .then((r: AxiosResponse) => {
+        if (r.data.status == "success") {
+          setLoading(false);
+        } else if (r.data.status == "exists") {
+          setLoading(false);
+          setMessage("Agent already exits!");
+        }
+      });
+  };
   return (
     <Fragment>
       <form
@@ -51,14 +72,6 @@ const AgentCE = (props: Props) => {
           />
           <Input
             register={register}
-            name="f_name"
-            control={control}
-            label="Father name"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
             name="phone"
             control={control}
             label="Phone No."
@@ -70,14 +83,6 @@ const AgentCE = (props: Props) => {
             name="designation"
             control={control}
             label="Designation"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="cnic"
-            control={control}
-            label="Cnic"
             width={"w-30"}
             color={"text-gray"}
           />
@@ -107,8 +112,9 @@ const AgentCE = (props: Props) => {
           />
         </div>
         <div className="mb-1">
-          <Button style="btn-secondary" label="Create" type="submit" />
+          {loading?<Loader style="btn-secondary"/>:<Button style="btn-secondary" label="Create" type="submit" />}
         </div>
+        {message}
       </form>
     </Fragment>
   );
