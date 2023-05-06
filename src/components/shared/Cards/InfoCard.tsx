@@ -41,7 +41,7 @@ const InfoCard: React.FunctionComponent<Props> = (props) => {
             {props.data.map((items, index) => {
               return (
                 <Fragment>
-                  <div className="flex ">
+                  <div className="flex " key={index}>
                     <li className="w-full p-3">
                       {items.name} {items.designation}
                     </li>

@@ -47,14 +47,17 @@ const AgentCE = (props: Props) => {
         id:companyId
       })
       .then((r: AxiosResponse) => {
+        console.log(r.data.status)
         if (r.data.status == "success") {
           setLoading(false);
-        } else if (r.data.status == "exists") {
+          setMessage("Agent created successfully.")
+        } else if (r.data.status == "error") {
           setLoading(false);
           setMessage("Agent already exits!");
         } 
       });
   };
+
   return (
     <Fragment>
       <form
@@ -114,7 +117,7 @@ const AgentCE = (props: Props) => {
         <div className="mb-1">
           {loading?<Loader style="btn-secondary"/>:<Button style="btn-secondary" label="Create" type="submit" />}
         </div>
-        {message}
+        <p className="text-sm mt-2">{message}</p>
       </form>
     </Fragment>
   );

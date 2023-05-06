@@ -9,7 +9,7 @@ import Graph from "@/src/components/shared/Graph/Graph";
 //EDIT OR CREATE FORMS
 import AgentCE from "./CreateOrEdit/AgentCE";
 import TaskCE from "./CreateOrEdit/TaskCE";
-//MOCK DATA
+//Mock Data
 import Agents from '../../../../mock/Agents.json'
 import Clients from '../../../../mock/Clients.json'
 import Sales from '../../../../mock/Sales.json'
@@ -17,11 +17,6 @@ import Sales from '../../../../mock/Sales.json'
 type Props = {};
 
 const index = (props: Props) => {
-  // useEffect(() => {
-  //   axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string).then((x:AxiosResponse)=>{
-  //     console.log(x.data.payload)
-  //   })
-  // }, [])
   
   return (
     <Fragment>
