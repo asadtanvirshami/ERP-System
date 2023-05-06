@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import Cookies from "js-cookie";
+import moment from "moment";
+//Components Import
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
@@ -22,6 +24,17 @@ const SignupSchema = yup.object().shape({
 });
 
 const TaskCE = (props: Props) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const CompanyId = Cookies.get('company')
+    axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, {headers:{id:CompanyId}})
+    .then((r:AxiosResponse)=>{
+      console.log(r.data)
+    })
+  }, [])
+  
+
   const {
     register,
     control,
@@ -32,14 +45,27 @@ const TaskCE = (props: Props) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const onSubmit = async (data: object) => {
-    useEffect(() => {
-      axios.post(process.env.NEXT_PUBLIC_ERP_POST_TASK as string,{
-        data,
- 
-      })
-    }, [])
-    
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+
+    //formating the date
+    let date = data.deadline.split("-");
+    const new_format = date[1] + "/" + date[2] + "/" + date[0];
+
+    //setting the values in data object.
+    const newData = [{
+      ...data,
+      startDate: moment().format("L"),
+      startTime: moment().format("h:mm:ss a"),
+      deadline: new_format,
+    }];
+    console.log(newData);
+
+    // await axios
+    //   .post(process.env.NEXT_PUBLIC_ERP_POST_TASK as string, newData )
+    //   .then((r: AxiosResponse) => {
+    //     console.log(r.data);
+    //   });
   };
 
   return (
@@ -66,24 +92,28 @@ const TaskCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           />
+
           <DatePicker
             register={register}
             name="deadline"
             control={control}
             label="Deadline of task"
-            width={"w-30"}
+            width={"w-40"}
             color={"text-gray"}
           />
+
           <Input
             register={register}
             name="bonus"
             control={control}
             label="Bonus"
-            width={"w-30"}
+            width={"w-48"}
             color={"text-gray"}
           />
         </div>
-        <div><hr /></div>
+        <div>
+          <hr />
+        </div>
         <div className="mt-5 grid mb-2">
           <p className="text-sm mb-1">
             Write the job description for the brief understanding of task.
