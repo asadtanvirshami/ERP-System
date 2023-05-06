@@ -6,15 +6,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
+import TextArea from "@/src/components/shared/Form/TextArea";
+import SelectType from "@/src/components/shared/Form/SelectType";
+import DatePicker from "@/src/components/shared/Form/DatePicker";
 
 type Props = {};
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
+  title: yup.string().required("Required"),
   description: yup.string().required("Required"),
-  type: yup.string().required("Required"),
   priority: yup.string().required("Required"),
-  assignedTo: yup.string().required("Required"),
+  deadline: yup.string().required("Required"),
+  bonus: yup.string().required("Required"),
 });
 
 const TaskCE = (props: Props) => {
@@ -28,7 +32,16 @@ const TaskCE = (props: Props) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: object) => {
+    useEffect(() => {
+      axios.post(process.env.NEXT_PUBLIC_ERP_POST_TASK as string,{
+        data,
+ 
+      })
+    }, [])
+    
+  };
+
   return (
     <Fragment>
       <form
@@ -38,21 +51,14 @@ const TaskCE = (props: Props) => {
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
             register={register}
-            name="description"
+            name="title"
             control={control}
-            label="Description"
+            label="Title"
             width={"w-30"}
             color={"text-gray"}
           />
-          <Input
-            register={register}
-            name="assignedTo"
-            control={control}
-            label="Assigned To"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
+
+          <SelectType
             register={register}
             name="priority"
             control={control}
@@ -60,9 +66,40 @@ const TaskCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           />
+          <DatePicker
+            register={register}
+            name="deadline"
+            control={control}
+            label="Deadline of task"
+            width={"w-30"}
+            color={"text-gray"}
+          />
+          <Input
+            register={register}
+            name="bonus"
+            control={control}
+            label="Bonus"
+            width={"w-30"}
+            color={"text-gray"}
+          />
         </div>
-        <div className="mb-1">
-          <Button style="btn-secondary" label="Create" type="submit" />
+        <div><hr /></div>
+        <div className="mt-5 grid mb-2">
+          <p className="text-sm mb-1">
+            Write the job description for the brief understanding of task.
+          </p>
+          <TextArea
+            register={register}
+            name="description"
+            control={control}
+            label=""
+            width={"w-30"}
+            placeholder={"Write job description"}
+            color={"text-gray"}
+          />
+        </div>
+        <div className="mb-3 mt-2">
+          <Button style="btn-secondary" label="Create" type={"submit"} />
         </div>
       </form>
     </Fragment>

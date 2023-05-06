@@ -52,7 +52,7 @@ const AgentCE = (props: Props) => {
         } else if (r.data.status == "exists") {
           setLoading(false);
           setMessage("Agent already exits!");
-        }
+        } 
       });
   };
   return (

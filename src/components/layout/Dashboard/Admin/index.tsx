@@ -1,5 +1,4 @@
-import React, { useEffect,Fragment } from "react";
-import axios,{AxiosResponse} from "axios";
+import React, { Fragment } from "react";
 //COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
@@ -8,10 +7,9 @@ import ViewCard from "@/src/components/shared/Cards/ViewCard";
 import CreateCard from "@/src/components/shared/Cards/CreateCard";
 import Graph from "@/src/components/shared/Graph/Graph";
 //EDIT OR CREATE FORMS
-import InvoiceCE from "./CreateOrEdit/InvoiceCE";
 import AgentCE from "./CreateOrEdit/AgentCE";
 import TaskCE from "./CreateOrEdit/TaskCE";
-
+//MOCK DATA
 import Agents from '../../../../mock/Agents.json'
 import Clients from '../../../../mock/Clients.json'
 import Sales from '../../../../mock/Sales.json'
@@ -40,7 +38,7 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
             <InfoCard
-              renderModalComponent={<AgentCE />}
+              renderModalComponent={<TaskCE />}
               label="List of Agents"
               title="Agents"
               modalTitle="Agent Info"
@@ -52,7 +50,7 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
             <ViewCard
-              renderModalComponent={<InvoiceCE />}
+              renderModalComponent={<TaskCE />}
               label="List of Sales"
               title="Sales"
               modalTitle="Sales Info"
@@ -63,7 +61,7 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
           <ViewCard
-              renderModalComponent={<InvoiceCE />}
+              renderModalComponent={<TaskCE />}
               label="List of Clients"
               title="Clients"
               modalTitle="Clients Info"
