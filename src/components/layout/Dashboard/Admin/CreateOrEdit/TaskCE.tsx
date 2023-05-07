@@ -11,6 +11,9 @@ import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
+//Redux
+import { user_ } from "@/src/redux/user";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
@@ -25,15 +28,20 @@ const SignupSchema = yup.object().shape({
 
 const TaskCE = (props: Props) => {
   const [loading, setLoading] = useState(false);
+  
+  //redux initialize
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const CompanyId = Cookies.get('company')
-    axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, {headers:{id:CompanyId}})
-    .then((r:AxiosResponse)=>{
-      console.log(r.data)
-    })
+    const UserId = Cookies.get('loginId')
+    console.log(UserId)
+
+    axios.get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, { headers: { id: CompanyId } })
+      .then((r: AxiosResponse) => {
+        console.log(r.data)
+      })
   }, [])
-  
 
   const {
     register,

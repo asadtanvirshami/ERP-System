@@ -33,7 +33,7 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
             <InfoCard
-              renderModalComponent={<TaskCE />}
+              renderModalComponent={<AgentCE />}
               label="List of Agents"
               title="Agents"
               modalTitle="Agent Info"

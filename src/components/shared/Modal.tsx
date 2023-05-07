@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Dialog } from "@material-tailwind/react";
+import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 //SVG Import
 import CrossIcon from "../../../public/Image/Icons/svgs/cross.svg";
 
@@ -19,7 +19,8 @@ const Modal = (props: Props) => {
         size={props.modalSize}
         handler={() => props.setShowModal(false)}
       >
-        <div className="flex ">
+        <DialogHeader>
+        <div className="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
             {props.label}
           </div>
@@ -31,9 +32,10 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <div className="m-3">
+        </DialogHeader>
+        <DialogBody divider className="h-[10rem] overflow-scroll">
           <Fragment>{props.children}</Fragment>
-        </div>
+        </DialogBody>
       </Dialog>
     </Fragment>
   );
