@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Dialog, DialogBody } from "@material-tailwind/react";
+import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 //SVG Import
 import CrossIcon from "../../../public/Image/Icons/svgs/cross.svg";
 //Redux
@@ -43,9 +43,9 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
+        </DialogHeader>
         <DialogBody divider className="h-[30rem] overflow-scroll m-3">
           <Fragment>{props.children}</Fragment>
-        </DialogBody>
         </DialogBody>
       </Dialog>
     </Fragment>
