@@ -15,6 +15,9 @@ import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
+//Redux
+import { user_ } from "@/src/redux/user";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 

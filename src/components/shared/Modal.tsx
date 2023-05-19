@@ -25,7 +25,8 @@ const Modal = (props: Props) => {
         size={props.modalSize}
         handler={() => props.setShowModal(false)}
       >
-        <div className="flex ">
+        <DialogHeader>
+        <div className="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
             {show_info ? (
                <>{edit ? null : `${props.label} Info`}</>
@@ -44,6 +45,7 @@ const Modal = (props: Props) => {
         </div>
         <DialogBody divider className="h-[30rem] overflow-scroll m-3">
           <Fragment>{props.children}</Fragment>
+        </DialogBody>
         </DialogBody>
       </Dialog>
     </Fragment>
