@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useForm } from "react-hook-form";
+import { useForm,useFormContext  } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
 import * as yup from "yup";
 import Cookies from "js-cookie";
@@ -8,8 +8,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
+//Interface Import
+import { Agents } from "@/src/interfaces/Agents";
+//Redux
+import { form_ } from "@/src/redux/form";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+//BaseValues for Schema
+import { agentBaseValues } from "@/src/utils/baseValues";
 
-type Props = {};
+type Props = {
+  data:Array<Agents>
+};
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -24,21 +34,39 @@ const SignupSchema = yup.object().shape({
 const AgentCE = (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
+  //Redux Selectors
+  const state = useSelector((state: any) => state.form.value.form_edit);
+  const user_id = useSelector((state: any) => state.form.value._id);
+  const user_data = useSelector((state: any) => state.form.value.values);
+  //redux initialize
+  const dispatch = useDispatch();
 
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     //passing the props in the useForm yupResolver
     resolver: yupResolver(SignupSchema),
+    defaultValues:user_data
   });
+
+  useEffect(() => {
+    if(state==true){
+      const tempState:Agents[] = []
+      const tempData = [...props.data]
+      tempData.forEach((e,i)=>{if(e.id==user_id){tempState.push(e)}})
+      reset(tempState)
+    }
+    if(state==false){reset(agentBaseValues)}
+  }, [state])
+  
 
   const onSubmit = async (data: object) => {
     setLoading(true);
     let companyId = Cookies.get('company')
-    console.log(companyId)
     //submiting the values to the API and saving in the db
     axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
@@ -51,6 +79,9 @@ const AgentCE = (props: Props) => {
         if (r.data.status == "success") {
           setLoading(false);
           setMessage("Agent created successfully.")
+          console.log(r.data.payload)
+          dispatch(form_({ values: r.data.payload, data_create:true }));
+
         } else if (r.data.status == "error") {
           setLoading(false);
           setMessage("Agent already exits!");

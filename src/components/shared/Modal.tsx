@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from "react";
-import { Dialog } from "@material-tailwind/react";
+import { Dialog, DialogBody } from "@material-tailwind/react";
 //SVG Import
 import CrossIcon from "../../../public/Image/Icons/svgs/cross.svg";
+//Redux
+import { useSelector } from "react-redux";
 
 type Props = {
   showModal: boolean;
@@ -12,6 +14,10 @@ type Props = {
 };
 
 const Modal = (props: Props) => {
+  //Redux Selectors
+  const edit = useSelector((state: any) => state.form.value.form_edit);
+  const show_info = useSelector((state: any) => state.form.value.show_info);
+
   return (
     <Fragment>
       <Dialog
@@ -21,7 +27,12 @@ const Modal = (props: Props) => {
       >
         <div className="flex ">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
-            {props.label}
+            {show_info ? (
+               <>{edit ? null : `${props.label} Info`}</>
+              
+            ) : (
+              <>{edit ? `Edit ${props.label}` : `Create ${props.label}`}</>
+            )}
           </div>
           <div className="justify-center w-10 ">
             <CrossIcon
@@ -31,9 +42,9 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <div className="m-3">
+        <DialogBody divider className="h-[30rem] overflow-scroll m-3">
           <Fragment>{props.children}</Fragment>
-        </div>
+        </DialogBody>
       </Dialog>
     </Fragment>
   );

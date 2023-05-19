@@ -1,4 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import axios, { AxiosResponse } from "axios";
+import { BeatLoader } from "react-spinners";
 //COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
@@ -10,14 +13,35 @@ import Graph from "@/src/components/shared/Graph/Graph";
 import AgentCE from "./CreateOrEdit/AgentCE";
 import TaskCE from "./CreateOrEdit/TaskCE";
 //Mock Data
-import Agents from '../../../../mock/Agents.json'
-import Clients from '../../../../mock/Clients.json'
-import Sales from '../../../../mock/Sales.json'
+import Clients from "../../../../mock/Clients.json";
+import Sales from "../../../../mock/Sales.json";
 
 type Props = {};
 
 const index = (props: Props) => {
-  
+  const [data, setData] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function getCompnayData() {
+      setLoading(true);
+      const CompanyId = await Cookies.get("company");
+      await axios
+        .get(process.env.NEXT_PUBLIC_ERP_GET_COMPANY_DATA as string, {
+          headers: { id: CompanyId, offset: 0 },
+        })
+        .then((r: AxiosResponse) => {
+          if (r.data.message === "success") {
+            setData(r.data.payload);
+            setLoading(true);
+          }
+          if (r.data !== "success") {
+            setLoading(true);
+          }
+        });
+    }
+    getCompnayData();
+  }, []);
   return (
     <Fragment>
       <Container>
@@ -32,13 +56,21 @@ const index = (props: Props) => {
         </div>
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
-            <InfoCard
-              renderModalComponent={<TaskCE />}
-              label="List of Agents"
-              title="Agents"
-              modalTitle="Agent Info"
-              data={Agents}
-            />
+            {loading ? (
+              <InfoCard
+                renderModalComponent={<AgentCE data={data[0]} />}
+                label="List of Agents"
+                title="Agents"
+                modalTitle="Agent"
+                data={data[0]}
+                setData={setData}
+                cols={["name", "designation", "role"]}
+              />
+            ) : (
+              <div className="flex items-center">
+                <BeatLoader />
+              </div>
+            )}
           </div>
         </div>
 
@@ -48,18 +80,18 @@ const index = (props: Props) => {
               renderModalComponent={<TaskCE />}
               label="List of Sales"
               title="Sales"
-              modalTitle="Sales Info"
+              modalTitle="Sales"
               data={Sales}
             />
           </div>
         </div>
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
-          <ViewCard
+            <ViewCard
               renderModalComponent={<TaskCE />}
               label="List of Clients"
               title="Clients"
-              modalTitle="Clients Info"
+              modalTitle="Clients"
               data={Clients}
             />
           </div>
@@ -71,7 +103,7 @@ const index = (props: Props) => {
               label="Create Task"
               description="Create a task for agents."
               title="Tasks"
-              modalTitle="Create Task"
+              modalTitle="Task"
               // data={Clients}
             />
           </div>

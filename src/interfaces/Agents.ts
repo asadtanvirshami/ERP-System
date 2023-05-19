@@ -1,8 +1,12 @@
 
 export type Agents = {
+    id:string,
     name:string,
     designation:string,
-    role:string
+    type:string,
+    password:string,
+    email:string,
+    phone:string,
+    signature:string,
+    CompanyId:string
   }
-
-export default Agents

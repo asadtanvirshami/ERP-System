@@ -11,7 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.17",
     "@hookform/resolvers": "^3.0.1",
-    "@material-tailwind/react": "^1.4.2",
+    "@material-tailwind/react": "^2.0.0",
     "@react-spring/web": "^9.7.2",
     "@reduxjs/toolkit": "^1.9.3",
     "@types/cookies": "^0.7.7",

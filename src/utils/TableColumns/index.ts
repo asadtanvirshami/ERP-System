@@ -16,3 +16,15 @@
 // ];
 
 // export {adminMenu,agentMenu}
+
+// function formReducer(state:any, action:any){
+//     switch (action.form_type) {
+//       case false: {
+//         return {edit: false,}
+//       }
+//       case true: {
+//         return {edit: true,}
+//       }
+//       default: return state 
+//     }
+//   }

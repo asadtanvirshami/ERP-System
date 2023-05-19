@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import invoiceReducer from '../redux/invoices/index'
+import formReducer from '../redux/form/index'
 import userReducer from '../redux/user/index'
 
 export const store = configureStore({
   reducer: {
-    invoice: invoiceReducer,
+    form: formReducer,
     user: userReducer
   },
 })

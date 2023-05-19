@@ -1,17 +1,23 @@
 import React, { Fragment } from "react";
 import Modal from "../Modal";
 import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
+//Redux
+import { form_ } from "@/src/redux/form";
+import { useDispatch } from "react-redux";
 
 type Props = {
   label: string;
   description: string;
-  title:string;
+  title: string;
   modalTitle: string;
   renderModalComponent: React.ReactNode;
 };
 
 const CreateCard = (props: Props) => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
+
+  //redux initialize
+  const dispatch = useDispatch();
 
   return (
     <Fragment>
@@ -59,7 +65,10 @@ const CreateCard = (props: Props) => {
               }}
             >
               <AddIcon
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                  setShowModal(true);
+                  dispatch(form_({ form_edit: false }));
+                }}
                 fill={"white"}
                 className="w-6 h-6 text-gray-500 cursor-pointer"
               />
