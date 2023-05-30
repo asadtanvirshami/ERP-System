@@ -3,10 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   value: {
     _id: "",
-    show_info: false,
-    form_edit: false,
-    data_create: false,
-    data_update: false,
+    info: false,
+    edit: false,
+    create: false,
+    update: false,
+    delete:false,
     values: [],
   },
 };

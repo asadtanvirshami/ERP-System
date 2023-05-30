@@ -34,10 +34,12 @@ const SignupSchema = yup.object().shape({
 const AgentCE = (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
+  const [agentId, setAgentId] = useState("")
   //Redux Selectors
-  const state = useSelector((state: any) => state.form.value.form_edit);
-  const user_id = useSelector((state: any) => state.form.value._id);
-  const user_data = useSelector((state: any) => state.form.value.values);
+  const delete_agent = useSelector((state: any) => state.form.value.delete);
+  const edit = useSelector((state: any) => state.form.value.edit);
+  const agent_id = useSelector((state: any) => state.form.value._id);
+  const agent_data = useSelector((state: any) => state.form.value.values);
   //redux initialize
   const dispatch = useDispatch();
 
@@ -50,20 +52,32 @@ const AgentCE = (props: Props) => {
   } = useForm({
     //passing the props in the useForm yupResolver
     resolver: yupResolver(SignupSchema),
-    defaultValues:user_data
+    defaultValues:agent_data
   });
 
   useEffect(() => {
-    if(state==true){
-      const tempState:Agents[] = []
+    setAgentId(agent_id)
+    if(edit==true){
+      let tempState = {}
       const tempData = [...props.data]
-      tempData.forEach((e,i)=>{if(e.id==user_id){tempState.push(e)}})
+      tempData.forEach((e,i)=>{if(e.id==agent_id){tempState = {...e}}})
       reset(tempState)
     }
-    if(state==false){reset(agentBaseValues)}
-  }, [state])
+    if(edit==false){reset(agentBaseValues)}
+    if(delete_agent == true){
+      setLoading(true);
+      axios
+        .delete(process.env.NEXT_PUBLIC_ERP_DELETE_AGENTS as string, {
+          headers: { id: agentId },
+        })
+        .then((r) => {
+          if (r.data.status == "success") {
+            dispatch(form_({ id:agentId, delete:true }));
+          }
+        });
+    }
+  }, [edit])
   
-
   const onSubmit = async (data: object) => {
     setLoading(true);
     let companyId = Cookies.get('company')
@@ -80,7 +94,7 @@ const AgentCE = (props: Props) => {
           setLoading(false);
           setMessage("Agent created successfully.")
           console.log(r.data.payload)
-          dispatch(form_({ values: r.data.payload, data_create:true }));
+          dispatch(form_({ values: r.data.payload, create:true }));
 
         } else if (r.data.status == "error") {
           setLoading(false);
@@ -89,11 +103,34 @@ const AgentCE = (props: Props) => {
       });
   };
 
+  const onEdit = async (data: object) => {
+    setLoading(true);
+    //submiting the values to the API and saving in the db
+    console.log(agentId)
+    axios
+      .post(process.env.NEXT_PUBLIC_ERP_UPDATE_AGENT as string, {
+        data,
+        id:agentId
+      })
+      .then((r: AxiosResponse) => {
+        if (r.data.message == "success") {
+          setLoading(false);
+          setMessage("Agent edited successfully.")
+          console.log(r.data,'data')
+          dispatch(form_({ values: data, edit:true, update:true }));
+
+        } else if (r.data.message == "error") {
+          setLoading(false);
+          setMessage("Agent not edited!");
+        } 
+      });
+  };   
+
   return (
     <Fragment>
       <form
         className="w-auto mx-auto lg:w-full justify-center grid"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(edit?onEdit:onSubmit)}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
@@ -146,7 +183,7 @@ const AgentCE = (props: Props) => {
           />
         </div>
         <div className="mb-1">
-          {loading?<Loader style="btn-secondary"/>:<Button style="btn-secondary" label="Create" type="submit" />}
+          {loading?<Loader style="btn-secondary"/>:<Button style="btn-secondary" label={edit?"Update":"Create"} type="submit" />}
         </div>
         <p className="text-sm mt-2">{message}</p>
       </form>

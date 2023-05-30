@@ -15,8 +15,8 @@ type Props = {
 
 const Modal = (props: Props) => {
   //Redux Selectors
-  const edit = useSelector((state: any) => state.form.value.form_edit);
-  const show_info = useSelector((state: any) => state.form.value.show_info);
+  const edit = useSelector((state: any) => state.form.value.edit);
+  const show_info = useSelector((state: any) => state.form.value.info);
 
   return (
     <Fragment>
@@ -25,11 +25,10 @@ const Modal = (props: Props) => {
         size={props.modalSize}
         handler={() => props.setShowModal(false)}
       >
-        <DialogHeader>
-        <div className="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none">
+        <div className="flex  h-full w-full overflow-y-auto overflow-x-hidden outline-none">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
             {show_info ? (
-               <>{edit ? null : `${props.label} Info`}</>
+               <>{edit ? null : `${props.label} Info` }</>
               
             ) : (
               <>{edit ? `Edit ${props.label}` : `Create ${props.label}`}</>
@@ -43,7 +42,6 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        </DialogHeader>
         <DialogBody divider className="h-[30rem] overflow-scroll m-3">
           <Fragment>{props.children}</Fragment>
         </DialogBody>
