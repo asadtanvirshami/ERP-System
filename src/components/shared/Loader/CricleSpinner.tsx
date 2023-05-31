@@ -3,7 +3,7 @@ import { Spinner } from "@material-tailwind/react";
 
 type Props = {};
 
-const CricleSpinner = (props: Props) => {
+export const CricleSpinner = (props: Props) => {
   return (
     <div className="flex justify-center items-cente">
       <div className="mx-auto">

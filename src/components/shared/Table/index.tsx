@@ -1,38 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,Fragment} from "react";
 import Cookies from "js-cookie";
+import axios from "axios";
 //Icons & SVGs
 import { FunnelIcon, PlusIcon } from "@heroicons/react/24/outline";
 import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
 import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
+//Components
+import Modal from "../Modal";
 
 type Props = {
   data: Array<any>;
   cols: Array<any>;
+  url:string;
+  renderModalComponent:React.ReactNode;
+  modalTitle:string
 };
 
-const Table = ({ data, cols }: Props) => {
+const Table = ({ data, cols, url, modalTitle,  renderModalComponent: Component }: Props) => {
   const [type, setType] = useState<string | undefined>("");
   const [path, setPath] = useState<string | undefined>("");
+  const [_data,setData] = useState<any>([])
+  const [state, setState] = useState({
+    showModal: false,
+    viewModal: false,
+    loading: false,
+    cardLoading: false,
+  });
 
   useEffect(() => {
+    setData(data)
     let pathname = window.location.pathname;
     let type = Cookies.get("type");
     return setType(type), setPath(pathname);
-  }, []);
+  }, [data]);
 
-  let Keys = Object.keys(data[0]) as (keyof (typeof data)[0])[];
-  Keys = Keys.filter(
-    (key) =>
+  let Keys:any = data?.length>0? Object.keys(data[0]) as (keyof (typeof data)[0])[] : null
+  Keys =data?.length > 0 ? Keys?.filter(
+    (key:any) =>
       key !== "id" &&
       key !== "type" &&
       key !== "img" &&
       key !== "id" &&
       key !== "createdAt" &&
       key !== "updatedAt" &&
-      key !=="CompanyId"
-  );
+      key !=="CompanyId"&&
+      key !=="UserId"
+  ):null
+
+  const handleOnClick = (id:string) => {
+    // Function to handle global delete
+    console.log('id',id)
+    // setState((prevState) => ({ ...prevState, loading: true }));
+    // axios
+    //   .delete(url as string, { headers: { id: id } }) // Replace with the correct endpoint URL for deleting data
+    //   .then((response) => {
+    //     if (response.data.status === 'success') {
+    //       const newData = data?.filter((item: any) => item.id !== id);
+    //       setData([newData]);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error deleting data:", error);
+    //   })
+    //   .finally(() => {
+    //     setState((prevState) => ({ ...prevState, loading: false }));
+    //   });
+  };
 
   return (
+    <Fragment>
     <div className="flex flex-col">
       <div className="overflow-x-auto">
         <div className="flex justify-between py-3 pl-2">
@@ -102,16 +138,16 @@ const Table = ({ data, cols }: Props) => {
                     </div>
                   </th>
                   {cols.map((col: any, index: any) => {
-                    return <th className="text-left">{col}</th>;
+                    return <th key={index} className="text-left">{col}</th>;
                   })}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 ">
-                {data.length > 0 ? (
+                {_data.length > 0 ? (
                   <React.Fragment>
-                    {data.map((index) => {
+                    {_data.map((index:any) => {
                       return (
-                        <React.Fragment>
+                        <React.Fragment key={index}>
                           {
                             <tr key={data[0][Keys[0]]} className=" ">
                               <td className="py-3 pl-4">
@@ -125,7 +161,7 @@ const Table = ({ data, cols }: Props) => {
                                   </label>
                                 </div>
                               </td>
-                              {Keys.map((key: any, i) => (
+                              {Keys.map((key: any, i:any) => (
                                 <td
                                   key={i}
                                   className="text-sm text-gray-800 whitespace-nowrap"
@@ -143,6 +179,9 @@ const Table = ({ data, cols }: Props) => {
                                 <TrashIcon
                                   className="w-5 h-5 cursor-pointer"
                                   fill={"gray"}
+                                  onClick={()=>{
+                                    handleOnClick(data[0]['id'])
+                                  }}
                                 />
                               </td>
                             </tr>
@@ -161,6 +200,17 @@ const Table = ({ data, cols }: Props) => {
         </div>
       </div>
     </div>
+    <Modal
+        label={modalTitle}
+        showModal={state.showModal}
+        modalSize="xs"
+        setShowModal={(show) =>
+          setState((prevState) => ({ ...prevState, showModal: show }))
+        }
+      >
+        {Component}
+      </Modal>          
+    </Fragment>
   );
 };
 

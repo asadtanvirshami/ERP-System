@@ -21,7 +21,8 @@ const InfoCard = ({
   data,
   setData,
   cols,
-}:any) => {
+  url
+}: any) => {
   const [state, setState] = useState({
     showModal: false,
     viewModal: false,
@@ -31,7 +32,7 @@ const InfoCard = ({
 
   // Redux Selector
   const { id: _id, values: _data, create: data_create, update: data_update, delete: data_delete } = useSelector(
-    (state:any) => state.form.value
+    (state: any) => state.form.value
   );
 
   // Redux initialize
@@ -40,13 +41,15 @@ const InfoCard = ({
   useEffect(() => {
     if (data?.length > 0) {
       let Keys: Array<keyof typeof data[0]> = Object.keys(data[0]) as Array<keyof typeof data[0]>;
-    Keys = Keys.filter((key) => key === "name");
-    setKeys(Keys);
+      Keys = Keys.filter((key) => key === "name");
+      setKeys(Keys);
     }
     if (data_create) {
       // Updating the array when a user is created
+      let newArr=[]
       const tempState = data?.length > 0 ? [...data, _data] : [_data];
-      setData(tempState);
+      newArr.push(tempState)
+      setData(newArr)
       dispatch(form_({ create: false }));
     }
     if (data_update) {
@@ -63,24 +66,18 @@ const InfoCard = ({
       }
       setState((prevState) => ({ ...prevState, loading: false }));
     }
-    if (data_delete) {
-      // Deleting a user from the array
-      setState((prevState) => ({ ...prevState, loading: true }));
-      const newData = data?.filter((item:any) => item.id !== _data.id);
-      setData([newData]);
-      setState((prevState) => ({ ...prevState, loading: false }));
-      dispatch(form_({ delete: false }));
-    }
+
   }, [data, data_create, data_update, data_delete]);
 
-  const handleOnClick = () => {
+  const handleOnClick = (id:string) => {
     // Function to handle global delete
     setState((prevState) => ({ ...prevState, loading: true }));
     axios
-      .delete("/api/delete") // Replace with the correct endpoint URL for deleting data
+      .delete(url as string, { headers: { id: id } }) // Replace with the correct endpoint URL for deleting data
       .then((response) => {
-        if (response.status === 200) {
-          setData([]);
+        if (response.data.status === 'success') {
+          const newData = data?.filter((item: any) => item.id !== id);
+          setData([newData]);
         }
       })
       .catch((error) => {
@@ -93,7 +90,7 @@ const InfoCard = ({
 
   return (
     <Fragment>
-      {data || state.loading ? (
+      {data? (
         <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
@@ -111,11 +108,11 @@ const InfoCard = ({
           <div className="font-body">{label}</div>
           <div className="h-100 flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
             <ul className="p-3 w-full">
-              {data?.length > 0 && !state.loading ? (
+              {data?.length && !state.loading ? (
                 <>
                   {keys?.map((key, i) => (
                     <Fragment key={i}>
-                      {data?.map((item:any, index:any) => (
+                      {data?.map((item: any, index: any) => (
                         <Fragment key={item[key].id}>
                           <div className="flex">
                             <li className="w-full p-3">
@@ -141,13 +138,7 @@ const InfoCard = ({
                               <li className="">
                                 <TrashIcon
                                   onClick={() =>
-                                    dispatch(
-                                      form_({
-                                        delete: true,
-                                        _id: item.id,
-                                        values: item,
-                                      })
-                                    )
+                                    handleOnClick(item.id)
                                   }
                                   fill="gray"
                                   className="w-5 h-5 cursor-pointer"
@@ -204,7 +195,7 @@ const InfoCard = ({
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
       >
-        <Table cols={cols} data={data} />
+        <Table modalTitle="Create" renderModalComponent={Component} url={url} cols={cols} data={data} />
       </Modal>
     </Fragment>
   );

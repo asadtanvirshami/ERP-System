@@ -62,9 +62,10 @@ const index = (props: Props) => {
                 label="List of Agents"
                 title="Agents"
                 modalTitle="Agent"
+                cols={["name", "designation", "role"]}
                 data={data[0]}
                 setData={setData}
-                cols={["name", "designation", "role"]}
+                url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
               />
             ) : (
               <div className="flex items-center">
