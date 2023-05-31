@@ -4,6 +4,7 @@ import axios from "axios";
 import Modal from "../Modal";
 import Table from "../Table";
 import CardLoader from "../Loader/CardLoader";
+import CricleSpinner from "../Loader/CricleSpinner";
 // SVGs Imports
 import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
 import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
@@ -11,7 +12,6 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
 import { form_ } from "@/src/redux/form";
 import { useDispatch, useSelector } from "react-redux";
-import CricleSpinner from "../Loader/CricleSpinner";
 
 const InfoCard = ({
   label,
@@ -21,42 +21,48 @@ const InfoCard = ({
   data,
   setData,
   cols,
-  url
+  url,
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
     viewModal: false,
     loading: false,
   });
-  const [keys, setKeys] = React.useState<Array<keyof typeof data[0]>>([]);
+  const [keys, setKeys] = React.useState<Array<keyof (typeof data)[0]>>([]);
 
   // Redux Selector
-  const { id: _id, values: _data, create: data_create, update: data_update, delete: data_delete } = useSelector(
-    (state: any) => state.form.value
-  );
+  const {
+    id: _id,
+    values: _data,
+    create: data_create,
+    update: data_update,
+    delete: data_delete,
+  } = useSelector((state: any) => state.form.value);
 
   // Redux initialize
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (data?.length > 0) {
-      let Keys: Array<keyof typeof data[0]> = Object.keys(data[0]) as Array<keyof typeof data[0]>;
+      let Keys: Array<keyof (typeof data)[0]> = Object.keys(data[0]) as Array<
+        keyof (typeof data)[0]
+      >;
       Keys = Keys.filter((key) => key === "name");
       setKeys(Keys);
     }
     if (data_create) {
       // Updating the array when a user is created
-      let newArr=[]
+      let newArr = [];
       const tempState = data?.length > 0 ? [...data, _data] : [_data];
-      newArr.push(tempState)
-      setData(newArr)
+      newArr.push(tempState);
+      setData(newArr);
       dispatch(form_({ create: false }));
     }
     if (data_update) {
       // Updating the array when a user is updated
       setState((prevState) => ({ ...prevState, loading: true }));
       if (data?.length > 0 || _data) {
-        const tempState = [...data];
+        const tempState =  [...data];
         const i = tempState.findIndex((item) => item.id === _data.id);
         if (i !== -1) {
           tempState[i] = _data;
@@ -66,16 +72,15 @@ const InfoCard = ({
       }
       setState((prevState) => ({ ...prevState, loading: false }));
     }
-
   }, [data, data_create, data_update, data_delete]);
 
-  const handleOnClick = (id:string) => {
+  const handleOnClick = (id: string) => {
     // Function to handle global delete
     setState((prevState) => ({ ...prevState, loading: true }));
     axios
       .delete(url as string, { headers: { id: id } }) // Replace with the correct endpoint URL for deleting data
       .then((response) => {
-        if (response.data.status === 'success') {
+        if (response.data.status === "success") {
           const newData = data?.filter((item: any) => item.id !== id);
           setData([newData]);
         }
@@ -90,7 +95,7 @@ const InfoCard = ({
 
   return (
     <Fragment>
-      {data? (
+      {data ? (
         <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
@@ -122,7 +127,10 @@ const InfoCard = ({
                               <li className="px-5">
                                 <EditIcon
                                   onClick={() => {
-                                    setState((prevState) => ({ ...prevState, showModal: true }));
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      showModal: true,
+                                    }));
                                     dispatch(
                                       form_({
                                         edit: true,
@@ -137,9 +145,7 @@ const InfoCard = ({
                               </li>
                               <li className="">
                                 <TrashIcon
-                                  onClick={() =>
-                                    handleOnClick(item.id)
-                                  }
+                                  onClick={() => handleOnClick(item.id)}
                                   fill="gray"
                                   className="w-5 h-5 cursor-pointer"
                                 />
@@ -155,7 +161,7 @@ const InfoCard = ({
               ) : (
                 <>
                   {state.loading && <CricleSpinner />}
-                  {data?.length === 0 && <> No Agents to show</>}
+                  {data?.length === 0 && <> No {modalTitle} to show</>}
                 </>
               )}
             </ul>
@@ -167,7 +173,7 @@ const InfoCard = ({
               className="font-body cursor-pointer"
               onClick={() => {
                 setState((prevState) => ({ ...prevState, viewModal: true }));
-                dispatch(form_({ edit: false, info: true }));
+                dispatch(form_({ edit: false }));
               }}
             >
               View More
@@ -181,6 +187,7 @@ const InfoCard = ({
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
+        viewTable={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, showModal: show }))
         }
@@ -191,11 +198,19 @@ const InfoCard = ({
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="lg"
+        viewTable={true}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
       >
-        <Table modalTitle="Create" renderModalComponent={Component} url={url} cols={cols} data={data} />
+        <Table
+          modalTitle={modalTitle}
+          renderModalComponent={Component}
+          url={url}
+          cols={cols}
+          data={data || undefined}
+          setData={setData}
+        />
       </Modal>
     </Fragment>
   );

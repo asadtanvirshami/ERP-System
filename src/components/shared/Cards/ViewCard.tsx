@@ -55,6 +55,7 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
         showModal={showModal}
         modalSize="lg"
         setShowModal={setShowModal}
+        viewTable={true}
       >
         <Table data={data} />
       </Modal>

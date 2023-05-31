@@ -6,15 +6,12 @@ import { BeatLoader } from "react-spinners";
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
 import InfoCard from "@/src/components/shared/Cards/InfoCard";
-import ViewCard from "@/src/components/shared/Cards/ViewCard";
 import CreateCard from "@/src/components/shared/Cards/CreateCard";
 import Graph from "@/src/components/shared/Graph/Graph";
 //EDIT OR CREATE FORMS
-import AgentCE from "./CreateOrEdit/AgentCE";
-import TaskCE from "./CreateOrEdit/TaskCE";
-//Mock Data
-import Clients from "../../../../mock/Clients.json";
-import Sales from "../../../../mock/Sales.json";
+import AgentCE from "@/src/components/shared/CreateOrEdit/AgentCE";
+import TaskCE from "@/src/components/shared/CreateOrEdit/TaskCE";
+import ClientsCE from "@/src/components/shared/CreateOrEdit/ClientsCE";
 
 type Props = {};
 
@@ -58,12 +55,21 @@ const index = (props: Props) => {
           <div className="rounded-lg bg-card h-80">
             {loading ? (
               <InfoCard
-                renderModalComponent={<AgentCE data={data[0]} />}
+                cols={[
+                  "Name",
+                  "Phone.",
+                  "Password",
+                  "Email",
+                  "Designation",
+                  "Signature",
+                  "Edit",
+                  "Delete",
+                ]}
+                renderModalComponent={<AgentCE data={data[0] || undefined} />}
                 label="List of Agents"
                 title="Agents"
                 modalTitle="Agent"
-                cols={["name", "designation", "role"]}
-                data={data[0]}
+                data={data[0] || undefined}
                 setData={setData}
                 url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
               />
@@ -77,24 +83,60 @@ const index = (props: Props) => {
 
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
-            <ViewCard
-              renderModalComponent={<TaskCE />}
-              label="List of Sales"
-              title="Sales"
-              modalTitle="Sales"
-              data={Sales}
-            />
+          {loading ? (
+              <InfoCard
+                cols={[
+                  "Name",
+                  "Phone.",
+                  "Password",
+                  "Email",
+                  "Designation",
+                  "Signature",
+                  "Edit",
+                  "Delete",
+                ]}
+                renderModalComponent={<ClientsCE data={data[1] || undefined} />}
+                label="List of Sales"
+                title="Sales"
+                modalTitle="Sale"
+                data={data[1] || undefined}
+                setData={setData}
+                url={''}
+              />
+            ) : (
+              <div className="flex items-center">
+                <BeatLoader />
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full p-2 lg:w-1/3 ">
           <div className="rounded-lg bg-card h-80">
-            <ViewCard
-              renderModalComponent={<TaskCE />}
-              label="List of Clients"
-              title="Clients"
-              modalTitle="Clients"
-              data={Clients}
-            />
+          {loading ? (
+              <InfoCard
+                cols={[
+                  "Name",
+                  "Phone.",
+                  "Password",
+                  "Email",
+                  "Designation",
+                  "Signature",
+                  "Edit",
+                  "Delete",
+                ]}
+                renderModalComponent={<ClientsCE data={data[2] || undefined} />}
+                label="List of Clients"
+                title="Clients"
+                modalTitle="Client"
+                data={data[2] || undefined}
+                setData={setData}
+                url={''}
+              />
+            ) : (
+              <div className="flex items-center">
+                <BeatLoader />
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full p-2 lg:w-1/3">

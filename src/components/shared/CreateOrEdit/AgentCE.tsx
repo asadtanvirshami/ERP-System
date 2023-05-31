@@ -63,7 +63,6 @@ const AgentCE = (props: Props) => {
       tempData.forEach((e,i)=>{if(e.id==agent_id){tempState = {...e}}})
       reset(tempState)
     }
-    if(edit==false){reset(agentBaseValues)}
     if(delete_agent == true){
       setLoading(true);
       axios
@@ -76,6 +75,7 @@ const AgentCE = (props: Props) => {
           }
         });
     }
+    if(edit==false){reset(agentBaseValues)}
   }, [edit])
   
   const onSubmit = async (data: object) => {

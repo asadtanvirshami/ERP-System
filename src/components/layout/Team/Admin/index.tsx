@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
+import AgentCE from "@/src/components/shared/CreateOrEdit/AgentCE";
 
 type Props = {};
 
@@ -34,9 +35,13 @@ const index = (props: Props) => {
               "Designation",
               "Signature",
               "Edit",
-              "Delete"
+              "Delete",
             ]}
-            data={agents}
+            data={agents || undefined}
+            setData={setAgents}
+            modalTitle="Agent"
+            renderModalComponent={<AgentCE data={agents || undefined} />}
+            url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
           />
         ) : null}
       </Fragment>

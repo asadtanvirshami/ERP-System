@@ -81,6 +81,7 @@ const CreateCard = (props: Props) => {
         showModal={showModal}
         modalSize="xs"
         setShowModal={setShowModal}
+        viewTable={false}
       >
         {props.renderModalComponent}
       </Modal>
