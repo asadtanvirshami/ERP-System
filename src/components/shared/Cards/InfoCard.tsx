@@ -40,6 +40,7 @@ const InfoCard = ({
     (state: any) => state.form.value
   );
 
+  console.log('data info card',data)
   useEffect(() => {
     if (data?.length > 0) {
       let Keys: Array<keyof (typeof data)[0]> = Object.keys(data[0]) as Array<

@@ -105,7 +105,7 @@ const AgentCE = (props: Props) => {
             return props.setData(tempArr);
           }else{
             let tempArr = [...props.data, r.data.payload];
-            return props.setData(tempArr);
+            return props.setData([tempArr]);
           }
         } else if (r.data.status == "error") {
           setLoading(false);

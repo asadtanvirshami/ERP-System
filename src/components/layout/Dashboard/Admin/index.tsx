@@ -84,8 +84,14 @@ const index = (props: Props) => {
         })
         .then((r: AxiosResponse) => {
           if (r.data.message === "success") {
-            setData(r.data.payload);
-            setLoading(false);
+            if(r.data.payload.length>0){
+              setData(r.data.payload);
+              setLoading(false);
+            }else{
+              setData([[],[],[]])
+              setLoading(false);
+            }
+            console.log(data, "data");
           }
           if (r.data !== "success") {
             setLoading(true);
@@ -95,6 +101,7 @@ const index = (props: Props) => {
     getCompnayData();
   }, []);
 
+  console.log(data, "data");
   return (
     <Fragment>
       <Container>
