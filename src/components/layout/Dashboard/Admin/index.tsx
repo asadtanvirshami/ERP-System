@@ -12,12 +12,67 @@ import Graph from "@/src/components/shared/Graph/Graph";
 import AgentCE from "@/src/components/shared/CreateOrEdit/AgentCE";
 import TaskCE from "@/src/components/shared/CreateOrEdit/TaskCE";
 import ClientsCE from "@/src/components/shared/CreateOrEdit/ClientsCE";
+import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 type Props = {};
 
 const index = (props: Props) => {
   const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const infoCardOBj: any = {
+    0: {
+      title: "Agents",
+      modalTitle: "Agent",
+      label: "List of Agents",
+      component: <AgentCE setData={setData} data={data} />,
+      url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT,
+      cols: [
+        "Name",
+        "Phone.",
+        "Password",
+        "Email",
+        "Designation",
+        "Signature",
+        "Edit",
+        "Delete",
+      ],
+    },
+    1: {
+      title: "Sales",
+      modalTitle: "Sales",
+      label: "List of Sales",
+      component: <AgentCE setData={setData} data={data} />,
+      url: null,
+      cols: [
+        "Name",
+        "Phone.",
+        "Password",
+        "Email",
+        "Designation",
+        "Signature",
+        "Edit",
+        "Delete",
+      ],
+    },
+    2: {
+      title: "Clients",
+      modalTitle: "Client",
+      label: "List of Clients",
+      component: <ClientsCE setData={setData} data={data} />,
+      url: process.env.NEXT_PUBLIC_ERP_DELETE_CLIENT,
+      cols: [
+        "Name",
+        "Phone.",
+        "Password",
+        "Email",
+        "Designation",
+        "Signature",
+        "Edit",
+        "Delete",
+      ],
+    },
+  };
 
   useEffect(() => {
     async function getCompnayData() {
@@ -30,7 +85,7 @@ const index = (props: Props) => {
         .then((r: AxiosResponse) => {
           if (r.data.message === "success") {
             setData(r.data.payload);
-            setLoading(true);
+            setLoading(false);
           }
           if (r.data !== "success") {
             setLoading(true);
@@ -39,6 +94,7 @@ const index = (props: Props) => {
     }
     getCompnayData();
   }, []);
+
   return (
     <Fragment>
       <Container>
@@ -51,94 +107,59 @@ const index = (props: Props) => {
             <Graph />
           </div>
         </div>
-        <div className="w-full p-2 lg:w-1/3 ">
-          <div className="rounded-lg bg-card h-80">
-            {loading ? (
-              <InfoCard
-                cols={[
-                  "Name",
-                  "Phone.",
-                  "Password",
-                  "Email",
-                  "Designation",
-                  "Signature",
-                  "Edit",
-                  "Delete",
-                ]}
-                renderModalComponent={<AgentCE data={data[0] || undefined} />}
-                label="List of Agents"
-                title="Agents"
-                modalTitle="Agent"
-                data={data[0] || undefined}
-                setData={setData}
-                url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
-              />
-            ) : (
-              <div className="flex items-center">
-                <BeatLoader />
+        {data.length != 0 ? (
+          <>
+            {data.map((x: any, i: number) => {
+              return (
+                <Fragment>
+                  {data.length != 0 ? (
+                    <div className="w-full p-2 lg:w-1/3 ">
+                      <div className="rounded-lg bg-card h-80">
+                        <InfoCard
+                          cols={infoCardOBj[i]["cols"]}
+                          label={infoCardOBj[i]["label"]}
+                          title={infoCardOBj[i]["title"]}
+                          modalTitle={infoCardOBj[i]["modalTitle"]}
+                          renderModalComponent={infoCardOBj[i]["component"]}
+                          url={infoCardOBj[i]["url"]}
+                          data_loading={loading}
+                          index={i}
+                          data={data[i] || undefined}
+                          allData={data || undefined}
+                          setData={setData}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full p-2 lg:w-1/3 ">
+                      <div className="rounded-lg bg-card h-80">
+                        <CardLoader />
+                      </div>
+                    </div>
+                  )}
+                </Fragment>
+              );
+            })}
+          </>
+        ) : (
+          <Fragment>
+            <div className="w-full p-2 lg:w-1/3 ">
+              <div className="rounded-lg bg-card h-80">
+                <CardLoader />
               </div>
-            )}
-          </div>
-        </div>
-
-        <div className="w-full p-2 lg:w-1/3 ">
-          <div className="rounded-lg bg-card h-80">
-          {loading ? (
-              <InfoCard
-                cols={[
-                  "Name",
-                  "Phone.",
-                  "Password",
-                  "Email",
-                  "Designation",
-                  "Signature",
-                  "Edit",
-                  "Delete",
-                ]}
-                renderModalComponent={<ClientsCE data={data[1] || undefined} />}
-                label="List of Sales"
-                title="Sales"
-                modalTitle="Sale"
-                data={data[1] || undefined}
-                setData={setData}
-                url={''}
-              />
-            ) : (
-              <div className="flex items-center">
-                <BeatLoader />
+            </div>
+            <div className="w-full p-2 lg:w-1/3 ">
+              <div className="rounded-lg bg-card h-80">
+                <CardLoader />
               </div>
-            )}
-          </div>
-        </div>
-        <div className="w-full p-2 lg:w-1/3 ">
-          <div className="rounded-lg bg-card h-80">
-          {loading ? (
-              <InfoCard
-                cols={[
-                  "Name",
-                  "Phone.",
-                  "Password",
-                  "Email",
-                  "Designation",
-                  "Signature",
-                  "Edit",
-                  "Delete",
-                ]}
-                renderModalComponent={<ClientsCE data={data[2] || undefined} />}
-                label="List of Clients"
-                title="Clients"
-                modalTitle="Client"
-                data={data[2] || undefined}
-                setData={setData}
-                url={''}
-              />
-            ) : (
-              <div className="flex items-center">
-                <BeatLoader />
+            </div>
+            <div className="w-full p-2 lg:w-1/3 ">
+              <div className="rounded-lg bg-card h-80">
+                <CardLoader />
               </div>
-            )}
-          </div>
-        </div>
+            </div>
+          </Fragment>
+        )}
         <div className="w-full p-2 lg:w-1/3">
           <div className="rounded-lg bg-white shad h-80">
             <CreateCard

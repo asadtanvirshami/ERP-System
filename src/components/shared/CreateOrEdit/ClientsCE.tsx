@@ -11,8 +11,9 @@ import Loader from "@/src/components/shared/Buttons/Loading";
 import TextArea from "@/src/components/shared/Form/TextArea";
 //Interface Import
 import { Agents } from "@/src/interfaces/Agents";
+//Function Import
+import { checkIsTwoDArray } from "@/src/functions/checkArray";
 //Redux
-import { form_ } from "@/src/redux/form";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
@@ -21,12 +22,12 @@ import SelectType from "../Form/SelectType";
 
 type Props = {
   data:Array<Agents>
+  setData:any
 };
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
   name: yup.string().required("Required"),
-  designation: yup.string().required("Required"),
   city: yup.string().required("Required"),
   country: yup.string().required("Required"),
   source: yup.string().required("Required"),
@@ -41,13 +42,10 @@ const ClientsCE = (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
   const [clientId, setClientId] = useState("")
-  //Redux Selectors
-  const delete_client = useSelector((state: any) => state.form.value.delete);
+  //Redux initialize
   const edit = useSelector((state: any) => state.form.value.edit);
   const client_id = useSelector((state: any) => state.form.value._id);
   const client_data = useSelector((state: any) => state.form.value.values);
-  //redux initialize
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -62,74 +60,104 @@ const ClientsCE = (props: Props) => {
   });
 
   useEffect(() => {
-    setClientId(client_id)
-    if(edit==true){
-      let tempState = {}
-      const tempData = [...props.data]
-      tempData.forEach((e,i)=>{if(e.id==client_id){tempState = {...e}}})
-      reset(tempState)
-    }
-    if(delete_client == true){
-      setLoading(true);
-      axios
-        .delete(process.env.NEXT_PUBLIC_ERP_DELETE_AGENTS as string, {
-          headers: { id: client_id },
-        })
-        .then((r) => {
-          if (r.data.status == "success") {
-            dispatch(form_({ id:client_id, delete:true }));
+    console.log(props.data)
+    setClientId(client_id);
+    let tempState = {};
+    if (edit == true) {
+      const check = checkIsTwoDArray(props.data)
+      if(check){
+        const data:any = props.data[2]
+        const tempData = [...data];
+        tempData.forEach((e, i) => {
+          if (e.id == client_id) {
+            return tempState = { ...e };
           }
         });
+        reset(tempState);
+      }else{        
+        const tempData = [...props.data];
+        tempData.forEach((e, i) => {
+          if (e.id == client_id) {
+            return tempState = { ...e };
+          }
+        });
+        reset(tempState);
+      }
     }
-    if(edit==false){reset(agentBaseValues)}
-  }, [edit])
-  
+    if (edit == false) {
+      reset(agentBaseValues);
+    }
+  }, [edit]);
+
   const onSubmit = async (data: object) => {
     setLoading(true);
-    let companyId = Cookies.get('company')
+    let companyId = Cookies.get("company");
     //submiting the values to the API and saving in the db
+    console.log(data)
     axios
-      .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
+      .post(process.env.NEXT_PUBLIC_ERP_CREATE_CLIENT as string, {
         data,
-        id:companyId
-      })
-      .then((r: AxiosResponse) => {
-        console.log(r.data.status)
-        if (r.data.status == "success") {
-          setLoading(false);
-          setMessage("Client created successfully.")
-          console.log(r.data.payload)
-          dispatch(form_({ values: r.data.payload, create:true }));
-
-        } else if (r.data.status == "error") {
-          setLoading(false);
-          setMessage("Client already exits!");
-        } 
-      });
-  };
-
-  const onEdit = async (data: object) => {
-    setLoading(true);
-    //submiting the values to the API and saving in the db
-    console.log(client_id)
-    axios
-      .post(process.env.NEXT_PUBLIC_ERP_UPDATE_AGENT as string, {
-        data,
-        id:clientId
+        id: companyId,
       })
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
           setLoading(false);
-          setMessage("Client updated successfully.")
-          console.log(r.data,'data')
-          dispatch(form_({ values: data, edit:true, update:true }));
-
+          setMessage("Client created successfully.");
+          const check = checkIsTwoDArray(props.data)
+          if(check){
+            const newData:any = props.data
+            let tempArr = [...newData];
+            tempArr[2].push(r.data.payload) 
+            return props.setData(tempArr);
+          }else{
+            let tempArr = [...props.data, r.data.payload];
+            return props.setData(tempArr);
+          }
         } else if (r.data.message == "error") {
           setLoading(false);
-          setMessage("Client not updated!");
-        } 
+          setMessage("Error Occured!");
+        }
       });
-  };   
+  };
+console.log(errors)
+  const onEdit = async (data: object) => {
+    setLoading(true);
+    console.log(clientId)
+    //submiting the values to the API and saving in the db
+    axios
+      .post(process.env.NEXT_PUBLIC_ERP_UPDATE_CLIENT as string, {
+        data,
+        id: clientId,
+      })
+      .then((r: AxiosResponse) => {
+        console.log(r.data.status)
+        if (r.data.message == "success") {
+          console.log(data)
+          setLoading(false);
+          setMessage("Agent edited successfully.");
+          const check = checkIsTwoDArray(props.data)
+          if(check){
+            const tempState: Array<any> = [...props.data];
+            const i = tempState[2].findIndex((item:any) => item.id === client_id);
+            if (i !== -1) {
+              tempState[2][i]= data;
+              return props.setData(tempState)
+            }
+          }else{
+            const tempState: Array<any> = [...props.data];
+            const i = tempState.findIndex((item) => item.id === client_id);
+            if (i !== -1) {
+              tempState[i] = data;
+              return props.setData(tempState)
+            }
+          }
+        } else if (r.data.message == "error") {
+          setLoading(false);
+          setMessage("Client not edited!");
+        }
+      });
+  };
+ 
 
   return (
     <Fragment>
@@ -186,7 +214,15 @@ const ClientsCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           />
-          <SelectType
+          {/* <SelectType
+            register={register}
+            name="source"
+            control={control}
+            label="Source"
+            width={"w-30"}
+            color={"text-gray"}
+          /> */}
+          <Input
             register={register}
             name="source"
             control={control}

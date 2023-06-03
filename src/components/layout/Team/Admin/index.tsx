@@ -22,6 +22,7 @@ const index = (props: Props) => {
         setAgents(r.data.payload);
       });
   }, []);
+  
   return (
     <div className="">
       <Fragment>
@@ -40,7 +41,7 @@ const index = (props: Props) => {
             data={agents || undefined}
             setData={setAgents}
             modalTitle="Agent"
-            renderModalComponent={<AgentCE data={agents || undefined} />}
+            renderModalComponent={<AgentCE setData={setAgents} data={agents || undefined} />}
             url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
           />
         ) : null}

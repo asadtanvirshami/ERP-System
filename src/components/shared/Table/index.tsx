@@ -10,6 +10,7 @@ import Modal from "../Modal";
 //Redux
 import { form_ } from "@/src/redux/form";
 import { useDispatch, useSelector } from "react-redux";
+import { checkIsTwoDArray } from "@/src/functions/checkArray";
 
 const Table = ({
   modalTitle,
@@ -17,6 +18,8 @@ const Table = ({
   data,
   setData,
   cols,
+  allData,
+  index,
   url,
 }: any) => {
   const [type, setType] = useState<string | undefined>("");
@@ -27,6 +30,7 @@ const Table = ({
     viewModal: false,
     loading: false,
     cardLoading: false,
+    viewDetail: "",
   });
   // Redux initialize
   const dispatch = useDispatch();
@@ -34,10 +38,6 @@ const Table = ({
   // Redux Selector
   const {
     id: _id,
-    values: data_values,
-    create: data_create,
-    update: data_update,
-    delete: data_delete,
   } = useSelector((state: any) => state.form.value);
 
   useEffect(() => {
@@ -46,29 +46,6 @@ const Table = ({
     let type = Cookies.get("type");
     return setType(type), setPath(pathname);
   }, [data]);
-
-  useEffect(() => {
-    if (data_create) {
-      // Updating the array when a user is created
-      const tempState =   [..._data, data_values]
-      _setData(tempState);
-      dispatch(form_({ create: false }));
-    }
-    if (data_update) {
-      // Updating the array when a user is updated
-      setState((prevState) => ({ ...prevState, loading: true }));
-        const tempState = [..._data];
-        const i = tempState.findIndex((item) => item.id === data_values.id);
-        if (i !== -1) {
-          tempState[i] = data_values;
-          _setData(tempState);
-          setData(tempState)//saving value in useState
-        }
-        dispatch(form_({ update: false, edit: true }));
-      
-      setState((prevState) => ({ ...prevState, loading: false }));
-    }
-  }, [data, data_create, data_update, data_delete]);
 
   let Keys: any =
     data?.length > 0
@@ -85,7 +62,8 @@ const Table = ({
             key !== "createdAt" &&
             key !== "updatedAt" &&
             key !== "CompanyId" &&
-            key !== "UserId"
+            key !== "UserId"&&
+            key !== "comments"
         )
       : null;
 
@@ -93,11 +71,22 @@ const Table = ({
     // Function to handle global delete
     setState((prevState) => ({ ...prevState, loading: true }));
     axios
-      .delete(url as string, { headers: { id: id } }) // Replace with the correct endpoint URL for deleting data
+      .delete(url as string, { headers: { id: id } })
       .then((response) => {
         if (response.data.status === "success") {
-          const newData = _data?.filter((item: any) => item.id !== id);
-          _setData(newData);
+          if (allData) {
+            let newData = [...allData];
+            const check = checkIsTwoDArray(allData);
+            if (check) {
+              const filteredData = data?.filter((item: any) => item.id !== id);
+              newData[index] = filteredData;
+              console.log(newData);
+              return setData(newData);
+            }
+          } else {
+            const newData = data?.filter((item: any) => item.id !== id);
+            setData(newData);
+          }
         }
       })
       .catch((error) => {
@@ -199,11 +188,11 @@ const Table = ({
                 <tbody className="divide-y divide-gray-200 ">
                   {_data.length > 0 ? (
                     <React.Fragment>
-                      {_data.map(( item:any,index: any) => {
+                      {_data.map((item: any, index: any) => {
                         return (
                           <React.Fragment key={index}>
                             {
-                              <tr key={_data[Keys['id']]} className=" ">
+                              <tr key={_data[Keys["id"]]} className=" ">
                                 <td className="py-3 pl-4">
                                   <div className="flex items-center h-5">
                                     <input
@@ -250,12 +239,17 @@ const Table = ({
                                     className="w-5 h-5 cursor-pointer"
                                     fill={"gray"}
                                     onClick={() => {
-                                      handleOnClick(
-                                        item.id,
-                                      );
+                                      handleOnClick(item.id);
                                     }}
                                   />
                                 </td>
+                                {_data[index]["comments"]&&<td className="text-sm font-medium whitespace-nowrap mx-2"
+                                onClick={(show) =>
+                                  setState((prevState:any) => ({ ...prevState, viewModal: show, viewDetail:_data[index]["comments"] }))
+                                }
+                                >
+                                 View
+                                </td>}
                               </tr>
                             }
                             <hr />
@@ -282,6 +276,17 @@ const Table = ({
         }
       >
         {Component}
+      </Modal>
+      <Modal
+        label={modalTitle}
+        showModal={state.viewModal}
+        modalSize="xs"
+        viewTable={true}
+        setShowModal={(show) =>
+          setState((prevState) => ({ ...prevState, viewModal: show }))
+        }
+      >
+        {state.viewDetail}
       </Modal>
     </Fragment>
   );

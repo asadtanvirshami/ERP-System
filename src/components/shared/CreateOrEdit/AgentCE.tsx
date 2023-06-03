@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useForm,useFormContext  } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import axios, { AxiosResponse } from "axios";
 import * as yup from "yup";
 import Cookies from "js-cookie";
@@ -8,17 +8,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
+//Functions import
+import { checkIsTwoDArray } from "@/src/functions/checkArray";
 //Interface Import
 import { Agents } from "@/src/interfaces/Agents";
 //Redux
-import { form_ } from "@/src/redux/form";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
 
 type Props = {
-  data:Array<Agents>
+  data: Array<Agents>;
+  setData: any;
 };
 
 const SignupSchema = yup.object().shape({
@@ -32,17 +33,15 @@ const SignupSchema = yup.object().shape({
 });
 
 const AgentCE = (props: Props) => {
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
-  const [agentId, setAgentId] = useState("")
+  const [_data, _setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [agentId, setAgentId] = useState("");
   //Redux Selectors
-  const delete_agent = useSelector((state: any) => state.form.value.delete);
   const edit = useSelector((state: any) => state.form.value.edit);
   const agent_id = useSelector((state: any) => state.form.value._id);
   const agent_data = useSelector((state: any) => state.form.value.values);
-  //redux initialize
-  const dispatch = useDispatch();
-
+  
   const {
     register,
     control,
@@ -52,85 +51,109 @@ const AgentCE = (props: Props) => {
   } = useForm({
     //passing the props in the useForm yupResolver
     resolver: yupResolver(SignupSchema),
-    defaultValues:agent_data
+    defaultValues: agent_data,
   });
 
   useEffect(() => {
-    setAgentId(agent_id)
-    if(edit==true){
-      let tempState = {}
-      const tempData = [...props.data]
-      tempData.forEach((e,i)=>{if(e.id==agent_id){tempState = {...e}}})
-      reset(tempState)
-    }
-    if(delete_agent == true){
-      setLoading(true);
-      axios
-        .delete(process.env.NEXT_PUBLIC_ERP_DELETE_AGENTS as string, {
-          headers: { id: agentId },
-        })
-        .then((r) => {
-          if (r.data.status == "success") {
-            dispatch(form_({ id:agentId, delete:true }));
+    setAgentId(agent_id);
+    let tempState = {};
+    if (edit == true) {
+      const check = checkIsTwoDArray(props.data)
+      if(check){
+        const data:any = props.data[0]
+        const tempData = [...data];
+        tempData.forEach((e, i) => {
+          if (e.id == agent_id) {
+            return tempState = { ...e };
           }
         });
+        reset(tempState);
+      }else{        
+        const tempData = [...props.data];
+        tempData.forEach((e, i) => {
+          if (e.id == agent_id) {
+            return tempState = { ...e };
+          }
+        });
+        reset(tempState);
+      }
     }
-    if(edit==false){reset(agentBaseValues)}
-  }, [edit])
-  
+    if (edit == false) {
+      reset(agentBaseValues);
+    }
+  }, [edit]);
+
   const onSubmit = async (data: object) => {
     setLoading(true);
-    let companyId = Cookies.get('company')
+    let companyId = Cookies.get("company");
     //submiting the values to the API and saving in the db
     axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
         data,
         type: "agent",
-        id:companyId
+        id: companyId,
       })
       .then((r: AxiosResponse) => {
-        console.log(r.data.status)
         if (r.data.status == "success") {
           setLoading(false);
-          setMessage("Agent created successfully.")
-          console.log(r.data.payload)
-          dispatch(form_({ values: r.data.payload, create:true }));
-
+          setMessage("Agent created successfully.");
+          const check = checkIsTwoDArray(props.data)
+          if(check){
+            const newData:any = props.data
+            let tempArr = [...newData];
+            tempArr[0].push(r.data.payload) 
+            return props.setData(tempArr);
+          }else{
+            let tempArr = [...props.data, r.data.payload];
+            return props.setData(tempArr);
+          }
         } else if (r.data.status == "error") {
           setLoading(false);
           setMessage("Agent already exits!");
-        } 
+        }
       });
   };
 
   const onEdit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
-    console.log(agentId)
     axios
       .post(process.env.NEXT_PUBLIC_ERP_UPDATE_AGENT as string, {
         data,
-        id:agentId
+        id: agentId,
       })
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
           setLoading(false);
-          setMessage("Agent edited successfully.")
-          console.log(r.data,'data')
-          dispatch(form_({ values: data, edit:true, update:true }));
-
+          setMessage("Agent edited successfully.");
+          const check = checkIsTwoDArray(props.data)
+          if(check){
+            const tempState: Array<any> = [...props.data];
+            const i = tempState[0].findIndex((item:any) => item.id === agent_id);
+            if (i !== -1) {
+              tempState[0][i]= data;
+              return props.setData(tempState)
+            }
+          }else{
+            const tempState: Array<any> = [...props.data];
+            const i = tempState.findIndex((item) => item.id === agent_id);
+            if (i !== -1) {
+              tempState[i] = data;
+              return props.setData(tempState)
+            }
+          }
         } else if (r.data.message == "error") {
           setLoading(false);
           setMessage("Agent not edited!");
-        } 
+        }
       });
-  };   
+  };
 
   return (
     <Fragment>
       <form
         className="w-auto mx-auto lg:w-full justify-center grid"
-        onSubmit={handleSubmit(edit?onEdit:onSubmit)}
+        onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
@@ -183,7 +206,15 @@ const AgentCE = (props: Props) => {
           />
         </div>
         <div className="mb-1">
-          {loading?<Loader style="btn-secondary"/>:<Button style="btn-secondary" label={edit?"Update":"Create"} type="submit" />}
+          {loading ? (
+            <Loader style="btn-secondary" />
+          ) : (
+            <Button
+              style="btn-secondary"
+              label={edit ? "Update" : "Create"}
+              type="submit"
+            />
+          )}
         </div>
         <p className="text-sm mt-2">{message}</p>
       </form>

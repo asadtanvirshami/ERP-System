@@ -12,6 +12,7 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
 import { form_ } from "@/src/redux/form";
 import { useDispatch, useSelector } from "react-redux";
+import { checkIsTwoDArray } from "@/src/functions/checkArray";
 
 const InfoCard = ({
   label,
@@ -19,9 +20,12 @@ const InfoCard = ({
   modalTitle,
   renderModalComponent: Component,
   data,
+  allData,
+  index,
   setData,
   cols,
   url,
+  data_loading,
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
@@ -29,18 +33,12 @@ const InfoCard = ({
     loading: false,
   });
   const [keys, setKeys] = React.useState<Array<keyof (typeof data)[0]>>([]);
-
-  // Redux Selector
-  const {
-    id: _id,
-    values: _data,
-    create: data_create,
-    update: data_update,
-    delete: data_delete,
-  } = useSelector((state: any) => state.form.value);
-
-  // Redux initialize
+  
+  // Redux intialization
   const dispatch = useDispatch();
+  const { id: _id, values: _data } = useSelector(
+    (state: any) => state.form.value
+  );
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -50,39 +48,28 @@ const InfoCard = ({
       Keys = Keys.filter((key) => key === "name");
       setKeys(Keys);
     }
-    if (data_create) {
-      // Updating the array when a user is created
-      let newArr = [];
-      const tempState = data?.length > 0 ? [...data, _data] : [_data];
-      newArr.push(tempState);
-      setData(newArr);
-      dispatch(form_({ create: false }));
-    }
-    if (data_update) {
-      // Updating the array when a user is updated
-      setState((prevState) => ({ ...prevState, loading: true }));
-      if (data?.length > 0 || _data) {
-        const tempState =  [...data];
-        const i = tempState.findIndex((item) => item.id === _data.id);
-        if (i !== -1) {
-          tempState[i] = _data;
-          setData([tempState]);
-        }
-        dispatch(form_({ update: false, edit: true }));
-      }
-      setState((prevState) => ({ ...prevState, loading: false }));
-    }
-  }, [data, data_create, data_update, data_delete]);
+  }, [data]);
 
   const handleOnClick = (id: string) => {
     // Function to handle global delete
     setState((prevState) => ({ ...prevState, loading: true }));
     axios
-      .delete(url as string, { headers: { id: id } }) // Replace with the correct endpoint URL for deleting data
+      .delete(url as string, { headers: { id: id } })
       .then((response) => {
         if (response.data.status === "success") {
-          const newData = data?.filter((item: any) => item.id !== id);
-          setData([newData]);
+          if(allData){
+          let newData = [...allData]
+          const check  = checkIsTwoDArray(allData)
+          if(check){
+            const filteredData = data?.filter((item: any) => item.id !== id);
+            newData[index] = filteredData
+            console.log(newData)
+            return setData(newData)
+          }
+        }else{
+            const newData = data?.filter((item: any) => item.id !== id);
+            setData(newData);
+          }
         }
       })
       .catch((error) => {
@@ -95,7 +82,7 @@ const InfoCard = ({
 
   return (
     <Fragment>
-      {data ? (
+      {data_loading ? (
         <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
@@ -113,17 +100,20 @@ const InfoCard = ({
           <div className="font-body">{label}</div>
           <div className="h-100 flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
             <ul className="p-3 w-full">
-              {data?.length && !state.loading ? (
+              {data?.length > 0 && !state.loading ? (
                 <>
                   {keys?.map((key, i) => (
                     <Fragment key={i}>
                       {data?.map((item: any, index: any) => (
-                        <Fragment key={item[key].id}>
-                          <div className="flex">
+                        <Fragment>
+                          <div key={i} className="flex">
                             <li className="w-full p-3">
                               {index + 1}. {item[key]}
                             </li>
-                            <div className="w-full p-3 justify-end flex text-right">
+                            <div
+                              key={item[key].id}
+                              className="w-full p-3 justify-end flex text-right"
+                            >
                               <li className="px-5">
                                 <EditIcon
                                   onClick={() => {
@@ -160,8 +150,8 @@ const InfoCard = ({
                 </>
               ) : (
                 <>
-                  {state.loading && <CricleSpinner />}
-                  {data?.length === 0 && <> No {modalTitle} to show</>}
+                  {state.loading && data?.length > 0 && <CricleSpinner />}
+                  {data?.length == 0 && <> No {modalTitle} to show</>}
                 </>
               )}
             </ul>
@@ -181,7 +171,9 @@ const InfoCard = ({
           </div>
         </div>
       ) : (
-        <CardLoader />
+        <>
+          <CardLoader />
+        </>
       )}
       <Modal
         label={modalTitle}
@@ -208,6 +200,8 @@ const InfoCard = ({
           renderModalComponent={Component}
           url={url}
           cols={cols}
+          index={index}
+          allData={allData}
           data={data || undefined}
           setData={setData}
         />
