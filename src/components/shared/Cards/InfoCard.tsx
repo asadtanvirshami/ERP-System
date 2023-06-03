@@ -40,9 +40,10 @@ const InfoCard = ({
     (state: any) => state.form.value
   );
 
-  console.log('data info card',data)
   useEffect(() => {
+    console.log('data info card',data)
     if (data?.length > 0) {
+      console.log("key",keys)
       let Keys: Array<keyof (typeof data)[0]> = Object.keys(data[0]) as Array<
         keyof (typeof data)[0]
       >;
@@ -60,13 +61,12 @@ const InfoCard = ({
         if (response.data.status === "success") {
           if(allData){
           let newData = [...allData]
-          const check  = checkIsTwoDArray(allData)
+          const check  = checkIsTwoDArray(allData) 
           if(check){
             const filteredData = data?.filter((item: any) => item.id !== id);
             newData[index] = filteredData
-            console.log(newData)
             return setData(newData)
-          }
+          } 
         }else{
             const newData = data?.filter((item: any) => item.id !== id);
             setData(newData);
@@ -112,7 +112,7 @@ const InfoCard = ({
                               {index + 1}. {item[key]}
                             </li>
                             <div
-                              key={item[key].id}
+                              key={item["id"]}
                               className="w-full p-3 justify-end flex text-right"
                             >
                               <li className="px-5">
