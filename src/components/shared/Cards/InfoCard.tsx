@@ -106,9 +106,9 @@ const InfoCard = ({
                   {keys?.map((key, i) => (
                     <Fragment key={i}>
                       {data?.map((item: any, index: any) => (
-                        <Fragment>
-                          <div key={i} className="flex">
-                            <li className="w-full p-3">
+                        <>
+                          <div className="flex">
+                            <li key={index} className="w-full p-3">
                               {index + 1}. {item[key]}
                             </li>
                             <div
@@ -144,7 +144,7 @@ const InfoCard = ({
                             </div>
                           </div>
                           <hr />
-                        </Fragment>
+                        </>
                       ))}
                     </Fragment>
                   ))}
