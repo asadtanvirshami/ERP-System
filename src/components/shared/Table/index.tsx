@@ -64,7 +64,8 @@ const Table = ({
             key !== "updatedAt" &&
             key !== "CompanyId" &&
             key !== "UserId" &&
-            key !== "comments"
+            key !== "comments" && 
+            key !== "User" 
         )
       : null;
 
@@ -263,6 +264,13 @@ const Table = ({
                                     }
                                   >
                                     View
+                                  </td>
+                                )}
+                                {data[index]["User"] && (
+                                  <td
+                                    className="text-sm font-medium whitespace-nowrap mx-2"
+                                  >
+                                    {data[index]["User"].name}
                                   </td>
                                 )}
                               </tr>

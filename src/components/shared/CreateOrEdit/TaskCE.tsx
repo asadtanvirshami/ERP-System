@@ -16,6 +16,10 @@ import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
 import LoadingButton from "../Buttons/Loading";
+//Redux
+import { useSelector } from "react-redux";
+//BaseValues for Schema
+import { tasksBaseValues } from "@/src/utils/baseValues";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -26,40 +30,46 @@ const SignupSchema = yup.object().shape({
   bonus: yup.string().required("Required"),
 });
 
-const TaskCE = () => {
+type Props = {
+  _data: Array<any>;
+};
+
+const TaskCE = ({ _data }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [proceed, setProceed] = useState<boolean>(false);
 
-  const [agents, setAgents] = useState<Agents[]>([]);
   const [isCheck, setIsCheck] = useState<any[]>([]);
 
-  useEffect(() => {
-    async function getAgents() {
-      const CompanyId = Cookies.get("company");
-      axios
-        .get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, {
-          headers: { id: CompanyId },
-        })
-        .then((r: AxiosResponse) => {
-          console.log(r.data.payload);
-          setAgents(r.data.payload);
-        });
-    }
-    getAgents();
-  }, []);
+  //Redux Selectors
+  const edit = useSelector((state: any) => state.form.value.edit);
+  const task_data = useSelector((state: any) => state.form.value.values);
 
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     //passing the props in the useForm yupResolver
     resolver: yupResolver(SignupSchema),
+    defaultValues: task_data,
   });
+
+  useEffect(() => {
+    let tempState: any = {};
+    const tempData = [..._data];
+    tempData.forEach((e, i) => {
+      return (tempState = { ...e });
+    });
+    reset(tempState);
+    if (edit == false) {
+      reset(tasksBaseValues);
+    }
+  }, [edit]);
 
   const handleClick = (e: any, data: any) => {
     const { checked } = e.target;
@@ -71,11 +81,9 @@ const TaskCE = () => {
   };
 
   const onSubmit = async (data: any) => {
+    console.log(data.deadline);
     const CompanyId = Cookies.get("company");
     const UserId = Cookies.get("loginId");
-    //formating the date
-    let date = data.deadline.split("-");
-    const new_format = date[1] + "/" + date[2] + "/" + date[0];
 
     if (!proceed) {
       setLoading(true);
@@ -84,7 +92,7 @@ const TaskCE = () => {
         ...data,
         startDate: moment().format("L"),
         startTime: moment().format("h:mm:ss a"),
-        deadline: new_format,
+        deadline: data.deadline,
         userId: UserId,
         companyId: CompanyId,
       };
@@ -108,7 +116,7 @@ const TaskCE = () => {
       setLoading(true);
       //creating new Array
       const tempStateIsCheck = [...isCheck];
-      const tempStateList = [...agents];
+      const tempStateList = [..._data];
       const tempData: any = [];
       tempStateIsCheck.forEach((x, indexone) => {
         tempStateList.forEach((y: any, index) => {
@@ -117,7 +125,7 @@ const TaskCE = () => {
               ...data,
               startDate: moment().format("L"),
               startTime: moment().format("h:mm:ss a"),
-              deadline: new_format,
+              deadline: data.date,
               userId: y.id,
               companyId: CompanyId,
               taskId: taskId,
@@ -149,7 +157,7 @@ const TaskCE = () => {
           <h1>Select agent to assign task.</h1>
         </div>
       )}
-      {agents.length >= 1 ? (
+      {_data?.length >= 1 ? (
         <>
           {!proceed ? (
             <form
@@ -225,12 +233,12 @@ const TaskCE = () => {
             </form>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="">
-              {agents.length >= 1 ? (
-                <Fragment>
-                  {agents.map((item: Agents, index) => {
-                    return (
-                      <>
-                        <div className="p-0 min-h-[330px] overflow-y-auto">
+              <div className="p-0 min-h-[39px] overflow-y-auto">
+                {_data?.length >= 1 ? (
+                  <Fragment>
+                    {_data?.map((item: Agents, index) => {
+                      return (
+                        <>
                           <label
                             htmlFor="vertical-list-react"
                             className="flex items-center w-full cursor-pointer"
@@ -248,23 +256,23 @@ const TaskCE = () => {
                               {item.name} {item.designation}
                             </p>
                           </label>
-                        </div>
-                      </>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div>
-                  <h1>There are no agents to assign task.</h1>
-                </div>
-              )}
-
+                        </>
+                      );
+                    })}
+                  </Fragment>
+                ) : (
+                  <div>
+                    <h1>There are no agents to assign task.</h1>
+                  </div>
+                )}
+              </div>
+              <hr />
               <div className="mb-3 mt-2">
                 {loading ? (
                   <LoadingButton style="btn-secondary" />
                 ) : (
                   <Fragment>
-                    {agents.length >= 1 && (
+                    {_data?.length >= 1 && (
                       <div>
                         <Button
                           style="btn-secondary"

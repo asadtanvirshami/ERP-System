@@ -1,9 +1,17 @@
-const agentBaseValues ={
-    name:"",
-    designation:"",
-    phone:"",
-    password:"",
-    email:"",
-}
+const agentBaseValues = {
+  name: "",
+  designation: "",
+  phone: "",
+  password: "",
+  email: "",
+};
 
-export {agentBaseValues}
+const tasksBaseValues = {
+  title: "",
+  description: "",
+  priority: "",
+  deadline: "",
+  bonus: "",
+};
+
+export { agentBaseValues, tasksBaseValues };

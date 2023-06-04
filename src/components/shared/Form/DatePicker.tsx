@@ -32,6 +32,7 @@ const DatePicker = (props: Props) => {
                 props.color
               )}
               type="date"
+              value={"2023-06-03"}
               {...field}
             />
             <label className={

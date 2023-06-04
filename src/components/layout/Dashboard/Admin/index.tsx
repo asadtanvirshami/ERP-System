@@ -170,12 +170,11 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3">
           <div className="rounded-lg bg-white shad h-80">
             <CreateCard
-              renderModalComponent={<TaskCE />}
+              renderModalComponent={<TaskCE _data={data[0]} />}
               label="Create Task"
               description="Create a task for agents."
               title="Tasks"
               modalTitle="Task"
-              // data={Clients}
             />
           </div>
         </div>
