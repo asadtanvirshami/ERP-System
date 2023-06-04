@@ -123,12 +123,12 @@ const index = (props: Props) => {
                     <div className="w-full p-2 lg:w-1/3 ">
                       <div className="rounded-lg bg-card h-80">
                         <InfoCard
-                          cols={infoCardOBj[i]["cols"]}
-                          label={infoCardOBj[i]["label"]}
-                          title={infoCardOBj[i]["title"]}
-                          modalTitle={infoCardOBj[i]["modalTitle"]}
-                          renderModalComponent={infoCardOBj[i]["component"]}
-                          url={infoCardOBj[i]["url"]}
+                          cols={infoCardOBj[i].cols}
+                          label={infoCardOBj[i].label}
+                          title={infoCardOBj[i].title}
+                          modalTitle={infoCardOBj[i].modalTitle}
+                          renderModalComponent={infoCardOBj[i].component}
+                          url={infoCardOBj[i].url}
                           data_loading={loading}
                           index={i}
                           data={data[i] || undefined}

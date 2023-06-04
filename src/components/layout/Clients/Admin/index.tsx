@@ -6,27 +6,32 @@ import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
 import ClientsCE from "@/src/components/shared/CreateOrEdit/ClientsCE";
+import TableLoader from "@/src/components/shared/EmptyComponents/EmptyTable";
 
 type Props = {};
 
 const index = (props: Props) => {
   const [data, setData] = useState<Agents[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const CompanyId = Cookies.get("company");
-    axios
+    async function getClientsData(){
+      const CompanyId = await Cookies.get("company");
+      await axios
       .get(process.env.NEXT_PUBLIC_ERP_GET_CLIENT as string, {
         headers: { id: CompanyId },
       })
       .then((r: AxiosResponse) => {
         setData(r.data.payload);
+        setLoading(false)
       });
+      setLoading(false)}
+      getClientsData()
   }, []);
-  
+
   return (
     <div className="">
       <Fragment>
-        {data.length ? (
           <Table
             cols={[
               "Name",
@@ -39,15 +44,14 @@ const index = (props: Props) => {
               "Source Link",
               "Edit",
               "Delete",
-              "View"
+              "View",
             ]}
-            data={data || undefined}
+            data={data}
             setData={setData}
             modalTitle="Client"
-            renderModalComponent={<ClientsCE setData={setData} data={data || undefined} />}
+            renderModalComponent={<ClientsCE setData={setData} data={data} />}
             url={process.env.NEXT_PUBLIC_ERP_DELETE_CLIENT}
           />
-        ) : null}
       </Fragment>
     </div>
   );

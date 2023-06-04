@@ -41,7 +41,7 @@ const AgentCE = (props: Props) => {
   const edit = useSelector((state: any) => state.form.value.edit);
   const agent_id = useSelector((state: any) => state.form.value._id);
   const agent_data = useSelector((state: any) => state.form.value.values);
-  
+
   const {
     register,
     control,
@@ -58,21 +58,21 @@ const AgentCE = (props: Props) => {
     setAgentId(agent_id);
     let tempState = {};
     if (edit == true) {
-      const check = checkIsTwoDArray(props.data)
-      if(check){
-        const data:any = props.data[0]
+      const check = checkIsTwoDArray(props.data);
+      if (check) {
+        const data: any = props.data[0];
         const tempData = [...data];
         tempData.forEach((e, i) => {
           if (e.id == agent_id) {
-            return tempState = { ...e };
+            return (tempState = { ...e });
           }
         });
         reset(tempState);
-      }else{        
+      } else {
         const tempData = [...props.data];
         tempData.forEach((e, i) => {
           if (e.id == agent_id) {
-            return tempState = { ...e };
+            return (tempState = { ...e });
           }
         });
         reset(tempState);
@@ -95,17 +95,18 @@ const AgentCE = (props: Props) => {
       })
       .then((r: AxiosResponse) => {
         if (r.data.status == "success") {
+          let tempArr;
           setLoading(false);
           setMessage("Agent created successfully.");
-          const check = checkIsTwoDArray(props.data)
-          if(check){
-            const newData:any = props.data
-            let tempArr = [...newData];
-            tempArr[0].push(r.data.payload) 
+          const check = checkIsTwoDArray(props.data);
+          if (check) {
+            const newData: any = props.data;
+            tempArr = [...newData];
+            tempArr[0].push(r.data.payload);
             return props.setData(tempArr);
           }else{
-            let tempArr = [...props.data, r.data.payload];
-            return props.setData([tempArr]);
+            tempArr = [...props.data, r.data.payload];
+            return props.setData(tempArr);
           }
         } else if (r.data.status == "error") {
           setLoading(false);
@@ -126,20 +127,22 @@ const AgentCE = (props: Props) => {
         if (r.data.message == "success") {
           setLoading(false);
           setMessage("Agent edited successfully.");
-          const check = checkIsTwoDArray(props.data)
-          if(check){
+          const check = checkIsTwoDArray(props.data);
+          if (check) {
             const tempState: Array<any> = [...props.data];
-            const i = tempState[0].findIndex((item:any) => item.id === agent_id);
+            const i = tempState[0].findIndex(
+              (item: any) => item.id === agent_id
+            );
             if (i !== -1) {
-              tempState[0][i]= data;
-              return props.setData(tempState)
+              tempState[0][i] = data;
+              return props.setData(tempState);
             }
-          }else{
+          } else {
             const tempState: Array<any> = [...props.data];
             const i = tempState.findIndex((item) => item.id === agent_id);
             if (i !== -1) {
               tempState[i] = data;
-              return props.setData(tempState)
+              return props.setData(tempState);
             }
           }
         } else if (r.data.message == "error") {

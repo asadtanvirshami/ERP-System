@@ -32,25 +32,19 @@ const InfoCard = ({
     viewModal: false,
     loading: false,
   });
-  const [keys, setKeys] = React.useState<Array<keyof (typeof data)[0]>>([]);
-  
+
   // Redux intialization
   const dispatch = useDispatch();
   const { id: _id, values: _data } = useSelector(
     (state: any) => state.form.value
   );
-
-  useEffect(() => {
-    console.log('data info card',data)
-    if (data?.length > 0) {
-      console.log("key",keys)
-      let Keys: Array<keyof (typeof data)[0]> = Object.keys(data[0]) as Array<
-        keyof (typeof data)[0]
-      >;
-      Keys = Keys.filter((key) => key === "name");
-      setKeys(Keys);
-    }
-  }, [data]);
+  
+  //Setting the object keys
+  let Keys;
+  if (data?.length >= 1) {
+    Keys = Object.keys(data[0]) as Array<keyof (typeof data)[0]>;
+    Keys = Keys.filter((key) => key === "name");
+  }
 
   const handleOnClick = (id: string) => {
     // Function to handle global delete
@@ -59,15 +53,15 @@ const InfoCard = ({
       .delete(url as string, { headers: { id: id } })
       .then((response) => {
         if (response.data.status === "success") {
-          if(allData){
-          let newData = [...allData]
-          const check  = checkIsTwoDArray(allData) 
-          if(check){
-            const filteredData = data?.filter((item: any) => item.id !== id);
-            newData[index] = filteredData
-            return setData(newData)
-          } 
-        }else{
+          if (allData) {
+            let newData = [...allData];
+            const check = checkIsTwoDArray(allData);
+            if (check) {
+              const filteredData = data?.filter((item: any) => item.id !== id);
+              newData[index] = filteredData;
+              return setData(newData);
+            }
+          } else {
             const newData = data?.filter((item: any) => item.id !== id);
             setData(newData);
           }
@@ -103,7 +97,7 @@ const InfoCard = ({
             <ul className="p-3 w-full">
               {data?.length > 0 && !state.loading ? (
                 <>
-                  {keys?.map((key, i) => (
+                  {Keys?.map((key, i) => (
                     <Fragment key={i}>
                       {data?.map((item: any, index: any) => (
                         <>

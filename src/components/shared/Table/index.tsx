@@ -6,10 +6,12 @@ import { FunnelIcon, PlusIcon } from "@heroicons/react/24/outline";
 import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
 import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 //Components
+import EmptyTable from "../EmptyComponents/EmptyTable";
 import Modal from "../Modal";
 //Redux
 import { form_ } from "@/src/redux/form";
 import { useDispatch, useSelector } from "react-redux";
+//Functions
 import { checkIsTwoDArray } from "@/src/functions/checkArray";
 
 const Table = ({
@@ -24,7 +26,6 @@ const Table = ({
 }: any) => {
   const [type, setType] = useState<string | undefined>("");
   const [path, setPath] = useState<string | undefined>("");
-  const [_data, _setData] = useState<any>([]);
   const [state, setState] = useState({
     showModal: false,
     viewModal: false,
@@ -36,15 +37,15 @@ const Table = ({
   const dispatch = useDispatch();
 
   // Redux Selector
-  const {
-    id: _id,
-  } = useSelector((state: any) => state.form.value);
+  const { id: _id } = useSelector((state: any) => state.form.value);
 
   useEffect(() => {
-    _setData(data);
-    let pathname = window.location.pathname;
-    let type = Cookies.get("type");
-    return setType(type), setPath(pathname);
+    async function checkPathAndTypes() {
+      let pathname = window.location.pathname;
+      let type = Cookies.get("type");
+      return setType(type), setPath(pathname);
+    }
+    checkPathAndTypes();
   }, [data]);
 
   let Keys: any =
@@ -62,7 +63,7 @@ const Table = ({
             key !== "createdAt" &&
             key !== "updatedAt" &&
             key !== "CompanyId" &&
-            key !== "UserId"&&
+            key !== "UserId" &&
             key !== "comments"
         )
       : null;
@@ -145,7 +146,10 @@ const Table = ({
                         <PlusIcon className="h-5" />
                       </div>
                       <div className="hidden sm:block">
-                        Add {path == "/team" ? "agent" : ""}
+                        Add{" "}
+                        {(path == "/team" && "Agent") ||
+                          (path == "/clients" && "Client") ||
+                          (path == "/" && `${modalTitle}`)}
                       </div>
                     </span>
                   </button>
@@ -164,35 +168,35 @@ const Table = ({
 
           <div className="p-1.5 w-full align-middle">
             <div className="overflow-hidden border rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 ">
-                  <tr>
-                    <th scope="col" className="py-3 pl-4">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="checkbox-all"
-                          type="checkbox"
-                          className="text-blue-60 rounded focus:ring-blue-500"
-                        />
-                      </div>
-                    </th>
-                    {cols.map((col: any, index: any) => {
-                      return (
-                        <th key={index} className="text-left">
-                          {col}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 ">
-                  {_data.length > 0 ? (
+              {data.length >= 1 ? (
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50 ">
+                    <tr>
+                      <th scope="col" className="py-3 pl-4">
+                        <div className="flex items-center h-5">
+                          <input
+                            id="checkbox-all"
+                            type="checkbox"
+                            className="text-blue-60 rounded focus:ring-blue-500"
+                          />
+                        </div>
+                      </th>
+                      {cols.map((col: any, index: any) => {
+                        return (
+                          <th key={index} className="text-left">
+                            {col}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 ">
                     <React.Fragment>
-                      {_data.map((item: any, index: any) => {
+                      {data.map((item: any, index: any) => {
                         return (
                           <React.Fragment key={index}>
                             {
-                              <tr key={_data[Keys["id"]]} className=" ">
+                              <tr key={item.id} className=" ">
                                 <td className="py-3 pl-4">
                                   <div className="flex items-center h-5">
                                     <input
@@ -207,14 +211,18 @@ const Table = ({
                                     </label>
                                   </div>
                                 </td>
-                                {Keys.map((key: any, i: any) => (
-                                  <td
-                                    key={i}
-                                    className="text-sm text-gray-800 whitespace-nowrap"
-                                  >
-                                    {_data[index][key]}
-                                  </td>
-                                ))}
+                                {Keys?.length >= 1 && (
+                                  <>
+                                    {Keys.map((key: any, i: any) => (
+                                      <td
+                                        key={i}
+                                        className="text-sm text-gray-800 whitespace-nowrap"
+                                      >
+                                        {data[index][key]}
+                                      </td>
+                                    ))}
+                                  </>
+                                )}
                                 <td className="text-sm font-medium whitespace-nowrap mx-2">
                                   <EditIcon
                                     className="w-5 h-5 cursor-pointer"
@@ -243,13 +251,20 @@ const Table = ({
                                     }}
                                   />
                                 </td>
-                                {_data[index]["comments"]&&<td className="text-sm font-medium whitespace-nowrap mx-2"
-                                onClick={(show) =>
-                                  setState((prevState:any) => ({ ...prevState, viewModal: show, viewDetail:_data[index]["comments"] }))
-                                }
-                                >
-                                 View
-                                </td>}
+                                {data[index]["comments"] && (
+                                  <td
+                                    className="text-sm font-medium whitespace-nowrap mx-2"
+                                    onClick={(show) =>
+                                      setState((prevState: any) => ({
+                                        ...prevState,
+                                        viewModal: show,
+                                        viewDetail: data[index]["comments"],
+                                      }))
+                                    }
+                                  >
+                                    View
+                                  </td>
+                                )}
                               </tr>
                             }
                             <hr />
@@ -257,11 +272,11 @@ const Table = ({
                         );
                       })}
                     </React.Fragment>
-                  ) : (
-                    <></>
-                  )}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              ) : (
+                <EmptyTable cols={cols} />
+              )}
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ const index = (props: Props) => {
         headers: { id: CompanyId },
       })
       .then((r: AxiosResponse) => {
+        console.log(r.data.payload);
         setAgents(r.data.payload);
       });
   }, []);
@@ -26,7 +27,7 @@ const index = (props: Props) => {
   return (
     <div className="">
       <Fragment>
-        {agents.length ? (
+        
           <Table
             cols={[
               "Name",
@@ -44,7 +45,6 @@ const index = (props: Props) => {
             renderModalComponent={<AgentCE setData={setAgents} data={agents || undefined} />}
             url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
           />
-        ) : null}
       </Fragment>
     </div>
   );

@@ -14,7 +14,6 @@ import { Agents } from "@/src/interfaces/Agents";
 //Function Import
 import { checkIsTwoDArray } from "@/src/functions/checkArray";
 //Redux
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
@@ -60,7 +59,6 @@ const ClientsCE = (props: Props) => {
   });
 
   useEffect(() => {
-    console.log(props.data)
     setClientId(client_id);
     let tempState = {};
     if (edit == true) {
@@ -93,7 +91,6 @@ const ClientsCE = (props: Props) => {
     setLoading(true);
     let companyId = Cookies.get("company");
     //submiting the values to the API and saving in the db
-    console.log(data)
     axios
       .post(process.env.NEXT_PUBLIC_ERP_CREATE_CLIENT as string, {
         data,
@@ -101,16 +98,17 @@ const ClientsCE = (props: Props) => {
       })
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
+          let tempArr;
           setLoading(false);
           setMessage("Client created successfully.");
           const check = checkIsTwoDArray(props.data)
           if(check){
             const newData:any = props.data
-            let tempArr = [...newData];
+            tempArr = [...newData];
             tempArr[2].push(r.data.payload) 
             return props.setData(tempArr);
           }else{
-            let tempArr = [...props.data, r.data.payload];
+            tempArr = [...props.data, r.data.payload];
             return props.setData(tempArr);
           }
         } else if (r.data.message == "error") {
@@ -119,10 +117,9 @@ const ClientsCE = (props: Props) => {
         }
       });
   };
-console.log(errors)
+
   const onEdit = async (data: object) => {
     setLoading(true);
-    console.log(clientId)
     //submiting the values to the API and saving in the db
     axios
       .post(process.env.NEXT_PUBLIC_ERP_UPDATE_CLIENT as string, {
@@ -130,9 +127,7 @@ console.log(errors)
         id: clientId,
       })
       .then((r: AxiosResponse) => {
-        console.log(r.data.status)
         if (r.data.message == "success") {
-          console.log(data)
           setLoading(false);
           setMessage("Agent edited successfully.");
           const check = checkIsTwoDArray(props.data)
