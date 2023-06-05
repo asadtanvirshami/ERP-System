@@ -150,7 +150,8 @@ const Table = ({
                         Add{" "}
                         {(path == "/team" && "Agent") ||
                           (path == "/clients" && "Client") ||
-                          (path == "/" && `${modalTitle}`)}
+                          (path == "/tasks" && "Tasks") ||
+                          (path == "/" && `${modalTitle}`)} 
                       </div>
                     </span>
                   </button>
