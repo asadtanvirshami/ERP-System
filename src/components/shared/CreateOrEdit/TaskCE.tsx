@@ -117,10 +117,15 @@ const TaskCE = ({ _data }: Props) => {
       //creating new Array
       const tempStateIsCheck = [...isCheck];
       const tempStateList = [..._data];
+      let asignees:any = []
       const tempData: any = [];
       tempStateIsCheck.forEach((x, indexone) => {
         tempStateList.forEach((y: any, index) => {
           if (x === y.id) {
+            asignees.push({
+              id:y.id,
+               email:y.email
+            })
             tempData.push({
               ...data,
               startDate: moment().format("L"),
@@ -135,7 +140,11 @@ const TaskCE = ({ _data }: Props) => {
       });
       console.log(tempData);
       await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, tempData)
+        .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
+          data:tempData,
+          asignees:asignees,
+          taskId:taskId
+        })
         .then((r: AxiosResponse) => {
           console.log(r.data);
           if (r.data.status == "success") {

@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
-import { BeatLoader } from "react-spinners";
 //COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";

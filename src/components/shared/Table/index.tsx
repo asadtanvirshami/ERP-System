@@ -8,6 +8,7 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 //Components
 import EmptyTable from "../EmptyComponents/EmptyTable";
 import Modal from "../Modal";
+import ViewDetail from "../Tasks/ViewDetail"
 //Redux
 import { form_ } from "@/src/redux/form";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +33,7 @@ const Table = ({
     loading: false,
     cardLoading: false,
     viewDetail: "",
+    userDetail: {},
   });
   // Redux initialize
   const dispatch = useDispatch();
@@ -64,8 +66,10 @@ const Table = ({
             key !== "updatedAt" &&
             key !== "CompanyId" &&
             key !== "UserId" &&
-            key !== "comments" && 
-            key !== "User" 
+            key !== "comments" &&
+            key !== "User" &&
+            key !== "asignees"
+
         )
       : null;
 
@@ -151,7 +155,7 @@ const Table = ({
                         {(path == "/team" && "Agent") ||
                           (path == "/clients" && "Client") ||
                           (path == "/tasks" && "Tasks") ||
-                          (path == "/" && `${modalTitle}`)} 
+                          (path == "/" && `${modalTitle}`)}
                       </div>
                     </span>
                   </button>
@@ -268,11 +272,23 @@ const Table = ({
                                   </td>
                                 )}
                                 {data[index]["User"] && (
-                                  <td
-                                    className="text-sm font-medium whitespace-nowrap mx-2"
-                                  >
+                                  <td className="text-sm font-medium whitespace-nowrap mx-2">
                                     {data[index]["User"].name}
                                   </td>
+                                )}
+                                {data[index]["asignees"] && (
+                                      <td
+                                      className="text-sm font-medium whitespace-nowrap mx-2"
+                                      onClick={(show) =>
+                                        setState((prevState: any) => ({
+                                          ...prevState,
+                                          viewModal: show,
+                                          viewDetail: data[index]["asignees"],
+                                        }))
+                                      }
+                                    >
+                                      View
+                                    </td>
                                 )}
                               </tr>
                             }
@@ -304,13 +320,13 @@ const Table = ({
       <Modal
         label={modalTitle}
         showModal={state.viewModal}
-        modalSize="xs"
+        modalSize="sm"
         viewTable={true}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
       >
-        {state.viewDetail}
+       <ViewDetail state={state.viewDetail}/>
       </Modal>
     </Fragment>
   );

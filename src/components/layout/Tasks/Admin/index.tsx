@@ -19,17 +19,24 @@ const index = (props: Props) => {
         headers: { id: CompanyId },
       })
       .then((r: AxiosResponse) => {
-        console.log(r.data.payload);
+        // let tempArr = [];
+        // for (let i = 0; i < r.data.payload.length; i++) {
+        //   tempArr.push({
+        //     ...r.data.payload[i].Task,
+        //     Asignee: r.data.payload[i].User,
+        //   });
+        // }
         setTasks(r.data.payload);
       });
   }, []);
+
+  console.log(tasks);
 
   return (
     <div className="">
       <Fragment>
         <Table
           cols={[
-
             "Description",
             "Start Time",
             "End Time",
@@ -42,7 +49,7 @@ const index = (props: Props) => {
             "Deadline",
             "Edit",
             "Delete",
-            "Assigned By"
+            "Assigned By",
           ]}
           data={tasks || undefined}
           setData={setTasks}
