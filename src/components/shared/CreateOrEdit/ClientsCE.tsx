@@ -157,7 +157,7 @@ const ClientsCE = (props: Props) => {
   return (
     <Fragment>
       <form
-        className="w-auto mx-auto lg:w-full justify-center grid"
+        className="w-auto mx-auto lg:w-full mt-4 justify-center grid"
         onSubmit={handleSubmit(edit?onEdit:onSubmit)}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
@@ -166,7 +166,7 @@ const ClientsCE = (props: Props) => {
             name="name"
             control={control}
             label="Full name"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
           />
           <Input
@@ -233,6 +233,7 @@ const ClientsCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           />
+          
         </div>
           <TextArea
               register={register}

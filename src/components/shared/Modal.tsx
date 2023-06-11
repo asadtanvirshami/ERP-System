@@ -25,7 +25,7 @@ const Modal = (props: Props) => {
         size={props.modalSize}
         handler={() => props.setShowModal(false)}
       >
-        <div className="flex  h-full w-full overflow-y-auto overflow-x-hidden outline-none">
+        <div className="flex outline-none">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
             {props.viewTable ? (
                <>{`${props.label} Info` }</>
@@ -43,7 +43,7 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <DialogBody divider className="h-[30rem] overflow-scroll m-3">
+        <DialogBody divider className="max-h-[40rem] block">
           <Fragment>{props.children}</Fragment>
         </DialogBody>
       </Dialog>

@@ -19,21 +19,33 @@ main {
   /* Or flex-grow: 1;*/
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 /*======= Scroller Css======*/
 ::-webkit-scrollbar {
-  height: 4px;/* height of horizontal scrollbar ← You're missing this */
-  width: 4px;/* width of vertical scrollbar */
+  height: 4px;
+  width: 4px;
   border: 1px solid #d5d5d5;
+  display: none;
 }
   /* Track */
   ::-webkit-scrollbar-track {
     border-radius: 10px;
+    display: none;
   }
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
     background: silver; 
     border-radius: 10px;
+    display: none;
   }
   
 /*=======Buttons Tailwind css=======*/
@@ -45,4 +57,26 @@ main {
   .btn-secondary {
     @apply border border-custom-red-500 w-24 h-9 px-4 bg-transparent text-custom-red-500 font-body rounded-full;
   }
+}
+
+.fade-down-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.fade-down-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.fade-down-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-down-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
 }

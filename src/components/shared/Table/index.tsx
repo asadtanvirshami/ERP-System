@@ -124,52 +124,62 @@ const Table = ({
 
   return (
     <Fragment>
-      <Card className="h-full w-full">
-        <CardHeader floated={false} shadow={false} className="rounded-none">
-          <div className="mb-8 flex items-center justify-between gap-8">
-            <div>
-              <Typography variant="h5" color="blue-gray">
-                Members list
-              </Typography>
-              <Typography color="gray" className="mt-1 font-normal">
-                See information about all members
-              </Typography>
-            </div>
-            <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-              <Button variant="outlined" color="blue-gray" size="sm">
-                view all
-              </Button>
-              <Button
-                className="flex items-center gap-3"
-                color="blue"
-                size="sm"
-              >
-                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add member
-              </Button>
-            </div>
+      <Card className="max-h-[35rem]">
+        <div className="mb-0 flex items-center justify-between p-3">
+          <div>
+            <Typography variant="h5" color="blue-gray">
+              Members list
+            </Typography>
+            <Typography color="gray" className="mt-1 font-normal">
+              See information about all members
+            </Typography>
           </div>
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <Tabs value="all" className="w-full md:w-max">
-              <TabsHeader>
-                {/* {cols.map(({ label, value }) => (
+          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+            <Button variant="outlined" color="blue-gray" size="sm">
+              view all
+            </Button>
+            <Button
+              className="flex items-center gap-3"
+              color="red"
+              size="sm"
+              onClick={() => {
+                setState((prevState) => ({
+                  ...prevState,
+                  showModal: true,
+                }));
+                dispatch(form_({ edit: false }));
+              }}
+            >
+              <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add{" "}
+              {(path == "/team" && "Agent") ||
+                (path == "/clients" && "Client") ||
+                (path == "/tasks" && "Tasks") ||
+                (path == "/" && `${modalTitle}`)}
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row p-3">
+          <div className="w-full md:w-72">
+            <Input
+              label="Search"
+              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+            />
+          </div>
+          <Tabs value="all" className="w-full md:w-max">
+            <TabsHeader>
+              {/* {cols.map(({ label, value }) => (
                 <Tab key={value} value={value}>
                   &nbsp;&nbsp;{label}&nbsp;&nbsp;
                 </Tab>
               ))} */}
-              </TabsHeader>
-            </Tabs>
-            <div className="w-full md:w-72">
-              <Input
-                label="Search"
-                icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-              />
-            </div>
-          </div>
-        </CardHeader>
+            </TabsHeader>
+          </Tabs>
+        </div>
+
         {data.length >= 1 ? (
           <CardBody className="overflow-scroll px-0">
-            <table className="mt-4 w-full min-w-max table-auto text-left">
-              <thead>
+            <table className="mt-2 w-full min-w-max table-auto text-left">
+              <thead className="">
                 <tr>
                   {cols.map((head: string) => (
                     <th
@@ -243,20 +253,20 @@ const Table = ({
                         </td>
                         <td className={classes}>
                           <Tooltip content="Delete Item">
-                          <IconButton
+                            <IconButton
                               variant="text"
                               color="blue-gray"
                               onClick={() => {
                                 handleOnClick(ele.id);
                               }}
                             >
-                            <TrashIcon
-                              className="w-5 h-5 cursor-pointer"
-                              fill={"gray"}
-                              onClick={() => {
-                                handleOnClick(ele.id);
-                              }}
-                            />
+                              <TrashIcon
+                                className="w-5 h-5 cursor-pointer"
+                                fill={"gray"}
+                                onClick={() => {
+                                  handleOnClick(ele.id);
+                                }}
+                              />
                             </IconButton>
                           </Tooltip>
                         </td>
@@ -277,21 +287,21 @@ const Table = ({
                         )}
                         {data[index]["asignees"] && (
                           <td className={classes}>
-                          <div className="flex items-center gap-3">
-                            <div className="flex flex-col">
-                              <List state={data[index]["asignees"]}/>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-col">
+                                <List state={data[index]["asignees"]} />
+                              </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
                         )}
                         {data[index]["comments"] && (
                           <td className={classes}>
-                          <div className="flex items-center gap-3">
-                            <div className="flex flex-col">
-                              <List state={data[index]["comments"]}/>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-col">
+                                <List state={data[index]} />
+                              </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
                         )}
                       </tr>
                     </>
@@ -336,9 +346,7 @@ const Table = ({
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
-      >
-
-      </Modal>
+      ></Modal>
     </Fragment>
   );
 };
