@@ -45,11 +45,13 @@ const index = (props: Props) => {
             "Title",
             "Code",
             "Status",
+            "Status",
             "End Date",
             "Deadline",
             "Edit",
             "Delete",
             "Assigned By",
+            "Assigned To",
           ]}
           data={tasks || undefined}
           setData={setTasks}
