@@ -13,11 +13,15 @@ type Props = {
 
 export const List = ({ state }: Props) => {
   return (
+    <div className="relative z-50"> {/* Add a parent container with relative positioning and a high z-index */}
     <Menu>
       <MenuHandler>
-        <Button variant="text" color="red">
-          View
-        </Button>
+      <button
+       
+        className="bg-red-500 hover:bg-red-600 text-white px-4  rounded focus:outline-none"
+      >
+        View
+      </button>
       </MenuHandler>
       {state.length > 0 ? (
         <MenuList className="max-h-72">
@@ -47,5 +51,6 @@ export const List = ({ state }: Props) => {
         </MenuList>
       )}
     </Menu>
+  </div>
   );
 };

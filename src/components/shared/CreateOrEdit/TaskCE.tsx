@@ -206,7 +206,7 @@ const TaskCE = ({ _data }: Props) => {
                   name="bonus"
                   control={control}
                   label="Bonus"
-                  width={"w-48"}
+                  width={"w-42"}
                   color={"text-gray"}
                 />
               </div>

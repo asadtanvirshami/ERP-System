@@ -30,6 +30,7 @@ const index = (props: Props) => {
         
           <Table
             cols={[
+              "No",
               "Name",
               "Phone.",
               "Password",

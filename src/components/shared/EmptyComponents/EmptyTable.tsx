@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-//Icons & SVGs
-import { FunnelIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { PropagateLoader } from "react-spinners";
+import React from "react";
+import { Typography, CardBody } from "@material-tailwind/react";
 
 type Props = {
   cols: any;
@@ -11,43 +8,35 @@ type Props = {
 const EmptyTable = ({ cols }: Props) => {
   return (
     <React.Fragment>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 ">
+        <CardBody className="overflow-scroll px-0">
+      <table className="mt-2 w-full min-w-max table-auto text-left">
+        <thead className="">
           <tr>
-            <th scope="col" className="py-3 pl-4">
-              <div className="flex items-center h-5">
-                <input
-                  id="checkbox-all"
-                  type="checkbox"
-                  disabled={true}
-                  className="text-blue-60 cursor-not-allowed rounded focus:ring-blue-500"
-                />
-              </div>
-            </th>
-            {cols.map((col: any, index: any) => {
-              return (
-                <th key={index} className="text-left">
-                  {col}
-                </th>
-              );
-            })}
+            {cols.map((head: string) => (
+              <th
+                key={head}
+                className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+              >
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70"
+                >
+                  {head}
+                </Typography>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="py-3 pl-4">
-              {" "}
-              <input
-                id="checkbox-all"
-                type="checkbox"
-                disabled={true}
-                className="text-blue-60 rounded cursor-not-allowed focus:ring-blue-500"
-              />
+            <td className="py-5">
+              <span className="ml-4">No data to show.</span>
             </td>
-            <td className="p-3 pl-0">no data to show</td>
           </tr>
         </tbody>
       </table>
+    </CardBody>
     </React.Fragment>
   );
 };

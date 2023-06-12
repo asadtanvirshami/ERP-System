@@ -80,3 +80,44 @@ main {
   transform: translateY(20px);
   transition: opacity 300ms, transform 300ms;
 }
+
+
+/* ===Popover animation=== */
+.popover-container {
+  display: flex;
+  width: 180px;
+  min-height: 1px !important;
+  overflow-y: scroll;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.popover {
+  animation-duration: 0.3s;
+}
+
+.popover.fade-in {
+  animation-name: fadeIn;
+  animation-fill-mode: forwards;
+}
+

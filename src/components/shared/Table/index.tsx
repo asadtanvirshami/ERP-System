@@ -32,6 +32,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { List } from "../List";
+import Popovers from "../Popovers";
 
 const Table = ({
   modalTitle,
@@ -124,7 +125,7 @@ const Table = ({
 
   return (
     <Fragment>
-      <Card className="max-h-[35rem]">
+      <Card className="max-h-[45rem] relative z-10">
         <div className="mb-0 flex items-center justify-between p-3">
           <div>
             <Typography variant="h5" color="blue-gray">
@@ -208,6 +209,19 @@ const Table = ({
                     <>
                       <tr key={index}>
                         <>
+                        <td className={classes}>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-col">
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-normal"
+                                >
+                                  {index+1}
+                                </Typography>
+                              </div>
+                            </div>
+                          </td>
                           {Keys.map((key: string, i: number) => {
                             return (
                               <>
@@ -298,7 +312,7 @@ const Table = ({
                           <td className={classes}>
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
-                                <List state={data[index]} />
+                                <Popovers state={data[index]["comments"]} />
                               </div>
                             </div>
                           </td>
@@ -328,6 +342,7 @@ const Table = ({
         </CardFooter>
       </Card>
       <Modal
+      className="fixed inset-0 z-50 flex items-center justify-center"
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
@@ -339,6 +354,7 @@ const Table = ({
         {Component}
       </Modal>
       <Modal
+      
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="sm"
