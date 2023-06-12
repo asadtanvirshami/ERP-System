@@ -2,8 +2,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 //Icons & SVGs
-import { FunnelIcon, PlusIcon } from "@heroicons/react/24/outline";
-import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
 import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 //Components
 import EmptyTable from "../EmptyComponents/EmptyTable";
@@ -17,7 +15,6 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
-  CardHeader,
   Input,
   Typography,
   Button,
@@ -89,7 +86,8 @@ const Table = ({
             key !== "User" &&
             key !== "asignees" &&
             key !== "Status" &&
-            key !== "active"
+            key !== "active" &&
+            key !== "description"
         )
       : null;
 
@@ -210,15 +208,15 @@ const Table = ({
                     <>
                       <tr key={index}>
                         <>
-                        <td className={classes}>
+                          <td className={classes}>
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
                                 <Typography
                                   variant="small"
                                   color="blue-gray"
-                                  className="font-normal"
+                                  className="font-normal font-bold"
                                 >
-                                  {index+1}
+                                  {index + 1}.
                                 </Typography>
                               </div>
                             </div>
@@ -243,6 +241,21 @@ const Table = ({
                             );
                           })}
                         </>
+                        {data[index]["User"] && (
+                          <td className={classes}>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-col">
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-normal"
+                                >
+                                  {data[index]["User"].name}
+                                </Typography>
+                              </div>
+                            </div>
+                          </td>
+                        )}
                         <td className={classes}>
                           <Tooltip content="Edit Item">
                             <IconButton
@@ -285,21 +298,7 @@ const Table = ({
                             </IconButton>
                           </Tooltip>
                         </td>
-                        {data[index]["User"] && (
-                          <td className={classes}>
-                            <div className="flex items-center gap-3">
-                              <div className="flex flex-col">
-                                <Typography
-                                  variant="small"
-                                  color="blue-gray"
-                                  className="font-normal"
-                                >
-                                  {data[index]["User"].name}
-                                </Typography>
-                              </div>
-                            </div>
-                          </td>
-                        )}
+
                         {data[index]["asignees"] && (
                           <td className={classes}>
                             <div className="flex items-center gap-3">
@@ -314,6 +313,26 @@ const Table = ({
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
                                 <Popovers state={data[index]["comments"]} />
+                              </div>
+                            </div>
+                          </td>
+                        )}
+                        {data[index]["description"] && (
+                          <td className={classes}>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-col">
+                                <button
+                                  onClick={() => {
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      viewModal: true,
+                                      viewDetail: data[index]["description"],
+                                    }));
+                                  }}
+                                  className="bg-red-500 hover:bg-red-600 text-white px-4  rounded focus:outline-none"
+                                >
+                                  View
+                                </button>
                               </div>
                             </div>
                           </td>
@@ -343,7 +362,7 @@ const Table = ({
         </CardFooter>
       </Card>
       <Modal
-      className="fixed inset-0 z-50 flex items-center justify-center"
+        className="fixed inset-0 z-50 flex items-center justify-center"
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
@@ -355,7 +374,6 @@ const Table = ({
         {Component}
       </Modal>
       <Modal
-      
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="sm"
@@ -363,7 +381,11 @@ const Table = ({
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
-      ></Modal>
+      >
+        <>
+        {state.viewDetail}
+        </>
+      </Modal>
     </Fragment>
   );
 };

@@ -43,6 +43,7 @@ const index = (props: Props) => {
               "Source",
               "Source Link",
               "Edit",
+              "Edit",
               "Delete",
               "View",
             ]}
