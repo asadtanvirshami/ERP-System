@@ -37,6 +37,7 @@ const index = (props: Props) => {
       <Fragment>
         <Table
           cols={[
+            "No.",
             "Description",
             "Start Time",
             "End Time",

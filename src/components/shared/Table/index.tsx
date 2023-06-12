@@ -125,7 +125,7 @@ const Table = ({
 
   return (
     <Fragment>
-      <Card className="max-h-[45rem] relative z-10">
+      <Card className="xl:max-h-[80rem] md:max-h-[45rem] relative z-10">
         <div className="mb-0 flex items-center justify-between p-3">
           <div>
             <Typography variant="h5" color="blue-gray">
