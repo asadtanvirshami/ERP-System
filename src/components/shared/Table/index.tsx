@@ -163,6 +163,7 @@ const Table = ({
           <div className="w-full md:w-72">
             <Input
               label="Search"
+              color="gray"
               icon={<MagnifyingGlassIcon className="h-5 w-5" />}
             />
           </div>
