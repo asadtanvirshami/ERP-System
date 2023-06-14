@@ -362,7 +362,6 @@ const Table = ({
         </CardFooter>
       </Card>
       <Modal
-        className="fixed inset-0 z-50 flex items-center justify-center"
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"

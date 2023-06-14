@@ -20,6 +20,7 @@ import LoadingButton from "../Buttons/Loading";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { tasksBaseValues } from "@/src/utils/baseValues";
+import Tabs from "../Tabs";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -42,6 +43,8 @@ const TaskCE = ({ _data }: Props) => {
   const [proceed, setProceed] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
+
+  const [active, setActive] = useState<number>(0);
 
   //Redux Selectors
   const edit = useSelector((state: any) => state.form.value.edit);
@@ -117,15 +120,15 @@ const TaskCE = ({ _data }: Props) => {
       //creating new Array
       const tempStateIsCheck = [...isCheck];
       const tempStateList = [..._data];
-      let asignees:any = []
+      let asignees: any = [];
       const tempData: any = [];
       tempStateIsCheck.forEach((x, indexone) => {
         tempStateList.forEach((y: any, index) => {
           if (x === y.id) {
             asignees.push({
-              id:y.id,
-               email:y.email
-            })
+              id: y.id,
+              email: y.email,
+            });
             tempData.push({
               ...data,
               startDate: moment().format("L"),
@@ -141,9 +144,9 @@ const TaskCE = ({ _data }: Props) => {
       console.log(tempData);
       await axios
         .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
-          data:tempData,
-          asignees:asignees,
-          taskId:taskId
+          data: tempData,
+          asignees: asignees,
+          taskId: taskId,
         })
         .then((r: AxiosResponse) => {
           console.log(r.data);
@@ -158,17 +161,27 @@ const TaskCE = ({ _data }: Props) => {
         });
     }
   };
+  
+  const tabs = [
+    { title: "Task",  },
+    { title: "Asignees",  },
+  ];
 
   return (
     <Fragment>
-      {proceed && (
+      <div>
+        {tabs.map((ele, i) => {
+          return <Tabs title={ele.title} onClick={} />;
+        })}
+      </div>
+      {active == 1 && (
         <div>
           <h1>Select agent to assign task.</h1>
         </div>
       )}
       {_data?.length >= 1 ? (
         <>
-          {!proceed ? (
+          {active == 0 && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
               onSubmit={handleSubmit(onSubmit)}
@@ -240,7 +253,9 @@ const TaskCE = ({ _data }: Props) => {
                 <p className="mt-2">{message}</p>
               </div>
             </form>
-          ) : (
+          )}
+
+          {active == 1 && (
             <form onSubmit={handleSubmit(onSubmit)} className="">
               <div className="p-0 min-h-[39px] overflow-y-auto">
                 {_data?.length >= 1 ? (
