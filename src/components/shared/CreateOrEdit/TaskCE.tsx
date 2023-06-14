@@ -161,17 +161,28 @@ const TaskCE = ({ _data }: Props) => {
         });
     }
   };
-  
+
   const tabs = [
-    { title: "Task",  },
-    { title: "Asignees",  },
+    { title: "Task", val: 0 },
+    { title: "Asignees", val: 1 },
   ];
 
   return (
     <Fragment>
-      <div>
+      <div className=" text-center items-center align-middle mx-auto grid grid-cols-2">
         {tabs.map((ele, i) => {
-          return <Tabs title={ele.title} onClick={} />;
+          return (
+            <div className="">
+              <Tabs
+                activeTab={active}
+                title={ele.title}
+                val={ele.val}
+                onClick={() => {
+                  setActive(ele.val);
+                }}
+              />
+            </div>
+          );
         })}
       </div>
       {active == 1 && (
