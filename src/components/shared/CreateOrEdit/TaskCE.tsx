@@ -33,7 +33,7 @@ const SignupSchema = yup.object().shape({
 
 type Props = {
   _data: Array<any>;
-  setData: any
+  setData: any;
 };
 
 const TaskCE = ({ _data, setData }: Props) => {
@@ -43,6 +43,7 @@ const TaskCE = ({ _data, setData }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
+  const [asignees, setAsignees] = useState<any[]>([]);
 
   const [active, setActive] = useState<number>(0);
 
@@ -65,27 +66,31 @@ const TaskCE = ({ _data, setData }: Props) => {
   useEffect(() => {
     let tempState: any = {};
     let agentsArr: any = [];
-    const tempData = [..._data[0]];
-    let agentsData = [..._data[1]];
 
-    tempData.forEach((e, i) => {
-      return (tempState = { ...e });
-    });
-
-    if (_data[1].length > 0) {
-      agentsData.forEach((ele, inx) => {
-        agentsArr.push({ ...ele, check: false });
-        tempData.forEach((e: any, index: number) => {
-          for (let i = 0; i < e.asignees?.length; i++) {
-            agentsArr.push(e.asignees[i].id);
-          }
+    if (edit) {
+      const tempData = [..._data[0]];
+      let agentsData = [..._data[1]];
+      if (_data[1].length > 0) {
+        agentsData.forEach((ele, inx) => {
+          agentsArr.push({ ...ele, check: false });
+          tempData.forEach((e: any, index: number) => {
+            for (let i = 0; i < e.asignees?.length; i++) {
+              agentsArr.push(e.asignees[i].id);
+            }
+          });
         });
-      });
-      return setIsCheck(agentsArr);
-    }
 
+        return setIsCheck(agentsArr),setAsignees(agentsData);
+      }
+    }
     reset(tempState);
-    if (edit == false) {
+
+    if (!edit) {
+      const tempData = [..._data];
+      tempData.forEach((e, i) => {
+        return (tempState = { ...e });
+      });
+      setAsignees(_data);
       reset(tasksBaseValues);
     }
   }, [edit]);
@@ -134,7 +139,7 @@ const TaskCE = ({ _data, setData }: Props) => {
       setLoading(true);
       //creating new Array
       const tempStateIsCheck = [...isCheck];
-      const tempStateList = [..._data[0]];
+      const tempStateList = edit?[..._data[0]]:[..._data];
 
       let asignees: any = [];
       const tempData: any = [];
@@ -251,15 +256,15 @@ const TaskCE = ({ _data, setData }: Props) => {
             setLoading(false);
             const tempState: Array<any> = [..._data[0]];
             tempState.forEach((ele, i) => {
-              for(let i = 0; i < tempState.length; i++){
-              tempStateIsCheck.forEach((x, indexone) => {
-                const i = tempState.findIndex((item) => item.id === x.id);
-                if (i !== -1) {
-                  tempState[i] = data;
-                  return setData(tempState);
-                }
-              });
-            }
+              for (let i = 0; i < tempState.length; i++) {
+                tempStateIsCheck.forEach((x, indexone) => {
+                  const i = tempState.findIndex((item) => item.id === x.id);
+                  if (i !== -1) {
+                    tempState[i] = data;
+                    return setData(tempState);
+                  }
+                });
+              }
             });
           }
           if (r.data.status == "error") {
@@ -273,6 +278,8 @@ const TaskCE = ({ _data, setData }: Props) => {
     { title: "Task", val: 0 },
     { title: "Asignees", val: 1 },
   ];
+
+  console.log(_data)
 
   return (
     <Fragment>
@@ -297,7 +304,7 @@ const TaskCE = ({ _data, setData }: Props) => {
           <h1>Select agent to assign task.</h1>
         </div>
       )}
-      {_data[0]?.length >= 1 ? (
+      {_data?.length >= 1 ? (
         <>
           {active == 0 && (
             <form
@@ -376,9 +383,9 @@ const TaskCE = ({ _data, setData }: Props) => {
           {active == 1 && (
             <form onSubmit={handleSubmit(onSubmit)} className="">
               <div className="p-0 min-h-[39px] overflow-y-auto">
-                {_data[1]?.length >= 1 ? (
+                {asignees?.length >= 1 ? (
                   <Fragment>
-                    {_data[1]?.map((item: any, index: number) => {
+                    {asignees?.map((item: any, index: number) => {
                       return (
                         <>
                           <label
@@ -414,7 +421,7 @@ const TaskCE = ({ _data, setData }: Props) => {
                   <LoadingButton style="btn-secondary" />
                 ) : (
                   <Fragment>
-                    {_data[1]?.length >= 1 && (
+                    {asignees?.length >= 1 && (
                       <div>
                         <Button
                           style="btn-secondary"

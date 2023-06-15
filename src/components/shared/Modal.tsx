@@ -43,7 +43,7 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <DialogBody divider className="max-h-[40rem] overflow-x-auto">
+        <DialogBody divider className="max-h-[40rem] max-w-[90rem] overflow-x-auto">
           <Fragment>{props.children}</Fragment>
         </DialogBody>
       </Dialog>
