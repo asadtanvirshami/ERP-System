@@ -11,6 +11,7 @@ type Props = {};
 
 const index = (props: Props) => {
   const [tasks, setTasks] = useState<any[]>([]);
+  const [asignees, setAsignees] = useState<any[]>([]);
 
   useEffect(() => {
     const CompanyId = Cookies.get("company");
@@ -19,14 +20,10 @@ const index = (props: Props) => {
         headers: { id: CompanyId },
       })
       .then((r: AxiosResponse) => {
-        // let tempArr = [];
-        // for (let i = 0; i < r.data.payload.length; i++) {
-        //   tempArr.push({
-        //     ...r.data.payload[i].Task,
-        //     Asignee: r.data.payload[i].User,
-        //   });
-        // }
+        let tempArr = [];
+        tempArr.push(r.data.payload, r.data.users)
         setTasks(r.data.payload);
+        setAsignees(tempArr)
       });
   }, []);
 
@@ -57,7 +54,7 @@ const index = (props: Props) => {
           data={tasks || undefined}
           setData={setTasks}
           modalTitle="Tasks"
-          renderModalComponent={<TaskCE _data={tasks} />}
+          renderModalComponent={<TaskCE setData={setAsignees} _data={asignees} />}
           url={process.env.NEXT_PUBLIC_ERP_POST_DELETE_TASK}
         />
       </Fragment>

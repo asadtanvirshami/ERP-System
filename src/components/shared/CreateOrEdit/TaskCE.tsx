@@ -33,14 +33,14 @@ const SignupSchema = yup.object().shape({
 
 type Props = {
   _data: Array<any>;
+  setData: any
 };
 
-const TaskCE = ({ _data }: Props) => {
+const TaskCE = ({ _data, setData }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [proceed, setProceed] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
 
@@ -64,10 +64,26 @@ const TaskCE = ({ _data }: Props) => {
 
   useEffect(() => {
     let tempState: any = {};
-    const tempData = [..._data];
+    let agentsArr: any = [];
+    const tempData = [..._data[0]];
+    let agentsData = [..._data[1]];
+
     tempData.forEach((e, i) => {
       return (tempState = { ...e });
     });
+
+    if (_data[1].length > 0) {
+      agentsData.forEach((ele, inx) => {
+        agentsArr.push({ ...ele, check: false });
+        tempData.forEach((e: any, index: number) => {
+          for (let i = 0; i < e.asignees?.length; i++) {
+            agentsArr.push(e.asignees[i].id);
+          }
+        });
+      });
+      return setIsCheck(agentsArr);
+    }
+
     reset(tempState);
     if (edit == false) {
       reset(tasksBaseValues);
@@ -84,11 +100,10 @@ const TaskCE = ({ _data }: Props) => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data.deadline);
     const CompanyId = Cookies.get("company");
     const UserId = Cookies.get("loginId");
 
-    if (!proceed) {
+    if (active == 0) {
       setLoading(true);
       //setting the data object
       const newData = {
@@ -107,7 +122,7 @@ const TaskCE = ({ _data }: Props) => {
             setTaskId(r.data.payload.id);
             setMessage(r.data.message);
             setLoading(false);
-            setProceed(true);
+            setActive(1);
           }
           if (r.data.status == "error") {
             setLoading(false);
@@ -115,13 +130,15 @@ const TaskCE = ({ _data }: Props) => {
         });
     }
 
-    if (proceed && isCheck.length > 0) {
+    if (active == 1 && isCheck.length > 0) {
       setLoading(true);
       //creating new Array
       const tempStateIsCheck = [...isCheck];
-      const tempStateList = [..._data];
+      const tempStateList = [..._data[0]];
+
       let asignees: any = [];
       const tempData: any = [];
+
       tempStateIsCheck.forEach((x, indexone) => {
         tempStateList.forEach((y: any, index) => {
           if (x === y.id) {
@@ -153,7 +170,97 @@ const TaskCE = ({ _data }: Props) => {
           if (r.data.status == "success") {
             setMessage(r.data.message);
             setLoading(false);
-            setProceed(true);
+          }
+          if (r.data.status == "error") {
+            setLoading(false);
+          }
+        });
+    }
+  };
+
+  const onEdit = async (data: any) => {
+    const CompanyId = Cookies.get("company");
+    const UserId = Cookies.get("loginId");
+
+    if (active == 0) {
+      setLoading(true);
+      //setting the data object
+      const newData = {
+        ...data,
+        startDate: moment().format("L"),
+        startTime: moment().format("h:mm:ss a"),
+        deadline: data.deadline,
+        userId: UserId,
+        companyId: CompanyId,
+      };
+      await axios
+        .post(process.env.NEXT_PUBLIC_ERP_POST_CREATE_TASK as string, newData)
+        .then((r: AxiosResponse) => {
+          console.log(r.data);
+          if (r.data.status == "success") {
+            setTaskId(r.data.payload.id);
+            setMessage(r.data.message);
+            setLoading(false);
+            setActive(1);
+          }
+          if (r.data.status == "error") {
+            setLoading(false);
+          }
+        });
+    }
+
+    if (active == 1 && isCheck.length > 0) {
+      setLoading(true);
+      //creating new Array
+      const tempStateIsCheck = [...isCheck];
+      const tempStateList = [..._data[0]];
+
+      let asignees: any = [];
+      const tempData: any = [];
+
+      tempStateIsCheck.forEach((x, indexone) => {
+        tempStateList.forEach((y: any, index) => {
+          if (x === y.id) {
+            asignees.push({
+              id: y.id,
+              email: y.email,
+            });
+            tempData.push({
+              ...data,
+              startDate: moment().format("L"),
+              startTime: moment().format("h:mm:ss a"),
+              deadline: data.date,
+              userId: y.id,
+              companyId: CompanyId,
+              taskId: taskId,
+            });
+          }
+        });
+      });
+
+      await axios
+        .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
+          data: tempData,
+          asignees: asignees,
+          taskId: taskId,
+        })
+        .then((r: AxiosResponse) => {
+          console.log(r.data);
+          if (r.data.status == "success") {
+            setMessage(r.data.message);
+            setLoading(false);
+            const tempState: Array<any> = [..._data[0]];
+            tempState.forEach((ele, i) => {
+              for(let i = 0; i < tempState.length; i++){
+              tempStateIsCheck.forEach((x, indexone) => {
+                const i = tempState.findIndex((item) => item.id === x.id);
+                if (i !== -1) {
+                  tempState[i] = data;
+                  return setData(tempState);
+                }
+              });
+            }
+            });
           }
           if (r.data.status == "error") {
             setLoading(false);
@@ -172,7 +279,7 @@ const TaskCE = ({ _data }: Props) => {
       <div className=" text-center items-center align-middle mx-auto grid grid-cols-2">
         {tabs.map((ele, i) => {
           return (
-            <div className="">
+            <div key={ele.val} className="">
               <Tabs
                 activeTab={active}
                 title={ele.title}
@@ -190,7 +297,7 @@ const TaskCE = ({ _data }: Props) => {
           <h1>Select agent to assign task.</h1>
         </div>
       )}
-      {_data?.length >= 1 ? (
+      {_data[0]?.length >= 1 ? (
         <>
           {active == 0 && (
             <form
@@ -269,9 +376,9 @@ const TaskCE = ({ _data }: Props) => {
           {active == 1 && (
             <form onSubmit={handleSubmit(onSubmit)} className="">
               <div className="p-0 min-h-[39px] overflow-y-auto">
-                {_data?.length >= 1 ? (
+                {_data[1]?.length >= 1 ? (
                   <Fragment>
-                    {_data?.map((item: Agents, index) => {
+                    {_data[1]?.map((item: any, index: number) => {
                       return (
                         <>
                           <label
@@ -307,7 +414,7 @@ const TaskCE = ({ _data }: Props) => {
                   <LoadingButton style="btn-secondary" />
                 ) : (
                   <Fragment>
-                    {_data?.length >= 1 && (
+                    {_data[1]?.length >= 1 && (
                       <div>
                         <Button
                           style="btn-secondary"

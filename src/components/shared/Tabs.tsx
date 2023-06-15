@@ -17,18 +17,20 @@ type Props = {
 const TabsCom = ({ title, onClick, activeTab, val }: Props) => {
   console.log(val, activeTab);
   return (
-    <div>
+    <div className="mb-8">
       <div>
         <button
           key={activeTab}
           onClick={onClick}
-          className={val == activeTab ? "text-white w-full rounded-lg bg-custom-red-700" : ""}
+          className={
+            val == activeTab
+              ? "text-white w-full rounded-lg bg-custom-red-500 transition-transform duration-300 ease-in-out "
+              : "text-gray-500 w-full rounded-lg bg-gray-200"
+          }
         >
           {title}
         </button>
       </div>
-      ++
-      
     </div>
   );
 };
