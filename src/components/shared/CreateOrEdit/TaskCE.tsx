@@ -72,15 +72,21 @@ const TaskCE = ({ _data, setData }: Props) => {
       let agentsData = [..._data[1]];
       if (_data[1].length > 0) {
         agentsData.forEach((ele, inx) => {
-          agentsArr.push({ ...ele, check: false });
+          agentsArr.push({ ...ele, check: false, asignees:[], taskId:"" });
           tempData.forEach((e: any, index: number) => {
             for (let i = 0; i < e.asignees?.length; i++) {
-              agentsArr.push(e.asignees[i].id);
+              if(ele.id == e.asignees[i].id){
+                // agentsArr.push({ ...ele, check: true, asignees:e.asignees[i] });
+                agentsArr[inx].check = true
+                // agentsArr[inx].asignees = e.asignees[i]
+                agentsArr[inx].taskId = e.id
+                // agentsArr.push(e.asignees[i].id);
+              }
             }
           });
         });
-
-        return setIsCheck(agentsArr),setAsignees(agentsData);
+        console.log(agentsArr)
+        return setIsCheck(agentsArr),setAsignees(agentsArr);
       }
     }
     reset(tempState);
