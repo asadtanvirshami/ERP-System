@@ -16,11 +16,13 @@ import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
 import LoadingButton from "../Buttons/Loading";
+import Tabs from "../Tabs";
 //Redux
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { tasksBaseValues } from "@/src/utils/baseValues";
-import Tabs from "../Tabs";
+//Functions Import
+import { checkList } from "@/src/functions/isCheckList";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -64,30 +66,31 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
     defaultValues: task_data,
   });
 
-  useEffect(() => {
-    let tempState: any = {};
-    let agentsArr: any = [];
+  const tabs = [
+    { title: "Task", val: 0 },
+    { title: "Asignees", val: 1 },
+  ];
 
+  useEffect(() => {
     if (edit) {
-      const tempData = {...task_data};
+      const tempData = { ...task_data };
       let agentsData = [..._agents];
 
-      if (_agents.length > 0) {
-        agentsData.forEach((ele, inx) => {
-          agentsArr.push({ ...ele  });
-          for (let i = 0; i < tempData.asignees?.length; i++) {
-            if(ele.id == tempData.asignees[i].id){
-                 agentsArr.push(tempData.asignees[i].id);
-              }
-            }
-        });
-        return setIsCheck(agentsArr),setAsignees(agentsData);
-      }
-    }
-    reset(tempState);
+      if (agentsData.length > 0 && tempData.asignees) {
+        const asigneeIds = tempData.asignees
+          .map((asignee: any) => asignee.id)
+          .filter(Boolean);
+        const updatedAgentsArr = [...asigneeIds];
 
-    if (!edit) {
+        setIsCheck(updatedAgentsArr);
+        setAsignees(agentsData);
+      }
+      reset(tempData);
+    } 
+    if(!edit) {
+      let tempState: any = {};
       const tempData = [..._data];
+
       tempData.forEach((e, i) => {
         return (tempState = { ...e });
       });
@@ -96,14 +99,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
     }
   }, [edit]);
 
-  const handleClick = (e: any, data: any) => {
-    const { checked } = e.target;
-    setIsCheck([...isCheck, data.id]);
-    if (!checked) {
-      const unChecked = isCheck.filter((x) => x !== data.id);
-      setIsCheck(unChecked);
-    }
-  };
+
 
   const onSubmit = async (data: any) => {
     const CompanyId = Cookies.get("company");
@@ -134,176 +130,71 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
           }
         });
     }
-
-    if (active == 1 && isCheck.length > 0) {
-      setLoading(true);
-      //creating new Array
-      const tempStateIsCheck = [...isCheck];
-      const tempStateList = edit?[..._data[0]]:[..._data];
-
-      let asignees: any = [];
+    if (active === 1 && isCheck.length > 0) {
+      // setLoading(true);
+      const tempStateList = edit ? _data : _agents;
+      const asignees: any = [];
       const tempData: any = [];
-
-      tempStateIsCheck.forEach((x, indexone) => {
-        tempStateList.forEach((y: any, index) => {
-          if (x === y.id) {
-            asignees.push({
-              id: y.id,
-              email: y.email,
-            });
-            tempData.push({
-              ...data,
-              startDate: moment().format("L"),
-              startTime: moment().format("h:mm:ss a"),
-              deadline: data.date,
-              userId: y.id,
-              companyId: CompanyId,
-              taskId: taskId,
-            });
-          }
-        });
+      
+      tempStateList.forEach((y: any) => {
+        if (isCheck.includes(y.id)) {
+          asignees.push({
+            id: y.id,
+            email: y.email,
+          });
+          
+          console.log(isCheck, asignees)
+          tempData.push({
+            ...data,
+            startDate: moment().format("L"),
+            startTime: moment().format("h:mm:ss a"),
+            deadline: data.date,
+            userId: y.id,
+            companyId: CompanyId,
+            taskId: taskId,
+          });
+        }
       });
-      console.log(tempData);
+
+
       await axios
         .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
-          data: tempData,
+          data: isCheck,
           asignees: asignees,
           taskId: taskId,
         })
         .then((r: AxiosResponse) => {
-          if (r.data.status == "success") {
+          setLoading(false);
+          if (r.data.status === "success") {
             setMessage(r.data.message);
-            setLoading(false);
           }
-          if (r.data.status == "error") {
-            setLoading(false);
-          }
-        });
-    }
-  };
-
-  const onEdit = async (data: any) => {
-    const CompanyId = Cookies.get("company");
-    const UserId = Cookies.get("loginId");
-
-    if (active == 0) {
-      setLoading(true);
-      //setting the data object
-      const newData = {
-        ...data,
-        startDate: moment().format("L"),
-        startTime: moment().format("h:mm:ss a"),
-        deadline: data.deadline,
-        userId: UserId,
-        companyId: CompanyId,
-      };
-      await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_UPDATE_TASK as string, newData)
-        .then((r: AxiosResponse) => {
-          console.log(r.data);
-          if (r.data.status == "success") {
-            setTaskId(r.data.payload.id);
-            setMessage(r.data.message);
-            setLoading(false);
-            setActive(1);
-          }
-          if (r.data.status == "error") {
-            setLoading(false);
-          }
-        });
-    }
-
-    if (active == 1 && isCheck.length > 0) {
-      setLoading(true);
-      //creating new Array
-      const tempStateIsCheck = [...isCheck];
-      const tempStateList = [..._data[0]];
-
-      let asignees: any = [];
-      const tempData: any = [];
-
-      tempStateIsCheck.forEach((x, indexone) => {
-        tempStateList.forEach((y: any, index) => {
-          if (x === y.id) {
-            asignees.push({
-              id: y.id,
-              email: y.email,
-            });
-            tempData.push({
-              ...data,
-              startDate: moment().format("L"),
-              startTime: moment().format("h:mm:ss a"),
-              deadline: data.date,
-              userId: y.id,
-              companyId: CompanyId,
-              taskId: taskId,
-            });
-          }
-        });
-      });
-
-      await axios
-        .post(process.env.NEXT_PUBLIC_ERP_UPDATE_ASSIGN_TASK as string, {
-          data: tempData,
-          asignees: asignees,
-          taskId: taskId,
         })
-        .then((r: AxiosResponse) => {
-          console.log(r.data);
-          if (r.data.status == "success") {
-            setMessage(r.data.message);
-            setLoading(false);
-            const tempState: Array<any> = [..._data[0]];
-            tempState.forEach((ele, i) => {
-              for (let i = 0; i < tempState.length; i++) {
-                tempStateIsCheck.forEach((x, indexone) => {
-                  const i = tempState.findIndex((item) => item.id === x.id);
-                  if (i !== -1) {
-                    tempState[i] = data;
-                    return setData(tempState);
-                  }
-                });
-              }
-            });
-          }
-          if (r.data.status == "error") {
-            setLoading(false);
-          }
+        .catch(() => {
+          setLoading(false);
         });
     }
   };
-
-  const tabs = [
-    { title: "Task", val: 0 },
-    { title: "Asignees", val: 1 },
-  ];
 
   return (
     <Fragment>
-      <div className=" text-center items-center align-middle mx-auto grid grid-cols-2">
-        {tabs.map((ele, i) => {
-          return (
-            <div key={ele.val} className="">
-              <Tabs
-                activeTab={active}
-                title={ele.title}
-                val={ele.val}
-                onClick={() => {
-                  setActive(ele.val);
-                }}
-              />
-            </div>
-          );
-        })}
+      <div className="text-center items-center align-middle mx-auto grid grid-cols-2">
+        {tabs.map((ele) => (
+          <div key={ele.val}>
+            <Tabs
+              activeTab={active}
+              title={ele.title}
+              val={ele.val}
+              onClick={() => setActive(ele.val)}
+            />
+          </div>
+        ))}
       </div>
-      {active == 1 && (
-        <div>
-          <h1>Select agent to assign task.</h1>
-        </div>
-      )}
+
+      {active === 1 && <h1>Select agent to assign task.</h1>}
+
       {_data?.length >= 1 ? (
         <>
-          {active == 0 && (
+          {active === 0 && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
               onSubmit={handleSubmit(onSubmit)}
@@ -314,8 +205,8 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                   name="title"
                   control={control}
                   label="Title"
-                  width={"w-30"}
-                  color={"text-gray"}
+                  width="w-30"
+                  color="text-gray"
                 />
 
                 <SelectType
@@ -323,8 +214,8 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                   name="priority"
                   control={control}
                   label="Priority"
-                  width={"w-30"}
-                  color={"text-gray"}
+                  width="w-30"
+                  color="text-gray"
                 />
 
                 <DatePicker
@@ -332,8 +223,8 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                   name="deadline"
                   control={control}
                   label="Deadline of task"
-                  width={"w-40"}
-                  color={"text-gray"}
+                  width="w-40"
+                  color="text-gray"
                 />
 
                 <Input
@@ -341,13 +232,13 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                   name="bonus"
                   control={control}
                   label="Bonus"
-                  width={"w-42"}
-                  color={"text-gray"}
+                  width="w-42"
+                  color="text-gray"
                 />
               </div>
-              <div>
+              <>
                 <hr />
-              </div>
+              </>
               <div className="mt-5 grid mb-2">
                 <p className="text-sm mb-1">
                   Write the job description for the brief understanding of task.
@@ -357,89 +248,85 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                   name="description"
                   control={control}
                   label=""
-                  width={"w-30"}
-                  placeholder={"Write job description"}
-                  color={"text-gray"}
+                  width="w-30"
+                  placeholder="Write job description"
+                  color="text-gray"
                 />
               </div>
+              <>
+                <hr />
+              </>
               <div className="mb-3 mt-2">
                 {loading ? (
                   <LoadingButton style="btn-secondary" />
                 ) : (
                   <Button
                     style="btn-secondary"
-                    label={edit?"Update":"Create"}
-                    type={"submit"}
+                    label={edit ? "Update" : "Create"}
+                    type="submit"
                   />
                 )}
                 <p className="mt-2">{message}</p>
               </div>
             </form>
           )}
-
-          {active == 1 && (
-            <form onSubmit={handleSubmit(onSubmit)} className="">
-              <div className="p-0 min-h-[39px] overflow-y-auto">
-                {asignees?.length >= 1 ? (
-                  <Fragment>
-                    {asignees?.map((item: any, index: number) => {
-                      return (
-                        <>
-                          <label
-                            htmlFor="vertical-list-react"
-                            className="flex items-center w-full cursor-pointer"
-                          >
-                            <div className="mr-3">
-                              <Checkbox
-                                id="vertical-list-react"
-                                className="hover:before:opacity-0"
-                                type="checkbox"
-                                onChange={(e) => handleClick(e, item)}
-                                checked={isCheck.includes(item.id)}
-                              />
-                            </div>
-                            <p className="text-sm mb-1">
-                              {item.name} {item.designation}
-                            </p>
-                          </label>
-                        </>
-                      );
-                    })}
-                  </Fragment>
-                ) : (
-                  <div>
-                    <h1>There are no agents to assign task.</h1>
-                  </div>
-                )}
-              </div>
-              <hr />
-              <div className="mb-3 mt-2">
-                {loading ? (
-                  <LoadingButton style="btn-secondary" />
-                ) : (
-                  <Fragment>
-                    {asignees?.length >= 1 && (
-                      <div>
-                        <Button
-                          style="btn-secondary"
-                          label={edit?"Update":"Create"}
-                          type={"submit"}
-                        />
-                        <p className="mt-2">{message}</p>
-                      </div>
-                    )}
-                  </Fragment>
-                )}
-              </div>
-            </form>
-          )}
         </>
       ) : (
-        <>
-          <div>
-            <h1>You cannot create task until you have agents in your firm.</h1>
+        <div>
+          <h1>You cannot create a task until you have agents in your firm.</h1>
+        </div>
+      )}
+
+      {active === 1 && (
+        <form onSubmit={handleSubmit(onSubmit)} className="">
+          <div className="p-0 min-h-[39px] overflow-y-auto">
+            {asignees?.length >= 1 ? (
+              <>
+                {asignees?.map((item: any, index: number) => (
+                  <label
+                    key={item.id}
+                    htmlFor="vertical-list-react"
+                    className="flex items-center w-full cursor-pointer"
+                  >
+                    <div className="mr-3">
+                      <Checkbox
+                        id="vertical-list-react"
+                        className="hover:before:opacity-0"
+                        type="checkbox"
+                        onChange={(e) => checkList(e, item,setIsCheck, isCheck)}
+                        checked={isCheck.includes(item.id)}
+                      />
+                    </div>
+                    <p className="text-sm mb-1">{item.email}</p>
+                  </label>
+                ))}
+              </>
+            ) : (
+              <div>
+                <h1>There are no agents to assign a task.</h1>
+              </div>
+            )}
           </div>
-        </>
+          <hr />
+          <div className="mb-3 mt-2">
+            {loading ? (
+              <LoadingButton style="btn-secondary" />
+            ) : (
+              <>
+                {asignees?.length >= 1 && (
+                  <div>
+                    <Button
+                      style="btn-secondary"
+                      label={edit ? "Update" : "Create"}
+                      type="submit"
+                    />
+                    <p className="mt-2">{message}</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </form>
       )}
     </Fragment>
   );
