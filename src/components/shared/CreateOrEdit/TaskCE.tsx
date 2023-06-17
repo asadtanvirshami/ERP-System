@@ -16,7 +16,6 @@ import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
 import LoadingButton from "../Buttons/Loading";
-import Tabs from "../Tabs";
 //Redux
 import { useSelector } from "react-redux";
 //BaseValues for Schema
@@ -48,7 +47,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
   const [isCheck, setIsCheck] = useState<any[]>([]);
   const [asignees, setAsignees] = useState<any[]>([]);
 
-  const [active, setActive] = useState<number>(0);
+  const [proceed, setProceed] = useState<boolean>(false);
 
   //Redux Selectors
   const edit = useSelector((state: any) => state.form.value.edit);
@@ -66,11 +65,6 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
     defaultValues: task_data,
   });
 
-  const tabs = [
-    { title: "Task", val: 0 },
-    { title: "Asignees", val: 1 },
-  ];
-
   useEffect(() => {
     if (edit) {
       const tempData = { ...task_data };
@@ -86,8 +80,8 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
         setAsignees(agentsData);
       }
       reset(tempData);
-    } 
-    if(!edit) {
+    }
+    if (!edit) {
       let tempState: any = {};
       const tempData = [..._data];
 
@@ -99,13 +93,11 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
     }
   }, [edit]);
 
-
-
   const onSubmit = async (data: any) => {
     const CompanyId = Cookies.get("company");
     const UserId = Cookies.get("loginId");
 
-    if (active == 0) {
+    if (!proceed) {
       setLoading(true);
       //setting the data object
       const newData = {
@@ -123,27 +115,27 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
             setTaskId(r.data.payload.id);
             setMessage(r.data.message);
             setLoading(false);
-            setActive(1);
+            setProceed(true);
           }
           if (r.data.status == "error") {
             setLoading(false);
           }
         });
     }
-    if (active === 1 && isCheck.length > 0) {
+    if (proceed && isCheck.length > 0) {
       // setLoading(true);
       const tempStateList = edit ? _data : _agents;
       const asignees: any = [];
       const tempData: any = [];
-      
+
       tempStateList.forEach((y: any) => {
         if (isCheck.includes(y.id)) {
           asignees.push({
             id: y.id,
             email: y.email,
           });
-          
-          console.log(isCheck, asignees)
+
+          console.log(isCheck, asignees);
           tempData.push({
             ...data,
             startDate: moment().format("L"),
@@ -155,8 +147,6 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
           });
         }
       });
-
-
       await axios
         .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
           data: isCheck,
@@ -177,24 +167,10 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
 
   return (
     <Fragment>
-      <div className="text-center items-center align-middle mx-auto grid grid-cols-2">
-        {tabs.map((ele) => (
-          <div key={ele.val}>
-            <Tabs
-              activeTab={active}
-              title={ele.title}
-              val={ele.val}
-              onClick={() => setActive(ele.val)}
-            />
-          </div>
-        ))}
-      </div>
-
-      {active === 1 && <h1>Select agent to assign task.</h1>}
-
+      {(proceed) && <h1>Select agent to assign task.</h1>}
       {_data?.length >= 1 ? (
         <>
-          {active === 0 && (
+          {(!proceed) && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
               onSubmit={handleSubmit(onSubmit)}
@@ -277,7 +253,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
         </div>
       )}
 
-      {active === 1 && (
+      {(proceed) && (
         <form onSubmit={handleSubmit(onSubmit)} className="">
           <div className="p-0 min-h-[39px] overflow-y-auto">
             {asignees?.length >= 1 ? (
@@ -293,7 +269,9 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
                         id="vertical-list-react"
                         className="hover:before:opacity-0"
                         type="checkbox"
-                        onChange={(e) => checkList(e, item,setIsCheck, isCheck)}
+                        onChange={(e) =>
+                          checkList(e, item, setIsCheck, isCheck)
+                        }
                         checked={isCheck.includes(item.id)}
                       />
                     </div>
