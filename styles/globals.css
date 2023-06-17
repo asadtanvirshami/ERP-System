@@ -82,7 +82,8 @@ main {
 }
 
 
-/* ===Popover animation=== */
+/* ===Popover animation===
+ */
 .popover-container {
   display: flex;
   width: 180px;

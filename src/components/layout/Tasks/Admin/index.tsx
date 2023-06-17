@@ -27,8 +27,6 @@ const index = (props: Props) => {
       });
   }, []);
 
-  console.log(tasks);
-
   return (
     <div className="">
       <Fragment>
