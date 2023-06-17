@@ -33,10 +33,11 @@ const SignupSchema = yup.object().shape({
 
 type Props = {
   _data: Array<any>;
+  _agents: Array<any>;
   setData: any;
 };
 
-const TaskCE = ({ _data, setData }: Props) => {
+const TaskCE = ({ _data, setData, _agents }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
@@ -68,25 +69,19 @@ const TaskCE = ({ _data, setData }: Props) => {
     let agentsArr: any = [];
 
     if (edit) {
-      const tempData = [..._data[0]];
-      let agentsData = [..._data[1]];
-      if (_data[1].length > 0) {
+      const tempData = {...task_data};
+      let agentsData = [..._agents];
+
+      if (_agents.length > 0) {
         agentsData.forEach((ele, inx) => {
-          agentsArr.push({ ...ele, check: false, asignees:[], taskId:"" });
-          tempData.forEach((e: any, index: number) => {
-            for (let i = 0; i < e.asignees?.length; i++) {
-              if(ele.id == e.asignees[i].id){
-                // agentsArr.push({ ...ele, check: true, asignees:e.asignees[i] });
-                agentsArr[inx].check = true
-                // agentsArr[inx].asignees = e.asignees[i]
-                agentsArr[inx].taskId = e.id
-                // agentsArr.push(e.asignees[i].id);
+          agentsArr.push({ ...ele  });
+          for (let i = 0; i < tempData.asignees?.length; i++) {
+            if(ele.id == tempData.asignees[i].id){
+                 agentsArr.push(tempData.asignees[i].id);
               }
             }
-          });
         });
-        console.log(agentsArr)
-        return setIsCheck(agentsArr),setAsignees(agentsArr);
+        return setIsCheck(agentsArr),setAsignees(agentsData);
       }
     }
     reset(tempState);
@@ -96,7 +91,7 @@ const TaskCE = ({ _data, setData }: Props) => {
       tempData.forEach((e, i) => {
         return (tempState = { ...e });
       });
-      setAsignees(_data);
+      setAsignees(_agents);
       reset(tasksBaseValues);
     }
   }, [edit]);
@@ -128,7 +123,6 @@ const TaskCE = ({ _data, setData }: Props) => {
       await axios
         .post(process.env.NEXT_PUBLIC_ERP_POST_CREATE_TASK as string, newData)
         .then((r: AxiosResponse) => {
-          console.log(r.data);
           if (r.data.status == "success") {
             setTaskId(r.data.payload.id);
             setMessage(r.data.message);
@@ -177,7 +171,6 @@ const TaskCE = ({ _data, setData }: Props) => {
           taskId: taskId,
         })
         .then((r: AxiosResponse) => {
-          console.log(r.data);
           if (r.data.status == "success") {
             setMessage(r.data.message);
             setLoading(false);
@@ -205,7 +198,7 @@ const TaskCE = ({ _data, setData }: Props) => {
         companyId: CompanyId,
       };
       await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_CREATE_TASK as string, newData)
+        .post(process.env.NEXT_PUBLIC_ERP_POST_UPDATE_TASK as string, newData)
         .then((r: AxiosResponse) => {
           console.log(r.data);
           if (r.data.status == "success") {
@@ -250,7 +243,7 @@ const TaskCE = ({ _data, setData }: Props) => {
       });
 
       await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
+        .post(process.env.NEXT_PUBLIC_ERP_UPDATE_ASSIGN_TASK as string, {
           data: tempData,
           asignees: asignees,
           taskId: taskId,
@@ -284,8 +277,6 @@ const TaskCE = ({ _data, setData }: Props) => {
     { title: "Task", val: 0 },
     { title: "Asignees", val: 1 },
   ];
-
-  console.log(_data)
 
   return (
     <Fragment>
@@ -377,7 +368,7 @@ const TaskCE = ({ _data, setData }: Props) => {
                 ) : (
                   <Button
                     style="btn-secondary"
-                    label="Create"
+                    label={edit?"Update":"Create"}
                     type={"submit"}
                   />
                 )}
@@ -431,7 +422,7 @@ const TaskCE = ({ _data, setData }: Props) => {
                       <div>
                         <Button
                           style="btn-secondary"
-                          label="Create"
+                          label={edit?"Update":"Create"}
                           type={"submit"}
                         />
                         <p className="mt-2">{message}</p>

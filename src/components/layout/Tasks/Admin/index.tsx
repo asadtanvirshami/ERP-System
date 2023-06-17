@@ -54,7 +54,7 @@ const index = (props: Props) => {
           data={tasks || undefined}
           setData={setTasks}
           modalTitle="Tasks"
-          renderModalComponent={<TaskCE setData={setAsignees} _data={asignees} />}
+          renderModalComponent={<TaskCE setData={setAsignees} _agents={asignees[1]} _data={tasks} />}
           url={process.env.NEXT_PUBLIC_ERP_POST_DELETE_TASK}
         />
       </Fragment>

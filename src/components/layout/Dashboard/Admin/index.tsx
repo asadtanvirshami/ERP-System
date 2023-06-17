@@ -83,11 +83,11 @@ const index = (props: Props) => {
         })
         .then((r: AxiosResponse) => {
           if (r.data.message === "success") {
-            if(r.data.payload.length>0){
+            if (r.data.payload.length > 0) {
               setData(r.data.payload);
               setLoading(false);
-            }else{
-              setData([[],[],[]])
+            } else {
+              setData([[], [], []]);
               setLoading(false);
             }
             console.log(data, "data");
@@ -117,7 +117,7 @@ const index = (props: Props) => {
           <>
             {data.map((x: any, i: number) => {
               return (
-                <Fragment>
+                <Fragment key={i}>
                   {data.length != 0 ? (
                     <div className="w-full p-2 lg:w-1/3 ">
                       <div className="rounded-lg bg-card h-80">
@@ -169,7 +169,9 @@ const index = (props: Props) => {
         <div className="w-full p-2 lg:w-1/3">
           <div className="rounded-lg bg-white shad h-80">
             <CreateCard
-              renderModalComponent={<TaskCE _data={data[0]} />}
+              renderModalComponent={
+                <TaskCE _agents={data[0]} setData={setData} _data={data[0]} />
+              }
               label="Create Task"
               description="Create a task for agents."
               title="Tasks"
