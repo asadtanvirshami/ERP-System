@@ -98,6 +98,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
     const UserId = Cookies.get("loginId");
 
     if (!proceed) {
+      console.log(isCheck, proceed, 'check')
       setLoading(true);
       //setting the data object
       const newData = {
@@ -122,6 +123,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
           }
         });
     }
+    console.log(isCheck, proceed)
     if (proceed && isCheck.length > 0) {
       // setLoading(true);
       const tempStateList = edit ? _data : _agents;
@@ -168,7 +170,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
   return (
     <Fragment>
       {(proceed) && <h1>Select agent to assign task.</h1>}
-      {_data?.length >= 1 ? (
+      {_agents||_data?.length >= 1 ? (
         <>
           {(!proceed) && (
             <form
