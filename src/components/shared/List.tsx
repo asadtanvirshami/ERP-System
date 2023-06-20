@@ -12,8 +12,6 @@ type Props = {
   onClick:any
 };
 
-
-
 export const List = ({ onClick, state}: Props) => {
   return (
     <div className="relative z-50">
@@ -80,7 +78,7 @@ export const List = ({ onClick, state}: Props) => {
           </MenuList>
         ) : (
           <MenuList className="max-h-72">
-            <MenuItem>{state.comments}</MenuItem>;
+            <li>No asignees associated with this task.  </li>;
           </MenuList>
         )}
       </Menu>
