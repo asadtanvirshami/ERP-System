@@ -7,7 +7,7 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 import EmptyTable from "../EmptyComponents/EmptyTable";
 import Modal from "../Modal";
 //Redux
-import { form_ } from "@/src/redux/form";
+import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
 //Functions
 import { checkIsTwoDArray } from "@/src/functions/checkArray";

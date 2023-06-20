@@ -10,7 +10,7 @@ type Props = {
 
 const tasks = (props: Props) => {
   return (
-    <div><Tasks sessionData={props.sessionData} /></div>
+    <><Tasks sessionData={props.sessionData} /></>
   )
 }
 

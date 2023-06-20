@@ -10,7 +10,7 @@ import TableLoader from "@/src/components/shared/EmptyComponents/EmptyTable";
 
 type Props = {};
 
-const index = (props: Props) => {
+const Index = (props: Props) => {
   const [data, setData] = useState<Agents[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -58,4 +58,4 @@ const index = (props: Props) => {
   );
 };
 
-export default index;
+export default Index;

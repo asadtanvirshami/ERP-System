@@ -8,7 +8,7 @@ import Input from "../../shared/Form/Input";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
 //Redux
-import { user_ } from "@/src/redux/user";
+import { user_ } from "@/src/redux/reducers/userReducer";
 import { useDispatch } from "react-redux";
 
 type Props = {

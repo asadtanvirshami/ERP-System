@@ -23,10 +23,8 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
   const sessionData = await axios
   .get(process.env.NEXT_ERP_TOKEN_VERIFICATION as string, {
     headers: {
-    "x-access-token": `${cookies.get("token")}`,
-    email: `${cookies.get("email")}`,
-    id: `${cookies.get("id")}`,
-  },
+    "x-access-token": `${cookies.get("_hjSession")}`,
+  }
 })
 .then((r:AxiosResponse) => r.data);
 

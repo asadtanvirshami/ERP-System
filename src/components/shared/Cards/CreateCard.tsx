@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import Modal from "../Modal";
 import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
 //Redux
-import { form_ } from "@/src/redux/form";
+import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch } from "react-redux";
 
 type Props = {

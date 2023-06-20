@@ -4,6 +4,8 @@ import Cookies from "js-cookie";
 //Components Imports
 import Admin from './Admin/index'
 import Agent from './Agent/index'
+import { useSelector } from 'react-redux';
+import { loginSuccess } from "@/src/redux/actions/userActions/userActions";
 
 type Props = {
     sessionData:any
@@ -11,6 +13,9 @@ type Props = {
 
 const Dashboard = (props: Props) => {
 const [type, setType] = useState<string | undefined>('')
+const isAuthenticated = useSelector((state:any) => state.user.role);
+
+console.log(isAuthenticated,'auth')
 const router = useRouter();
   useEffect(() => {
     if(props.sessionData.isLoggedIn == false){

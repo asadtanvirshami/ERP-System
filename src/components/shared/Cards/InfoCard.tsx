@@ -10,7 +10,7 @@ import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
 import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
 import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
-import { form_ } from "@/src/redux/form";
+import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { checkIsTwoDArray } from "@/src/functions/checkArray";
 

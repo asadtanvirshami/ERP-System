@@ -1,32 +1,54 @@
-import React,{ Fragment, useEffect, useState } from 'react'
-import { useRouter } from 'next/router';
+import React, { useState, useEffect, Fragment } from "react";
+import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-//Components Imports
-import TeamComponent from './Admin/index'
+//Interface Imports
+import { Agents } from "@/src/interfaces/Agents";
+//Component Imports
+import Table from "@/src/components/shared/Table";
+import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
 
-type Props = {
-    sessionData:any
-}
+type Props = {};
 
-const index = (props: Props) => {
-const [type, setType] = useState<string | undefined>('')
-const router = useRouter();
+const Index = (props: Props) => {
+  const [agents, setAgents] = useState<Agents[]>([]);
 
   useEffect(() => {
-    if(props.sessionData.isLoggedIn == false){
-      router.push('/auth')
-    }else{
-      let  type  = Cookies.get('type')
-      return setType(type)
-    }
-  }, [])
+    const CompanyId = Cookies.get("company");
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, {
+        headers: { id: CompanyId },
+      })
+      .then((r: AxiosResponse) => {
+        console.log(r.data.payload);
+        setAgents(r.data.payload);
+      });
+  }, []);
   
-  console.log(props.sessionData)
-    return (
-    <Fragment>
-      {type == 'admin' && <Fragment><TeamComponent/></Fragment>}
-    </Fragment>
-  )
-}
+  return (
+    <div className="">
+      <Fragment>
+        
+          <Table
+            cols={[
+              "No",
+              "Name",
+              "Phone.",
+              "Password",
+              "Email",
+              "Designation",
+              "Signature",
+              "Edit",
+              "Delete",
+            ]}
+            data={agents || undefined}
+            setData={setAgents}
+            modalTitle="Agent"
+            renderModalComponent={<AgentCE setData={setAgents} data={agents || undefined} />}
+            url={process.env.NEXT_PUBLIC_ERP_DELETE_AGENT}
+          />
+      </Fragment>
+    </div>
+  );
+};
 
-export default index
+export default Index;

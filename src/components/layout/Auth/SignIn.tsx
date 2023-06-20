@@ -11,9 +11,9 @@ import Input from "../../shared/Form/Input";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
 //Redux
-import { user_ } from "@/src/redux/user";
 import { useDispatch } from "react-redux";
-
+import { useSelector } from 'react-redux';
+import { loginSuccess } from "@/src/redux/actions/userActions/userActions";
 type Props = {
   setSignUp: (active: boolean) => void;
   setLoading: (active: boolean) => void;
@@ -30,6 +30,8 @@ const SignupSchema = yup.object().shape({
 
 const Signin = (props: Props) => {
   const [message, setMessage] = useState<string>("");
+  const isAuthenticated = useSelector((state:any) => state.user.isAuthenticated);
+
   //redux initialize
   const dispatch = useDispatch()
 
@@ -58,14 +60,9 @@ const Signin = (props: Props) => {
         if (r.data.message == "success") {
           props.setLoading(false);
           const token: any = jwt_decode(r.data.token);
-          Cookies.set("token", r.data.token, { expires: 1 });
-          Cookies.set("user", token.name, { expires: 1 });
-          Cookies.set("designation", token.designation, { expires: 1 });
-          Cookies.set("loginId", token.loginId, { expires: 1 });
-          Cookies.set("type", token.type, { expires: 1 });
-          Cookies.set("company", token.companyId, { expires: 1 });
-          Cookies.set("email", token.email, { expires: 1 });
-          dispatch(user_({name:token.name}))
+          Cookies.set("_hjSession", r.data.token, { expires: 1 });
+          dispatch(loginSuccess(r.data.payload, token.type))
+          console.log(isAuthenticated)
           Router.push("/");
         } else if (r.data.message == "invalid") {
           props.setLoading(false);

@@ -1,5 +1,5 @@
 import React from 'react'
-import Clients from '../components/layout/Clients/Admin/index'
+import Clients from '../components/layout/Clients/index'
 
 type Props = {}
 

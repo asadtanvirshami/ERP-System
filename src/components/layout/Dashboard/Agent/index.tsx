@@ -4,11 +4,11 @@ import React,{useEffect} from 'react'
 
 type Props = {}
 
-const index = (props: Props) => {
+const Index = (props: Props) => {
 
   return (
     <Container>Agents</Container>
   )
 }
 
-export default index
+export default Index

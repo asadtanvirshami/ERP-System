@@ -12,7 +12,7 @@ const initialState = {
   },
 };
 
-export const userSlice = createSlice({
+export const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
@@ -22,6 +22,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { form_ } = userSlice.actions;
+export const { form_ } = formSlice.actions;
 
-export default userSlice.reducer;
+export default formSlice.reducer;
