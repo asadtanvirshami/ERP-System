@@ -8,9 +8,9 @@ import InfoCard from "@/src/components/shared/Cards/InfoCard";
 import CreateCard from "@/src/components/shared/Cards/CreateCard";
 import Graph from "@/src/components/shared/Graph/Graph";
 //EDIT OR CREATE FORMS
-import AgentCE from "@/src/components/shared/CreateOrEdit/AgentCE";
-import TaskCE from "@/src/components/shared/CreateOrEdit/TaskCE";
-import ClientsCE from "@/src/components/shared/CreateOrEdit/ClientsCE";
+import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
+import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
+import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 type Props = {};

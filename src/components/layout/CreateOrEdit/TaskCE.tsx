@@ -15,7 +15,7 @@ import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
-import LoadingButton from "../Buttons/Loading";
+import LoadingButton from "../../shared/Buttons/Loading";
 //Redux
 import { useSelector } from "react-redux";
 //BaseValues for Schema
@@ -123,7 +123,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
           }
         });
     }
-    console.log(isCheck, proceed)
+
     if (proceed && isCheck.length > 0) {
       // setLoading(true);
       const tempStateList = edit ? _data : _agents;

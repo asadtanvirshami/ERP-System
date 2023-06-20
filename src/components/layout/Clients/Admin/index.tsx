@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
-import ClientsCE from "@/src/components/shared/CreateOrEdit/ClientsCE";
+import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import TableLoader from "@/src/components/shared/EmptyComponents/EmptyTable";
 
 type Props = {};

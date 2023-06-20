@@ -17,7 +17,7 @@ import { checkIsTwoDArray } from "@/src/functions/checkArray";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
-import SelectType from "../Form/SelectType";
+import SelectType from "../../shared/Form/SelectType";
 
 type Props = {
   data:Array<Agents>

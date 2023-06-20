@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
-import TaskCE from "@/src/components/shared/CreateOrEdit/TaskCE";
+import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
 
 type Props = {};
 
