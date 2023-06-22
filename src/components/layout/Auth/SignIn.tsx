@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {User} from "../User/UserProvider/index"; 
 //Components
 import Input from "../../shared/Form/Input";
 import Button from "../../shared/Buttons/Button";
@@ -14,6 +15,7 @@ import Loading from "../../shared/Buttons/Loading";
 import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
 import { loginSuccess } from "@/src/redux/actions/userActions/userActions";
+
 type Props = {
   setSignUp: (active: boolean) => void;
   setLoading: (active: boolean) => void;
@@ -34,6 +36,8 @@ const Signin = (props: Props) => {
 
   //redux initialize
   const dispatch = useDispatch()
+
+  const { user, isLoggedIn,updateUser, updateLoginStatus } = User();
 
   useEffect(() => {
     if (props.sessionData.isLoggedIn == true) {
@@ -61,15 +65,16 @@ const Signin = (props: Props) => {
           props.setLoading(false);
           const token: any = jwt_decode(r.data.token);
           Cookies.set("_hjSession", r.data.token, { expires: 1 });
-          dispatch(loginSuccess(r.data.payload, token.type))
-          console.log(isAuthenticated)
+          Cookies.set('user',JSON.stringify(r.data.payload))
           Router.push("/");
+          dispatch(loginSuccess(r.data.payload, token.type));
         } else if (r.data.message == "invalid") {
           props.setLoading(false);
           setMessage("Invalid email or password!");
         }
       });
   };
+  console.log(user,'datauser')
 
   return (
     <div className="flex h-screen align-middle justify-center items-center bg-gradient-to-r from-custom-red-500 to-custom-red-700">

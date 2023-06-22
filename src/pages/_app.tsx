@@ -8,6 +8,8 @@ import ThreeDots from "../components/shared/Loader/ThreeDots";
 import { store } from "../redux/store";
 import { Provider } from "react-redux";
 
+import {UserProvider} from "../components/layout/User/UserProvider";
+
 //Styles Imports
 import "../../styles/globals.css";
 
@@ -15,27 +17,35 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  Router.events.on("routeChangeStart", () => { setLoading(true) });
-  Router.events.on("routeChangeComplete", () => { setLoading(false)});
+  Router.events.on("routeChangeStart", () => {
+    setLoading(true);
+  });
+  Router.events.on("routeChangeComplete", () => {
+    setLoading(false);
+  });
 
   return (
     <>
-      {(router.pathname != "/auth")&& 
+      {router.pathname != "/auth" && (
         <Provider store={store}>
-          <MainLayout>
-            {loading && <ThreeDots />}
-            {!loading && <Component {...pageProps} />}
-          </MainLayout>
+          <UserProvider>
+            <MainLayout>
+              {loading && <ThreeDots />}
+              {!loading && <Component {...pageProps} />}
+            </MainLayout>
+          </UserProvider>
         </Provider>
-      }
-      {(router.pathname == "/auth")&&
+      )}
+      {router.pathname == "/auth" && (
         <>
           <Provider store={store}>
-            {loading && <ThreeDots />}
-            {!loading && <Component {...pageProps} />}
+            <UserProvider>
+              {loading && <ThreeDots />}
+              {!loading && <Component {...pageProps} />}
+            </UserProvider>
           </Provider>
         </>
-      }
+      )}
     </>
   );
 }

@@ -8,12 +8,15 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
-import User from "../../../../public/Image/Icons/svgs/User.svg";
+// import User from "../../../../public/Image/Icons/svgs/User.svg";
 import Logout from "../../../../public/Image/Icons/svgs/Logout.svg";
 //Component imports
 import MenuItems from "./MenuItems";
 //UTILs Imports
-import { adminMenu, agentMenu  } from "@/src/utils/Menus/";
+import { adminMenu, agentMenu } from "@/src/utils/Menus/";
+import { Avatar, IconButton } from "@material-tailwind/react";
+
+import { User } from "../../layout/User/UserProvider";
 
 // add NavItem prop to component prop
 type Props = {
@@ -23,6 +26,9 @@ type Props = {
 
 const Sidebar = ({ collapsed, setCollapsed }: Props) => {
   const router = useRouter();
+  const {
+    user: { name },
+  } = User();
   const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
   return (
     <div
@@ -47,7 +53,9 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
             "py-4 justify-center": collapsed,
           })}
         >
-          {!collapsed && <span className="whitespace-nowrap font-body">ManagementX</span>}
+          {!collapsed && (
+            <span className="whitespace-nowrap font-body">ManagementX</span>
+          )}
           <button
             className="grid place-content-center hover:bg-custom-red-700 w-10 h-10 rounded-full opacity-0 md:opacity-100"
             onClick={() => setCollapsed(!collapsed)}
@@ -68,7 +76,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
             >
               {adminMenu.map((menu_, i) => {
                 return (
-                  <li>
+                  <li key={menu_.id}>
                     <MenuItems collapsed={collapsed} menu_={menu_} />
                   </li>
                 );
@@ -81,16 +89,28 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
             "grid place-content-stretch p-4 ": true,
           })}
         >
-          <div className="flex gap-4 items-center h-11 overflow-hidden">
-            <User
+          <div className="flex gap-4 items-center h-12 max-w-full overflow-hidden">
+            {/* <User
               className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
               fill={"#fff"}
               src={User}
-            />
+            /> */}
+            <IconButton
+              color="red"
+              ripple={true}
+              variant="gradient"
+              className={
+                collapsed
+                  ? "rounded-full hover:shadow-none w-8 h-8 transition duration-75"
+                  : "rounded-full hover:shadow-none "
+              }
+            >
+              <span> {name?.charAt(0).toUpperCase()}</span>
+            </IconButton>
             {!collapsed && (
               <div className="=flex items-center h-full sm:justify-center xl:justify-start ">
                 <div className=" sm:hidden xl:block font-bold text-white">
-                  Jacob Williams
+                  {name?.toUpperCase("0")}
                 </div>
                 <Link href="." className="color-white text-sm">
                   View Profile
@@ -98,18 +118,12 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
                 <button
                   className="float-right"
                   onClick={() => {
-                    Cookies.remove("user"),
-                      Cookies.remove("loginId"),
-                      Cookies.remove("token"),
-                      Cookies.remove("designation"),
-                      Cookies.remove("type"),
-                      router.push("/auth");
+                    Cookies.remove("user"), router.push("/auth");
                   }}
                 >
                   <Logout
                     className="block sm:hidden xl:block w-6 h-5 ml-28"
                     fill={"#fff"}
-                    src={Logout}
                   />
                 </button>
                 <div className="flex-grow block sm:hidden xl:block" />

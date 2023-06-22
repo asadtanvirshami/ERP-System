@@ -5,13 +5,16 @@ import axios, { AxiosResponse } from 'axios';
 //Component import
 import Dashboard from '../components/layout/Dashboard/';
 
+import { User } from '../components/layout/User/UserProvider';
+
 type Props = {
   sessionData:object
 }
 
 const index = (props: Props) => {
+  const { user:{type} } : any = User();
   return (
-    <Fragment><Dashboard sessionData={props.sessionData}/></Fragment>
+    <Fragment><Dashboard sessionData={props.sessionData} type={type}/></Fragment>
   )
 }
 

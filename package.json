@@ -14,7 +14,7 @@
     "@hookform/resolvers": "^3.0.1",
     "@material-tailwind/react": "^2.0.0",
     "@react-spring/web": "^9.7.2",
-    "@reduxjs/toolkit": "^1.9.3",
+    "@reduxjs/toolkit": "^1.9.5",
     "@types/cookies": "^0.7.7",
     "@types/js-cookie": "^3.0.3",
     "@types/jwt-decode": "^3.1.0",
@@ -40,6 +40,8 @@
     "react-transition-group": "^4.4.5",
     "recharts": "^2.5.0",
     "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
+    "redux-persist-cookie-storage": "^1.0.0",
     "swr": "^2.1.5",
     "typescript": "5.0.3",
     "yup": "^1.1.1"

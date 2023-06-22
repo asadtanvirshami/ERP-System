@@ -18,6 +18,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/redux/constants/index", "src/redux/constants/index"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/redux/constants/index", "src/redux/constants/index", "src/components/layout/User/UserProvider/index.tsx"],
   "exclude": ["node_modules"]
 }

@@ -1,39 +1,45 @@
-import React,{ Fragment, useEffect, useState } from 'react'
-import { useRouter } from 'next/router';
-import Cookies from "js-cookie";
+import React, { Fragment, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 //Components Imports
-import Admin from './Admin/index'
-import Agent from './Agent/index'
-import { useSelector } from 'react-redux';
-import { loginSuccess } from "@/src/redux/actions/userActions/userActions";
+import Admin from "./Admin/index";
+import Agent from "./Agent/index";
+
+import { User } from "../User/UserProvider";
+
+import { useSelector } from "react-redux";
 
 type Props = {
-    sessionData:any
-}
+  sessionData: any;
+  type: string;
+};
 
 const Dashboard = (props: Props) => {
-const [type, setType] = useState<string | undefined>('')
-const isAuthenticated = useSelector((state:any) => state.user.role);
+  const router = useRouter();
 
-console.log(isAuthenticated,'auth')
-const router = useRouter();
+  const {
+    user: { type },
+  } = User();
+
   useEffect(() => {
-    if(props.sessionData.isLoggedIn == false){
-      router.push('/auth')
-    }else{
-      let  type  = Cookies.get('type')
-      return setType(type)
+    if (props.sessionData.isLoggedIn == false) {
+      router.push("/auth");
     }
-  }, [])
-  
+  }, []);
 
-  console.log(props.sessionData)
-    return (
+  return (
     <Fragment>
-      {type == 'admin' && <Fragment><Admin/></Fragment>}
-      {type == 'agent' && <Fragment><Agent/></Fragment>}
+      {type == "admin" && (
+        <Fragment>
+          <Admin />
+        </Fragment>
+      )}
+      {type == "agent" && (
+        <Fragment>
+          <Agent />
+        </Fragment>
+      )}
     </Fragment>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
