@@ -31,7 +31,7 @@ const EmptyTable = ({ cols }: Props) => {
         <tbody>
           <tr>
             <td className="py-5">
-              <span className="ml-4">No data to show.</span>
+              <span className="ml-4">No data to show2.</span>
             </td>
           </tr>
         </tbody>

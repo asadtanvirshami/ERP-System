@@ -77,8 +77,9 @@ const InfoCard = ({
 
   return (
     <Fragment>
-      {data_loading ? (
-        <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
+
+        <>
+          <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
             <div className="text-theme-700 font-bold ">
@@ -165,11 +166,9 @@ const InfoCard = ({
             </div>
           </div>
         </div>
-      ) : (
-        <>
-          <CardLoader />
+     
         </>
-      )}
+
       <Modal
         label={modalTitle}
         showModal={state.showModal}

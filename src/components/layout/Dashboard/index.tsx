@@ -15,22 +15,30 @@ type Props = {
 
 const Dashboard = (props: Props) => {
   const router = useRouter();
-
   const {
     user: { type },
   } = User();
 
   useEffect(() => {
+    
     if (props.sessionData.isLoggedIn == false) {
       router.push("/auth");
     }
+    // if (props.sessionData.isLoggedIn == true) {
+    //   if (loggedIn == true) {
+    //     const _type = type;
+    //     console.log(_type);
+        
+    //   }
+    // }
   }, []);
 
   return (
     <Fragment>
       {type == "admin" && (
         <Fragment>
-          <Admin />
+          <Admin /> 
+          {/* <Agent /> */}
         </Fragment>
       )}
       {type == "agent" && (

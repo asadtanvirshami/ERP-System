@@ -13,11 +13,17 @@ import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
 import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
+import { User } from "../../User/UserProvider";
 type Props = {};
 
 const Index = (props: Props) => {
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    user: { companyId },
+  } = User();
+  const _CompanyId = companyId;
 
   const infoCardOBj: any = {
     0: {
@@ -73,34 +79,31 @@ const Index = (props: Props) => {
     },
   };
 
+  async function getCompanyData() {
+    setLoading(true);
+    await axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_COMPANY_DATA as string, {
+        headers: { id: _CompanyId, offset: 0 },
+      })
+      .then((r: AxiosResponse) => {
+        if (r.data.message === "success") {
+          if (r.data.payload.length > 0) {
+            setData(r.data.payload);
+            setLoading(false);
+          } else {
+            setData([[], [], []]);
+          }
+        }
+      });
+  }
   useEffect(() => {
-    async function getCompnayData() {
-      setLoading(true);
-      const CompanyId = await Cookies.get("company");
-      await axios
-        .get(process.env.NEXT_PUBLIC_ERP_GET_COMPANY_DATA as string, {
-          headers: { id: CompanyId, offset: 0 },
-        })
-        .then((r: AxiosResponse) => {
-          if (r.data.message === "success") {
-            if (r.data.payload.length > 0) {
-              setData(r.data.payload);
-              setLoading(false);
-            } else {
-              setData([[], [], []]);
-              setLoading(false);
-            }
-            console.log(data, "data");
-          }
-          if (r.data !== "success") {
-            setLoading(true);
-          }
-        });
+    try {
+      getCompanyData();
+    } catch (e) {
+      console.log(e);
     }
-    getCompnayData();
   }, []);
 
-  console.log(data, "data");
   return (
     <Fragment>
       <Container>
@@ -114,39 +117,40 @@ const Index = (props: Props) => {
           </div>
         </div>
         {data.length != 0 ? (
-          <>
+          <Fragment>
             {data.map((x: any, i: number) => {
               return (
                 <Fragment key={i}>
-                  {data.length != 0 ? (
-                    <div className="w-full p-2 lg:w-1/3 ">
-                      <div className="rounded-lg bg-card h-80">
-                        <InfoCard
-                          cols={infoCardOBj[i].cols}
-                          label={infoCardOBj[i].label}
-                          title={infoCardOBj[i].title}
-                          modalTitle={infoCardOBj[i].modalTitle}
-                          renderModalComponent={infoCardOBj[i].component}
-                          url={infoCardOBj[i].url}
-                          data_loading={loading}
-                          index={i}
-                          data={data[i] || undefined}
-                          allData={data || undefined}
-                          setData={setData}
-                        />
-                      </div>
-                    </div>
+                  {(data.length != 0 && !loading )? (
+                   <div className="w-full p-2 lg:w-1/3 ">
+                   <div className="rounded-lg bg-card h-80">
+                     <InfoCard
+                       cols={infoCardOBj[i].cols}
+                       label={infoCardOBj[i].label}
+                       title={infoCardOBj[i].title}
+                       modalTitle={infoCardOBj[i].modalTitle}
+                       renderModalComponent={infoCardOBj[i].component}
+                       url={infoCardOBj[i].url}
+                       data_loading={loading}
+                       index={i}
+                       data={data[i] || undefined}
+                       allData={data || undefined}
+                       setData={setData}
+                     />
+                   </div>
+                 </div>
                   ) : (
                     <div className="w-full p-2 lg:w-1/3 ">
-                      <div className="rounded-lg bg-card h-80">
-                        <CardLoader />
-                      </div>
+                    <div className="rounded-lg bg-card h-80">
+                      <CardLoader />
                     </div>
+                  </div>
+                    
                   )}
                 </Fragment>
               );
             })}
-          </>
+          </Fragment>
         ) : (
           <Fragment>
             <div className="w-full p-2 lg:w-1/3 ">

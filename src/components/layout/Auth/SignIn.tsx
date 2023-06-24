@@ -65,7 +65,7 @@ const Signin = (props: Props) => {
           props.setLoading(false);
           const token: any = jwt_decode(r.data.token);
           Cookies.set("_hjSession", r.data.token, { expires: 1 });
-          Cookies.set('user',JSON.stringify(r.data.payload))
+          Cookies.set('user',JSON.stringify(r.data.payload), { expires: 1 })
           Router.push("/");
           dispatch(loginSuccess(r.data.payload, token.type));
         } else if (r.data.message == "invalid") {

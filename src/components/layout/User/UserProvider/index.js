@@ -11,14 +11,14 @@ export function UserProvider({ children }) {
   const [userData, setUserData] = useState({
     loggedIn: false,
     isAuthenticated: false,
-    user: {type: '',id:''},
+    user: {},
   });
 
   const deleteUser = () => {
     setUserData((prev) => {
       return {
         ...prev,
-        loggedIn: false,
+        loggedIn,
         user: {},
       };
     });
@@ -26,12 +26,20 @@ export function UserProvider({ children }) {
 
   const updateUser = async (data) => {
     setUserData((prev) => {
-      return { ...prev, user: { ...prev.user, ...data } };
+      return { ...prev, user: { ...prev.user, ...data  }, loggedIn:true };
     });
   };
 
   const getUserFromCookie = () => {
-    const userString = Cookies.get('user');
+    
+   
+  };
+
+
+  useEffect(() => {
+    async function getUserDataFromCookies() {
+      const userString = Cookies.get('user');
+
     if (userString) {
       try {
           const user = JSON.parse(userString);
@@ -40,11 +48,8 @@ export function UserProvider({ children }) {
         console.error('Error parsing JSON:', error);
       }
     }
-  };
-
-
-  useEffect(() => {
-  getUserFromCookie();
+  }
+  getUserDataFromCookies()
   }, []);
 
   const value = {
