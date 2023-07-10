@@ -19,25 +19,19 @@ const Dashboard = (props: Props) => {
     user: { type },
   } = User();
 
+  const userData = useSelector((state: any) => state.user.user);
+
   useEffect(() => {
-    
     if (props.sessionData.isLoggedIn == false) {
       router.push("/auth");
     }
-    // if (props.sessionData.isLoggedIn == true) {
-    //   if (loggedIn == true) {
-    //     const _type = type;
-    //     console.log(_type);
-        
-    //   }
-    // }
   }, []);
 
   return (
     <Fragment>
       {type == "admin" && (
         <Fragment>
-          <Admin /> 
+          <Admin />
           {/* <Agent /> */}
         </Fragment>
       )}

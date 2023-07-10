@@ -8,6 +8,7 @@ const initialState = {
     create: false,
     update: false,
     delete:false,
+    open:false,
     values: [],
   },
 };

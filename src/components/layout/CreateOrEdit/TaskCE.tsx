@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { tasksBaseValues } from "@/src/utils/baseValues";
 //Functions Import
 import { checkList } from "@/src/functions/isCheckList";
+import { CreateNewTask, AssignTask, UpdateTask } from "@/src/utils/api/tasks";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -35,10 +36,11 @@ const SignupSchema = yup.object().shape({
 type Props = {
   _data: Array<any>;
   _agents: Array<any>;
-  setData: any;
+  setTasks: any;
+  setAgents: any;
 };
 
-const TaskCE = ({ _data, setData, _agents }: Props) => {
+const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
@@ -51,7 +53,9 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
 
   //Redux Selectors
   const edit = useSelector((state: any) => state.form.value.edit);
+  const openState = useSelector((state: any) => state.form.value.open);
   const task_data = useSelector((state: any) => state.form.value.values);
+  const user_data = useSelector((state: any) => state.user.user);
 
   const {
     register,
@@ -67,8 +71,10 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
 
   useEffect(() => {
     if (edit) {
+      openState ? setProceed(true) : setProceed(false);
       const tempData = { ...task_data };
       let agentsData = [..._agents];
+      console.log(agentsData, tempData);
 
       if (agentsData.length > 0 && tempData.asignees) {
         const asigneeIds = tempData.asignees
@@ -94,11 +100,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
   }, [edit]);
 
   const onSubmit = async (data: any) => {
-    const CompanyId = Cookies.get("company");
-    const UserId = Cookies.get("loginId");
-
     if (!proceed) {
-      console.log(isCheck, proceed, 'check')
       setLoading(true);
       //setting the data object
       const newData = {
@@ -106,27 +108,119 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
         startDate: moment().format("L"),
         startTime: moment().format("h:mm:ss a"),
         deadline: data.deadline,
-        userId: UserId,
-        companyId: CompanyId,
+        userId: user_data.loginId,
+        companyId: user_data.companyId,
       };
-      await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_CREATE_TASK as string, newData)
-        .then((r: AxiosResponse) => {
-          if (r.data.status == "success") {
-            setTaskId(r.data.payload.id);
-            setMessage(r.data.message);
-            setLoading(false);
-            setProceed(true);
-          }
-          if (r.data.status == "error") {
-            setLoading(false);
-          }
-        });
+      const createdTask = await CreateNewTask(newData);
+      console.log(createdTask);
+      if (createdTask) {
+        if (createdTask.error == null) {
+          setMessage("Task created successfully.");
+          setLoading(false);
+          setProceed(true);
+          setTaskId(createdTask.task.id);
+          let tempArr = [..._data, createdTask.task];
+          return setTasks ? setTasks(tempArr) : null;
+        } else {
+          return (
+            setProceed(false), setLoading(true), setMessage("Task not created")
+          );
+        }
+      } else {
+        setProceed(false),
+          setLoading(true),
+          setMessage("Error occured please wait.");
+      }
     }
-
-    if (proceed && isCheck.length > 0) {
-      // setLoading(true);
+    if (proceed) {
+      setLoading(true);
       const tempStateList = edit ? _data : _agents;
+      // const tempStateList = _data;
+      const asignees: any = [];
+      const tempData: any = [];
+
+      tempStateList.forEach((y: any) => {
+        if (isCheck.includes(y.id)) {
+          asignees.push({
+            id: y.id,
+            email: y.email,
+          });
+          tempData.push({
+            ...data,
+            startDate: moment().format("L"),
+            startTime: moment().format("h:mm:ss a"),
+            deadline: data.date,
+            userId: user_data.loginId,
+            companyId: user_data.companyId,
+            taskId: taskId,
+          });
+        }
+      });
+
+      const assignedTask = await AssignTask(isCheck, taskId, asignees);
+      setLoading(true);
+      if (assignedTask) {
+        if (assignedTask.error == null) {
+          setLoading(false);
+          const tempState: Array<any> = [..._data];
+          const i = tempState.findIndex((item) => item.id === taskId);
+          if (i !== -1) {
+            tempState[i].asignees = asignees;
+            return setTasks ? setTasks(tempState) : null;;
+          }
+          setMessage("Task assigned successfully.");
+   
+        } else {
+          setMessage("Task not assigned.");
+          setLoading(true);
+        }
+      } else {
+        setMessage("Error occurred please wait.");
+        setLoading(true);
+      }
+    }
+  };
+
+  const onEdit = async (data: any) => {
+    if (!proceed) {
+      setLoading(true);
+      //setting the data object
+      const newData = {
+        ...data,
+        startDate: moment().format("L"),
+        startTime: moment().format("h:mm:ss a"),
+        deadline: data.deadline,
+        userId: user_data.id,
+        companyId: user_data.companyId,
+      };
+      const updatedTask = await UpdateTask(task_data.id, newData);
+      if (updatedTask) {
+        if (updatedTask.error == null) {
+          setMessage("Task updated successfully.");
+          const tempState: Array<any> = [..._data];
+          const i = tempState.findIndex((item) => item.id === task_data.id);
+          if (i !== -1) {
+            tempState[i] = data;
+            setLoading(false);
+            return setTasks(tempState);
+          }
+          setProceed(true);
+        } else {
+          setMessage("Task not created");
+          setLoading(true);
+          setProceed(false);
+        }
+      } else {
+        setMessage("Error occured please wait.");
+        setLoading(true);
+        setProceed(false);
+      }
+    }
+    if (proceed && isCheck.length > 0) {
+      setLoading(true);
+      console.log(isCheck);
+      const tempStateList = edit ? _data : _agents;
+      // const tempStateList = _data ;
       const asignees: any = [];
       const tempData: any = [];
 
@@ -143,39 +237,41 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
             startDate: moment().format("L"),
             startTime: moment().format("h:mm:ss a"),
             deadline: data.date,
-            userId: y.id,
-            companyId: CompanyId,
+            userId: user_data.loginId,
+            companyId: user_data.companyId,
             taskId: taskId,
           });
         }
       });
-      await axios
-        .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
-          data: isCheck,
-          asignees: asignees,
-          taskId: taskId,
-        })
-        .then((r: AxiosResponse) => {
+      const assignedTask = await AssignTask(
+        isCheck,
+        user_data.companyId,
+        asignees
+      );
+      if (assignedTask) {
+        if (assignedTask.error == null) {
+          setMessage("Task assigned successfully.");
           setLoading(false);
-          if (r.data.status === "success") {
-            setMessage(r.data.message);
-          }
-        })
-        .catch(() => {
-          setLoading(false);
-        });
+        } else {
+          setMessage("Task not assigned.");
+          setLoading(true);
+        }
+      } else {
+        setMessage("Error occurred please wait.");
+        setLoading(true);
+      }
     }
   };
 
   return (
     <Fragment>
-      {(proceed) && <h1>Select agent to assign task.</h1>}
-      {_agents||_data?.length >= 1 ? (
+      {proceed && <h1>Select agent to assign task.</h1>}
+      {_agents?.length >= 1 || _data?.length >= 1 ? (
         <>
-          {(!proceed) && (
+          {!proceed && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
             >
               <div className="grid grid-cols-2 items-center gap-4 mb-2">
                 <Input
@@ -255,7 +351,7 @@ const TaskCE = ({ _data, setData, _agents }: Props) => {
         </div>
       )}
 
-      {(proceed) && (
+      {proceed && (
         <form onSubmit={handleSubmit(onSubmit)} className="">
           <div className="p-0 min-h-[39px] overflow-y-auto">
             {asignees?.length >= 1 ? (

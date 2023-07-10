@@ -67,7 +67,7 @@ const CreateCard = (props: Props) => {
               <AddIcon
                 onClick={() => {
                   setShowModal(true);
-                  dispatch(form_({ form_edit: false }));
+                  dispatch(form_({ edit: false }));
                 }}
                 fill={"white"}
                 className="w-6 h-6 text-gray-500 cursor-pointer"

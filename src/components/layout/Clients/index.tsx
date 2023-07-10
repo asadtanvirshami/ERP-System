@@ -6,8 +6,10 @@ import { Agents } from "@/src/interfaces/Agents";
 import Table from "@/src/components/shared/Table";
 import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 
-import { User } from "../User/UserProvider";
 import EmptyTable from "../../shared/EmptyComponents/EmptyTable";
+
+import { useSelector } from "react-redux";
+import { getClientsData } from "@/src/utils/api/clients";
 
 type Props = {};
 
@@ -15,73 +17,74 @@ const Index = (props: Props) => {
   const [data, setData] = useState<Agents[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const {
-    user: { companyId },
-  } = User();
-  const _CompanyId = companyId;
+  const CompanyId = useSelector((state: any) => state.user.user.companyId);
 
-  async function getClientsData() {
+  async function dataCall() {
     try {
-      await axios
-        .get(process.env.NEXT_PUBLIC_ERP_GET_CLIENT as string, {
-          headers: { id: _CompanyId },
-        })
-        .then((r: AxiosResponse) => {
-          if (r.data.message == "success") {
-            setData(r.data.payload);
-            setLoading(false);
-          } else {
-            setLoading(true);
-          }
-        });
+      const Clients = await getClientsData(CompanyId);
+      if (Clients) {
+        if(Clients.error == null){
+          setData(Clients.clients);
+          setLoading(false);
+        }else{
+          setData([])
+        }
+      }else{
+        setData([])
+        setLoading(true)
+      }
     } catch (e) {
       console.log(e);
     }
   }
 
   useEffect(() => {
-    getClientsData();
+    dataCall();
   }, []);
 
   return (
     <div className="">
       <Fragment>
-       {!loading? (<Table
-          cols={[
-            "Name",
-            "Address",
-            "City",
-            "Country",
-            "Email",
-            "Phone",
-            "Source",
-            "Source Link",
-            "Edit",
-            "Edit",
-            "Delete",
-            "View",
-          ]}
-          data={data}
-          setData={setData}
-          modalTitle="Client"
-          renderModalComponent={<ClientsCE setData={setData} data={data} />}
-          url={process.env.NEXT_PUBLIC_ERP_DELETE_CLIENT}
-        />):(
+        {!loading ? (
+          <Table
+            cols={[
+              "Name",
+              "Address",
+              "City",
+              "Country",
+              "Email",
+              "Phone",
+              "Source",
+              "Source Link",
+              "Edit",
+              "Edit",
+              "Delete",
+              "View",
+            ]}
+            data={data}
+            setData={setData}
+            modalTitle="Client"
+            renderModalComponent={<ClientsCE setData={setData} data={data} />}
+            url={process.env.NEXT_PUBLIC_ERP_DELETE_CLIENT}
+          />
+        ) : (
           <div>
-            <EmptyTable cols={[
-            "Name",
-            "Address",
-            "City",
-            "Country",
-            "Email",
-            "Phone",
-            "Source",
-            "Source Link",
-            "Edit",
-            "Edit",
-            "Delete",
-            "View",
-          ]}/>
+            <EmptyTable
+              cols={[
+                "Name",
+                "Address",
+                "City",
+                "Country",
+                "Email",
+                "Phone",
+                "Source",
+                "Source Link",
+                "Edit",
+                "Edit",
+                "Delete",
+                "View",
+              ]}
+            />
           </div>
         )}
       </Fragment>

@@ -10,7 +10,6 @@ import Modal from "../Modal";
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
 //Functions
-import { checkIsTwoDArray } from "@/src/functions/checkArray";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
@@ -40,6 +39,7 @@ const Table = ({
   allData,
   index,
   url,
+  onClick
 }: any) => {
   const [type, setType] = useState<string | undefined>("");
   const [path, setPath] = useState<string | undefined>("");
@@ -56,15 +56,7 @@ const Table = ({
 
   // Redux Selector
   const { id: _id } = useSelector((state: any) => state.form.value);
-
-  useEffect(() => {
-    async function checkPathAndTypes() {
-      let pathname = window.location.pathname;
-      let type = Cookies.get("type");
-      return setType(type), setPath(pathname);
-    }
-    checkPathAndTypes();
-  }, [data]);
+  const {loginId:id}  = useSelector((state: any) => state.user.user);
 
   let Keys: any =
     data?.length > 0
@@ -91,35 +83,24 @@ const Table = ({
         )
       : null;
 
-  const handleOnClick = (id: string) => {
-    // Function to handle global delete
-    setState((prevState) => ({ ...prevState, loading: true }));
-    axios
-      .delete(url as string, { headers: { id: id } })
-      .then((response) => {
-        if (response.data.status === "success") {
-          if (allData) {
-            let newData = [...allData];
-            const check = checkIsTwoDArray(allData);
-            if (check) {
-              const filteredData = data?.filter((item: any) => item.id !== id);
-              newData[index] = filteredData;
-              console.log(newData);
-              return setData(newData);
-            }
-          } else {
-            const newData = data?.filter((item: any) => item.id !== id);
-            setData(newData);
-          }
-        }
-      })
-      .catch((error) => {
-        console.error("Error deleting data:", error);
-      })
-      .finally(() => {
-        setState((prevState) => ({ ...prevState, loading: false }));
-      });
-  };
+  // const handleOnClick = (id: string) => {
+  //   // Function to handle global delete
+  //   setState((prevState) => ({ ...prevState, loading: true }));
+  //   axios
+  //     .delete(url as string, { headers: { id: id } })
+  //     .then((response) => {
+  //       if (response.data.status === "success") {
+  //         const newData = data?.filter((item: any) => item.id !== id);
+  //         setData(newData);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting data:", error);
+  //     })
+  //     .finally(() => {
+  //       setState((prevState) => ({ ...prevState, loading: false }));
+  //     });
+  // };
 
   return (
     <Fragment>
@@ -127,7 +108,7 @@ const Table = ({
         <div className="mb-0 flex items-center justify-between p-3">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Members list
+              {modalTitle} list
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
               See information about all members
@@ -150,10 +131,7 @@ const Table = ({
               }}
             >
               <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add{" "}
-              {(path == "/team" && "Agent") ||
-                (path == "/clients" && "Client") ||
-                (path == "/tasks" && "Tasks") ||
-                (path == "/" && `${modalTitle}`)}
+                {modalTitle}
             </Button>
           </div>
         </div>
@@ -206,7 +184,7 @@ const Table = ({
 
                   return (
                     <>
-                      <tr key={index}>
+                      <tr key={ele.id}>
                         <>
                           <td className={classes}>
                             <div className="flex items-center gap-3">
@@ -224,7 +202,7 @@ const Table = ({
                           {Keys.map((key: string, i: number) => {
                             return (
                               <>
-                                <td key={ele.id} className={classes}>
+                                <td key={i} className={classes}>
                                   <div className="flex items-center gap-3">
                                     <div className="flex flex-col">
                                       <Typography
@@ -241,7 +219,7 @@ const Table = ({
                             );
                           })}
                         </>
-                        {data[index]["User"] && (
+                        {/* {data[index]["User"] && (
                           <td className={classes}>
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
@@ -255,7 +233,7 @@ const Table = ({
                               </div>
                             </div>
                           </td>
-                        )}
+                        )} */}
                         <td className={classes}>
                           <Tooltip content="Edit Item">
                             <IconButton
@@ -285,14 +263,19 @@ const Table = ({
                               variant="text"
                               color="blue-gray"
                               onClick={() => {
-                                handleOnClick(ele.id);
+                                onClick(ele.id);
+                                dispatch(
+                                  form_({
+                                    values: ele,
+                                  })
+                                );
                               }}
                             >
                               <TrashIcon
                                 className="w-5 h-5 cursor-pointer"
                                 fill={"gray"}
                                 onClick={() => {
-                                  handleOnClick(ele.id);
+                                  onClick(ele.id);
                                 }}
                               />
                             </IconButton>
@@ -303,7 +286,22 @@ const Table = ({
                           <td className={classes}>
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
-                                <List state={data[index]["asignees"]} />
+                                <List
+                                  onClick={() => {
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      showModal: true,
+                                    }));
+                                    dispatch(
+                                      form_({
+                                        open: true,
+                                        edit: true,
+                                        values: ele,
+                                      })
+                                    );
+                                  }}
+                                  state={data[index]["asignees"]}
+                                />
                               </div>
                             </div>
                           </td>
@@ -381,9 +379,7 @@ const Table = ({
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
       >
-        <>
-        {state.viewDetail}
-        </>
+        <>{state.viewDetail}</>
       </Modal>
     </Fragment>
   );

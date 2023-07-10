@@ -67,14 +67,13 @@ const Signin = (props: Props) => {
           Cookies.set("_hjSession", r.data.token, { expires: 1 });
           Cookies.set('user',JSON.stringify(r.data.payload), { expires: 1 })
           Router.push("/");
-          dispatch(loginSuccess(r.data.payload, token.type));
+          dispatch(loginSuccess(token, token.type));
         } else if (r.data.message == "invalid") {
           props.setLoading(false);
           setMessage("Invalid email or password!");
         }
       });
   };
-  console.log(user,'datauser')
 
   return (
     <div className="flex h-screen align-middle justify-center items-center bg-gradient-to-r from-custom-red-500 to-custom-red-700">

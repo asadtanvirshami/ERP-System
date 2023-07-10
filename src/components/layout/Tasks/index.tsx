@@ -1,47 +1,63 @@
-import React, { useState, useEffect, Fragment, useCallback } from "react";
-import axios, { AxiosResponse } from "axios";
-import Cookies from "js-cookie";
+import React, { useState, useEffect, Fragment } from "react";
 //Interface Imports
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
 import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
-
-import { User } from "../User/UserProvider";
+//Redux
+import { useSelector } from "react-redux";
+import { getAllTasks, DeleteTask } from "@/src/utils/api/tasks";
 
 type Props = {};
 
 const Index = (props: Props) => {
   const [tasks, setTasks] = useState<any[]>([]);
-  const [asignees, setAsignees] = useState<any[]>([]);
-  
-  const {user:{companyId}} = User()
-  const CompanyId = companyId
+  const [agents, setAgents] = useState<any[]>([]);
 
+  const userData = useSelector((state: any) => state.user.user);
+  const task_data = useSelector((state: any) => state.form.value.values);
+  const CompanyId = userData.companyId;
 
-  const getAllCreatedTasks = useCallback(async () => {
-    try {
-      await axios.get(process.env.NEXT_PUBLIC_ERP_POST_GET_TASK as string, {
-        headers: { id: CompanyId },
-      }).then((r: AxiosResponse) => {
-        if(r.data.payload && r.data.users){
-          const tempArr = [r.data.payload, r.data.users];
-          setTasks(r.data.payload);
-          setAsignees(tempArr);
-        }
-      });
-  
-    } catch (error) {
-      // Handle error here
-      console.error(error);
+  async function GetAllTasks() {
+    const Tasks = await getAllTasks(CompanyId);
+    if (Tasks) {
+      if (Tasks.error == null) {
+        setAgents(Tasks.users);
+        setTasks(Tasks.tasks);
+      } else {
+        setAgents([]);
+        setTasks([]);
+      }
+    } else {
+      setAgents([]);
+      setTasks([]);
     }
-  }, [CompanyId, setTasks, setAsignees]);
-  
+  }
+
+  const handleDelete = async (id: string) => {
+    const tempData = { ...task_data };
+    const taskAsignees = []
+    const asigneeIds = tempData.asignees
+    .map((asignee: any) => asignee.id)
+    .filter(Boolean);
+    taskAsignees.push(asigneeIds)
+    console.log(taskAsignees);
+     const deltetedAgent = await DeleteTask(id, asigneeIds);
+    // tempData.asignees.forEach((ele, i) => {
+    //   console.log("ELEE", ele.id);
+    //   asignees.push({
+    //     id: ele.id,
+    //   });
+    // });
+  };
+
   useEffect(() => {
-    if (CompanyId !== undefined) {
-      getAllCreatedTasks();
+    try {
+      GetAllTasks();
+    } catch (e) {
+      console.log(e);
     }
-  }, [CompanyId, getAllCreatedTasks]);
+  }, []);
 
   return (
     <div className="">
@@ -62,14 +78,20 @@ const Index = (props: Props) => {
             "Deadline",
             "Edit",
             "Delete",
-            "Assigned By",
             "Assigned To",
           ]}
-          data={tasks || undefined}
+          data={tasks}
           setData={setTasks}
           modalTitle="Tasks"
-          renderModalComponent={<TaskCE setData={setAsignees} _agents={asignees[1]} _data={tasks} />}
-          url={process.env.NEXT_PUBLIC_ERP_POST_DELETE_TASK}
+          renderModalComponent={
+            <TaskCE
+              setAgents={setAgents}
+              setTasks={setTasks}
+              _agents={agents}
+              _data={tasks}
+            />
+          }
+          onClick={handleDelete}
         />
       </Fragment>
     </div>

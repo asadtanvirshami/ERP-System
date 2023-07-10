@@ -3,7 +3,6 @@ import axios from "axios";
 // Component Imports
 import Modal from "../Modal";
 import Table from "../Table";
-import CardLoader from "../Loader/CardLoader";
 import CricleSpinner from "../Loader/CricleSpinner";
 // SVGs Imports
 import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
@@ -12,7 +11,6 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { checkIsTwoDArray } from "@/src/functions/checkArray";
 
 const InfoCard = ({
   label,
@@ -25,7 +23,6 @@ const InfoCard = ({
   setData,
   cols,
   url,
-  data_loading,
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
@@ -38,7 +35,7 @@ const InfoCard = ({
   const { id: _id, values: _data } = useSelector(
     (state: any) => state.form.value
   );
-  
+
   //Setting the object keys
   let Keys;
   if (data?.length >= 1) {
@@ -53,18 +50,8 @@ const InfoCard = ({
       .delete(url as string, { headers: { id: id } })
       .then((response) => {
         if (response.data.status === "success") {
-          if (allData) {
-            let newData = [...allData];
-            const check = checkIsTwoDArray(allData);
-            if (check) {
-              const filteredData = data?.filter((item: any) => item.id !== id);
-              newData[index] = filteredData;
-              return setData(newData);
-            }
-          } else {
             const newData = data?.filter((item: any) => item.id !== id);
             setData(newData);
-          }
         }
       })
       .catch((error) => {
@@ -77,9 +64,8 @@ const InfoCard = ({
 
   return (
     <Fragment>
-
-        <>
-          <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
+      <>
+        <div className="flex p-4 flex-col h-full rounded-lg shadow-lg">
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
             <div className="text-theme-700 font-bold ">
@@ -97,19 +83,16 @@ const InfoCard = ({
           <div className="h-100 flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
             <ul className="p-3 w-full">
               {data?.length > 0 && !state.loading ? (
-                <>
-                  {Keys?.map((key, i) => (
+                <Fragment>
+                  {Keys?.map((keys, i) => (
                     <Fragment key={i}>
                       {data?.map((item: any, index: any) => (
-                        <>
+                        <div key={item["id"]}>
                           <div className="flex">
-                            <li key={index} className="w-full p-3">
-                              {index + 1}. {item[key]}
+                            <li  className="w-full p-3">
+                              {index + 1}. {item[keys]}
                             </li>
-                            <div
-                              key={item["id"]}
-                              className="w-full p-3 justify-end flex text-right"
-                            >
+                            <div className="w-full p-3 justify-end flex text-right">
                               <li className="px-5">
                                 <EditIcon
                                   onClick={() => {
@@ -139,11 +122,11 @@ const InfoCard = ({
                             </div>
                           </div>
                           <hr />
-                        </>
+                        </div>
                       ))}
                     </Fragment>
                   ))}
-                </>
+                </Fragment>
               ) : (
                 <>
                   {state.loading && data?.length > 0 && <CricleSpinner />}
@@ -166,8 +149,7 @@ const InfoCard = ({
             </div>
           </div>
         </div>
-     
-        </>
+      </>
 
       <Modal
         label={modalTitle}
