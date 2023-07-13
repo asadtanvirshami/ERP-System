@@ -38,7 +38,7 @@ async function CreateNewAgent(CompanyId: string, data: any) {
           return { error: Error("Failed to create agent"), agent: null };
         }
       });
-    return response;
+    return response ; 
   } catch (e) {
     return { error: "error", agent: null };
   }
