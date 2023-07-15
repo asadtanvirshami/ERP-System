@@ -39,10 +39,9 @@ const Table = ({
   allData,
   index,
   url,
+  deleteFunc,
   onClick,
 }: any) => {
-  const [type, setType] = useState<string | undefined>("");
-  const [path, setPath] = useState<string | undefined>("");
   const [state, setState] = useState({
     showModal: false,
     viewModal: false,
@@ -279,6 +278,8 @@ const Table = ({
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
                                 <List
+                                  data={ele}
+                                  deleteFunc={deleteFunc}
                                   onClick={() => {
                                     setState((prevState) => ({
                                       ...prevState,

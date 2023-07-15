@@ -151,6 +151,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
           asignees.push({
             id: y.id,
             email: y.email,
+            taskId:taskId
           });
         }
       });
@@ -232,6 +233,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
           asignees.push({
             id: y.id,
             email: y.email,
+            taskId:taskId
           });
         }
       });

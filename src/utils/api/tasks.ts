@@ -72,27 +72,22 @@ async function AssignTask(
   }
 }
 
-async function updateAssignTask(
-  asignee: any,
-  taskId: any,
-  isCheck: string,
-  companyId: string
+async function DeleteUserTask(
+  userId: string,
+  taskId:string
 ) {
   try {
     const response = await axios
-      .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
-        data: asignee,
-        asignees: isCheck,
-        taskId: taskId,
-        companyId:companyId
+      .delete(process.env.NEXT_PUBLIC_ERP_DELETE_USER_TASK as string, {
+        headers: { id: userId, taskId:taskId },
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { task: r.data.payload, error: null };
+          return { payload: r.data.payload, error: null };
         }
         if (r.data.message == "error") {
-          return { error: Error("Failed to retrieve tasks"), task: null };
+          return { error: Error("Failed to delete tasks"), payload: null };
         }
       });
     return response;
@@ -144,4 +139,4 @@ async function DeleteTask(taskId: string) {
   }
 }
 
-export { getAllTasks, CreateNewTask, AssignTask, UpdateTask, DeleteTask };
+export { getAllTasks, CreateNewTask, AssignTask, UpdateTask, DeleteTask, DeleteUserTask };
