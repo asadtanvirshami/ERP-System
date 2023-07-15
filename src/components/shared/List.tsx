@@ -52,7 +52,7 @@ export const List = ({ onClick, state}: Props) => {
                 </li>
               );
             })}
-            <MenuItem  onClick={onClick}>
+            <MenuItem onClick={onClick}>
               <label
                 htmlFor="item-1"
                 className="flex cursor-pointer items-center gap-2 p-2"

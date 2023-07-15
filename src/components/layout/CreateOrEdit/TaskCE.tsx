@@ -71,19 +71,28 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
 
   useEffect(() => {
     if (edit) {
-      openState ? setProceed(true) : setProceed(false);
+      setTaskId(task_data.id);
+      (openState && edit) ? setProceed(true) : setProceed(false);
       const tempData = { ...task_data };
-      let agentsData = [..._agents];
-      console.log(agentsData, tempData);
+      let agentsData: any = [];
 
-      if (agentsData.length > 0 && tempData.asignees) {
+      if (task_data && tempData.asignees) {
+        
         const asigneeIds = tempData.asignees
           .map((asignee: any) => asignee.id)
           .filter(Boolean);
         const updatedAgentsArr = [...asigneeIds];
 
-        setIsCheck(updatedAgentsArr);
+        _agents.forEach((ele, inx) => {
+          agentsData.push({ ...ele, check: false });
+          tempData.asignees.forEach((e: any, i: number) => {
+            if (ele.id == e.id) {
+              agentsData[inx].check = true;
+            }
+          });
+        });
         setAsignees(agentsData);
+        setIsCheck(updatedAgentsArr)
       }
       reset(tempData);
     }
@@ -134,42 +143,38 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
     }
     if (proceed) {
       setLoading(true);
-      const tempStateList = edit ? _data : _agents;
-      // const tempStateList = _data;
+      const tempStateList = _agents;
       const asignees: any = [];
-      const tempData: any = [];
-
+   
       tempStateList.forEach((y: any) => {
         if (isCheck.includes(y.id)) {
           asignees.push({
             id: y.id,
             email: y.email,
           });
-          tempData.push({
-            ...data,
-            startDate: moment().format("L"),
-            startTime: moment().format("h:mm:ss a"),
-            deadline: data.date,
-            userId: user_data.loginId,
-            companyId: user_data.companyId,
-            taskId: taskId,
-          });
         }
       });
 
-      const assignedTask = await AssignTask(isCheck, taskId, asignees);
+      const assignedTask = await AssignTask(
+        isCheck,
+        taskId,
+        asignees,
+        user_data.companyId
+      );
       setLoading(true);
+      
       if (assignedTask) {
         if (assignedTask.error == null) {
           setLoading(false);
           const tempState: Array<any> = [..._data];
           const i = tempState.findIndex((item) => item.id === taskId);
           if (i !== -1) {
-            tempState[i].asignees = asignees;
-            return setTasks ? setTasks(tempState) : null;;
+            console.log(tempState[i].asignees)
+            const updatedItem = { ...tempState[i], asignees };
+            tempState[i] = updatedItem;
+            return setTasks ? setTasks(tempState) : null;
           }
           setMessage("Task assigned successfully.");
-   
         } else {
           setMessage("Task not assigned.");
           setLoading(true);
@@ -193,6 +198,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
         userId: user_data.id,
         companyId: user_data.companyId,
       };
+
       const updatedTask = await UpdateTask(task_data.id, newData);
       if (updatedTask) {
         if (updatedTask.error == null) {
@@ -216,13 +222,10 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
         setProceed(false);
       }
     }
-    if (proceed && isCheck.length > 0) {
+    if (proceed) {
       setLoading(true);
-      console.log(isCheck);
-      const tempStateList = edit ? _data : _agents;
-      // const tempStateList = _data ;
+      const tempStateList = _agents;
       const asignees: any = [];
-      const tempData: any = [];
 
       tempStateList.forEach((y: any) => {
         if (isCheck.includes(y.id)) {
@@ -230,26 +233,25 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
             id: y.id,
             email: y.email,
           });
-
-          console.log(isCheck, asignees);
-          tempData.push({
-            ...data,
-            startDate: moment().format("L"),
-            startTime: moment().format("h:mm:ss a"),
-            deadline: data.date,
-            userId: user_data.loginId,
-            companyId: user_data.companyId,
-            taskId: taskId,
-          });
         }
       });
+
       const assignedTask = await AssignTask(
         isCheck,
-        user_data.companyId,
-        asignees
+        taskId,
+        asignees,
+        user_data.companyId
       );
+
       if (assignedTask) {
         if (assignedTask.error == null) {
+          const tempState: Array<any> = [..._data];
+          const i = tempState.findIndex((item) => item.id === taskId);
+          if (i !== -1) {
+            const updatedItem = { ...tempState[i], asignees };
+            tempState[i] = updatedItem;
+             setTasks ? setTasks(tempState) : null;
+          }
           setMessage("Task assigned successfully.");
           setLoading(false);
         } else {
@@ -261,7 +263,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
         setLoading(true);
       }
     }
-  };
+  };  
 
   return (
     <Fragment>
@@ -271,7 +273,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
           {!proceed && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
-              onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
+              onSubmit={handleSubmit(edit==true ? onEdit : onSubmit)}
             >
               <div className="grid grid-cols-2 items-center gap-4 mb-2">
                 <Input
@@ -352,7 +354,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
       )}
 
       {proceed && (
-        <form onSubmit={handleSubmit(onSubmit)} className="">
+        <form onSubmit={handleSubmit(edit==true ? onEdit : onSubmit)} className="">
           <div className="p-0 min-h-[39px] overflow-y-auto">
             {asignees?.length >= 1 ? (
               <>
@@ -363,15 +365,34 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
                     className="flex items-center w-full cursor-pointer"
                   >
                     <div className="mr-3">
-                      <Checkbox
-                        id="vertical-list-react"
-                        className="hover:before:opacity-0"
-                        type="checkbox"
-                        onChange={(e) =>
-                          checkList(e, item, setIsCheck, isCheck)
-                        }
-                        checked={isCheck.includes(item.id)}
-                      />
+                      {item?.check == true ? (
+                        <div className="m-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="red"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                      ) : (
+                        <Checkbox
+                          id="vertical-list-react"
+                          className="hover:before:opacity-0"
+                          type="checkbox"
+                          onChange={(e) =>
+                            checkList(e, item, setIsCheck, isCheck)
+                          }
+                          checked={isCheck.includes(item.id)}
+                        />
+                      )}
                     </div>
                     <p className="text-sm mb-1">{item.email}</p>
                   </label>

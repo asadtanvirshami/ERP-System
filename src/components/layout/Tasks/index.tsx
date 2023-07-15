@@ -35,14 +35,7 @@ const Index = (props: Props) => {
   }
 
   const handleDelete = async (id: string) => {
-    const tempData = { ...task_data };
-    const taskAsignees = []
-    const asigneeIds = tempData.asignees
-    .map((asignee: any) => asignee.id)
-    .filter(Boolean);
-    taskAsignees.push(asigneeIds)
-    console.log(taskAsignees);
-     const deltetedAgent = await DeleteTask(id, asigneeIds);
+     const deltetedAgent = await DeleteTask(id);
     // tempData.asignees.forEach((ele, i) => {
     //   console.log("ELEE", ele.id);
     //   asignees.push({

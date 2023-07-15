@@ -27,7 +27,7 @@ type Props = {
 const Sidebar = ({ collapsed, setCollapsed }: Props) => {
   const router = useRouter();
   const {
-    user: { name },
+    user: { name, companyName },
   } = User();
   const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
   return (
@@ -54,7 +54,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
           })}
         >
           {!collapsed && (
-            <span className="whitespace-nowrap font-body">ManagementX</span>
+            <span className="whitespace-nowrap font-body">{companyName?.toUpperCase()}</span>
           )}
           <button
             className="grid place-content-center hover:bg-custom-red-700 w-10 h-10 rounded-full opacity-0 md:opacity-100"

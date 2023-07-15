@@ -43,13 +43,48 @@ async function CreateNewTask(data: any) {
   }
 }
 
-async function AssignTask(asignee: any, taskId: any, isCheck: string) {
+async function AssignTask(
+  asignee: any,
+  taskId: any,
+  isCheck: string,
+  companyId: string
+) {
   try {
     const response = await axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
         data: asignee,
         asignees: isCheck,
         taskId: taskId,
+        companyId:companyId
+      })
+      .then((r: AxiosResponse) => {
+        console.log(r.data.payload, r.data.message);
+        if (r.data.message == "success") {
+          return { task: r.data.payload, error: null };
+        }
+        if (r.data.message == "error") {
+          return { error: Error("Failed to retrieve tasks"), task: null };
+        }
+      });
+    return response;
+  } catch (e) {
+    return { error: "error", task: null };
+  }
+}
+
+async function updateAssignTask(
+  asignee: any,
+  taskId: any,
+  isCheck: string,
+  companyId: string
+) {
+  try {
+    const response = await axios
+      .post(process.env.NEXT_PUBLIC_ERP_POST_ASSIGN_TASK as string, {
+        data: asignee,
+        asignees: isCheck,
+        taskId: taskId,
+        companyId:companyId
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
@@ -71,7 +106,7 @@ async function UpdateTask(taskId: string, data: any) {
     const response = await axios
       .post(process.env.NEXT_PUBLIC_ERP_UPDATE_TASK as string, {
         taskId: taskId,
-        asignees: data,
+        data: data,
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
@@ -88,12 +123,11 @@ async function UpdateTask(taskId: string, data: any) {
   }
 }
 
-async function DeleteTask(taskId: string, data: any) {
-  console.log('Asigness',data)
+async function DeleteTask(taskId: string) {
   try {
     const response = await axios
       .delete(process.env.NEXT_PUBLIC_ERP_POST_DELETE_TASK as string, {
-        headers: { id: taskId, asignees: data },
+        headers: { id: taskId },
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);

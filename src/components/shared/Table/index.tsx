@@ -39,7 +39,7 @@ const Table = ({
   allData,
   index,
   url,
-  onClick
+  onClick,
 }: any) => {
   const [type, setType] = useState<string | undefined>("");
   const [path, setPath] = useState<string | undefined>("");
@@ -56,7 +56,7 @@ const Table = ({
 
   // Redux Selector
   const { id: _id } = useSelector((state: any) => state.form.value);
-  const {loginId:id}  = useSelector((state: any) => state.user.user);
+  const { loginId: id } = useSelector((state: any) => state.user.user);
 
   let Keys: any =
     data?.length > 0
@@ -131,7 +131,7 @@ const Table = ({
               }}
             >
               <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add{" "}
-                {modalTitle}
+              {modalTitle}
             </Button>
           </div>
         </div>
@@ -264,19 +264,11 @@ const Table = ({
                               color="blue-gray"
                               onClick={() => {
                                 onClick(ele.id);
-                                dispatch(
-                                  form_({
-                                    values: ele,
-                                  })
-                                );
                               }}
                             >
                               <TrashIcon
                                 className="w-5 h-5 cursor-pointer"
                                 fill={"gray"}
-                                onClick={() => {
-                                  onClick(ele.id);
-                                }}
                               />
                             </IconButton>
                           </Tooltip>
