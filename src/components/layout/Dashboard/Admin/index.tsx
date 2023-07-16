@@ -5,8 +5,6 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import Cookies from "js-cookie";
-import axios, { AxiosResponse } from "axios";
 // COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
@@ -21,6 +19,7 @@ import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 import { User } from "../../User/UserProvider";
 import { GetCompanyData } from "@/src/utils/api/dashboard";
+import SalesCE from "../../CreateOrEdit/SalesCE";
 
 type InfoCardData = {
   title: string;
@@ -99,7 +98,7 @@ const Index = () => {
         modalTitle: "Sales",
         label: "List of Sales",
         component: (
-          <AgentCE
+          <SalesCE
             setData={(agents: any) =>
               setData((prevData: any) => ({ ...prevData, agents }))
             }
