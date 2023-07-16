@@ -13,7 +13,6 @@ import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
 //Redux
 import { useDispatch } from "react-redux";
-import { useSelector } from 'react-redux';
 import { loginSuccess } from "@/src/redux/actions/userActions/userActions";
 
 type Props = {
@@ -32,12 +31,8 @@ const SignupSchema = yup.object().shape({
 
 const Signin = (props: Props) => {
   const [message, setMessage] = useState<string>("");
-  const isAuthenticated = useSelector((state:any) => state.user.isAuthenticated);
-
   //redux initialize
   const dispatch = useDispatch()
-
-  const { user, isLoggedIn,updateUser, updateLoginStatus } = User();
 
   useEffect(() => {
     if (props.sessionData.isLoggedIn == true) {

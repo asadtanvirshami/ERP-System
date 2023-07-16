@@ -8,7 +8,7 @@ import Input from "../../shared/Form/Input";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
 //Redux
-import { user_ } from "@/src/redux/reducers/userReducer";
+import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch } from "react-redux";
 
 type Props = {
@@ -60,7 +60,7 @@ const Signup = (props: Props) => {
       .then((r: AxiosResponse) => {
         if (r.data.status == "success") {
           setLoading(false);
-          dispatch(user_({ id: r.data.payload.id }));
+          dispatch(form_({ id: r.data.payload.id }));
           props.setCompanyReg(true);
         } else if (r.data.status == "exists") {
           setLoading(false);

@@ -29,7 +29,7 @@ const CompanyRegSchema = yup.object().shape({
 const CompanyReg = (props: Props) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
-  const id = useSelector((state: any) => state.user.value.id);
+  const id = useSelector((state: any) => state.form.value.id);
 
   const {
     register,

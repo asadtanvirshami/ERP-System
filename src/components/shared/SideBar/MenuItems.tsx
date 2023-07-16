@@ -21,7 +21,7 @@ const MenuItems = (props: Props) => {
         href={props.menu_.link}
         className={classNames({
           "text-indigo-100 hover:bg-red-700 flex": true, //colors
-          "transition-colors duration-300": true, //animation
+          "transition-colors duration-200": true, //animation
           "rounded-md p-2 mx-3 gap-2": !props.collapsed,
           "rounded-full p-2 mx-3 w-10 h-10": props.collapsed,
         })}

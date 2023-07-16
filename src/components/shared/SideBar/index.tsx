@@ -76,7 +76,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
             >
               {adminMenu.map((menu_, i) => {
                 return (
-                  <li key={menu_.id}>
+                  <li className="font-body font-semibold" key={menu_.id}>
                     <MenuItems collapsed={collapsed} menu_={menu_} />
                   </li>
                 );

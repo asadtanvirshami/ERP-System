@@ -12,6 +12,23 @@ const Settings = (props: Props) => {
               Settings
             </h2>
           </div>
+          <div className="pl-12">
+            <span><h2 className="font-body font-semibold pt-2 pb-2">Account</h2></span>
+            <ul className="p-1">
+              <li className="p-1">Profile account</li>
+              <li className="p-1">Company account</li>
+            </ul>
+            <span><h2 className="font-body font-semibold pt-2 pb-2">Security & Privacy</h2></span>
+            <ul className=" p-1">
+              <li className="p-1">Reset Email</li>
+              <li className="p-1">Reset Password</li>
+            </ul>
+            <span><h2 className="font-body font-semibold pt-2 pb-2">Option sets</h2></span>
+            <ul className=" p-1">
+              <li className="p-1">Sources</li>
+              <li className="p-1">Reset Password</li>
+            </ul>
+          </div>
         </div>
         <div className="lg:w-2/3 p-5 overflow-y-auto  flex items-center justify-center align-middle">
           <div className=" ">
