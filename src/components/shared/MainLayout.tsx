@@ -20,7 +20,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         })}
       >
         {/* sidebar */}
-        <div className="bg-theme-700 text-white">
+        <div className="bg-theme-700 border border-none shadow-lg rounded-tr-2xl rounded-br-2xl text-white">
           <Sidebar
             collapsed={collapsed}
             setCollapsed={() => setSidebarCollapsed((prev) => !prev)}

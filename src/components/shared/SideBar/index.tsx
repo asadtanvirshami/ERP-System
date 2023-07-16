@@ -33,15 +33,15 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
   return (
     <div
       className={classNames({
-        "bg-theme-700 text-zinc-50 fixed md:static md:translate-x-0 z-20": true,
+        "borderrounded-t-3xl fixed md:static md:translate-x-0 z-20 ": true,
         "transition-all duration-300 ease-in-out": false,
         "w-[300px]": !collapsed,
-        "w-16": collapsed,
+        "w-16" : collapsed,
       })}
     >
       <div
         className={classNames({
-          "flex flex-col justify-between h-screen sticky inset-0 w-full": true,
+          " flex flex-col justify-between h-screen sticky inset-0 w-full  ": true,
         })}
       >
         {/* logo and collapse button */}
