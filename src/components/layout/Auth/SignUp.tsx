@@ -60,6 +60,7 @@ const Signup = (props: Props) => {
       .then((r: AxiosResponse) => {
         if (r.data.status == "success") {
           setLoading(false);
+          console.log(r.data.payload.id)
           dispatch(form_({ id: r.data.payload.id }));
           props.setCompanyReg(true);
         } else if (r.data.status == "exists") {
