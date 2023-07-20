@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-async function getClientsData(CompanyId: string) {
+async function GetClientsData(CompanyId: string) {
   try {
     const response = await axios
       .get(process.env.NEXT_PUBLIC_ERP_GET_CLIENT as string, {
@@ -65,4 +65,4 @@ async function UpdateClient(CompanyId: string, data: any) {
     }
   }
 
-export { getClientsData, UpdateClient, CreateNewClient };
+export { GetClientsData, UpdateClient, CreateNewClient };

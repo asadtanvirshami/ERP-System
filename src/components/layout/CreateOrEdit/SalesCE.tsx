@@ -7,6 +7,7 @@ import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
 import TextArea from "@/src/components/shared/Form/TextArea";
+import DatePicker from "@/src/components/shared/Form/DatePicker";
 //Interface Import
 import { Agents } from "@/src/interfaces/Agents";
 import { useSelector } from "react-redux";
@@ -28,10 +29,8 @@ const SignupSchema = yup.object().shape({
   status: yup.string().required("Required"),
   source: yup.string().required("Required"),
   source_link: yup.string().required("Required"),
-  startDate: yup.string().required("Required"),
-  endDate: yup.string().required("Required"),
   amount_paid: yup.number().required("Required"),
-  amount_left:  yup.number().required("Required"),
+  amount_left: yup.number().required("Required"),
   total_amount: yup.number().required("Required"),
   total_amount_txt: yup.string().required("Required"),
   deadline: yup.string().required("Required"),
@@ -124,57 +123,73 @@ const SalesCE = (props: Props) => {
   return (
     <Fragment>
       <form
-        className="w-auto mx-auto lg:w-full mt-4 justify-center grid"
+        className="w-auto mx-auto lg:w-full justify-center grid"
         onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
             register={register}
-            name="name"
+            name="type"
             control={control}
-            label="Full name"
+            label="Work Type"
             width={"w-full"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="phone"
+            name="status"
             control={control}
-            label="Phone No."
+            label="Status"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="email"
+            name="source"
             control={control}
-            label="Email"
+            label="Source"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="address"
+            name="amount_paid"
             control={control}
-            label="Address"
+            label="Amount Paid"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="country"
+            name="amount_left"
             control={control}
-            label="Country"
+            label="Amount Left"
             width={"w-30"}
             color={"text-gray"}
           />
           <Input
             register={register}
-            name="city"
+            name="total_amount"
             control={control}
-            label="City"
+            label="Total Amount"
             width={"w-30"}
             color={"text-gray"}
+          />
+          <Input
+            register={register}
+            name="total_amount_txt"
+            control={control}
+            label="Total Amount in Text"
+            width={"w-30"}
+            color={"text-gray"}
+          />
+          <DatePicker
+            register={register}
+            name="deadline"
+            control={control}
+            label="Deadline of task"
+            width="w-40"
+            color="text-gray"
           />
           {/* <SelectType
             register={register}
@@ -201,13 +216,16 @@ const SalesCE = (props: Props) => {
             color={"text-gray"}
           />
         </div>
+        <div className="mb-3">
+          <hr></hr>
+        </div>
         <TextArea
           register={register}
           name="comments"
           control={control}
           label=""
           width={"w-30"}
-          placeholder={"Leave some comments about client."}
+          placeholder={"Write the details about the sale."}
           color={"text-gray"}
         />
         <div className="mt-3">

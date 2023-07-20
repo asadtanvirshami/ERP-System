@@ -28,7 +28,7 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
               return (
                 <Fragment>
                   {
-                    <li key={data[0][Keys[0]]} className=" p-3">
+                    <li key={index} className=" p-3">
                       {Keys.map((key: any, i) => (
                         <td key={i}>
                           {index + 1} {data[0][key]}

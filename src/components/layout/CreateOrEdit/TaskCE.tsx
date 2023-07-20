@@ -107,6 +107,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
       reset(tasksBaseValues);
     }
   }, [edit]);
+  
 
   const onSubmit = async (data: any) => {
     if (!proceed) {

@@ -12,6 +12,7 @@ type Props = {
   modalSize: any;
   label: string;
   viewTable:any
+  onScroll:any
 };
 
 const Modal = (props: Props) => {
@@ -43,8 +44,9 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <DialogBody divider className="max-h-[40rem] max-w-[90rem] overflow-x-auto">
-          <Fragment>{props.children}</Fragment>
+        <DialogBody onScroll={props.onScroll}  divider className="max-h-[10rem] max-w-[90rem] overflow-x-auto">
+        {/* <DialogBody divider className="max-h-[40rem] max-w-[90rem] overflow-x-auto"> */}
+          <Fragment><div onScroll={props.onScroll}>{props.children}</div></Fragment>
         </DialogBody>
       </Dialog>
     </Fragment>

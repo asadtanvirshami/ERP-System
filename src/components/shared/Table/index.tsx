@@ -29,6 +29,7 @@ import {
 } from "@material-tailwind/react";
 import { List } from "../List";
 import Popovers from "../Popovers";
+import TablePagination from "./TablePagination";
 
 const Table = ({
   modalTitle,
@@ -55,7 +56,6 @@ const Table = ({
 
   // Redux Selector
   const { id: _id } = useSelector((state: any) => state.form.value);
-  const { loginId: id } = useSelector((state: any) => state.user.user);
 
   let Keys: any =
     data?.length > 0
@@ -81,25 +81,6 @@ const Table = ({
             key !== "description"
         )
       : null;
-
-  // const handleOnClick = (id: string) => {
-  //   // Function to handle global delete
-  //   setState((prevState) => ({ ...prevState, loading: true }));
-  //   axios
-  //     .delete(url as string, { headers: { id: id } })
-  //     .then((response) => {
-  //       if (response.data.status === "success") {
-  //         const newData = data?.filter((item: any) => item.id !== id);
-  //         setData(newData);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting data:", error);
-  //     })
-  //     .finally(() => {
-  //       setState((prevState) => ({ ...prevState, loading: false }));
-  //     });
-  // };
 
   return (
     <Fragment>
@@ -218,21 +199,6 @@ const Table = ({
                             );
                           })}
                         </>
-                        {/* {data[index]["User"] && (
-                          <td className={classes}>
-                            <div className="flex items-center gap-3">
-                              <div className="flex flex-col">
-                                <Typography
-                                  variant="small"
-                                  color="blue-gray"
-                                  className="font-normal"
-                                >
-                                  {data[index]["User"].name}
-                                </Typography>
-                              </div>
-                            </div>
-                          </td>
-                        )} */}
                         <td className={classes}>
                           <Tooltip content="Edit Item">
                             <IconButton
@@ -338,19 +304,7 @@ const Table = ({
         ) : (
           <EmptyTable cols={cols} />
         )}
-        <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Typography variant="small" color="blue-gray" className="font-normal">
-            Page 1 of 10
-          </Typography>
-          <div className="flex gap-2">
-            <Button variant="outlined" color="blue-gray" size="sm">
-              Previous
-            </Button>
-            <Button variant="outlined" color="blue-gray" size="sm">
-              Next
-            </Button>
-          </div>
-        </CardFooter>
+        <TablePagination/>
       </Card>
       <Modal
         label={modalTitle}

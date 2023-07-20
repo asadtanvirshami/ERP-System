@@ -18,7 +18,8 @@ import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 import { User } from "../../User/UserProvider";
-import { GetCompanyData } from "@/src/utils/api/dashboard";
+import { GetAllAgents } from "@/src/utils/api/team";
+import { GetClientsData } from "@/src/utils/api/clients";
 import SalesCE from "../../CreateOrEdit/SalesCE";
 
 type InfoCardData = {
@@ -41,13 +42,15 @@ const Index = () => {
   const companyId = userCompanyId;
 
   const getCompanyData = useCallback(async () => {
-    const CompanyData = await GetCompanyData(companyId);
-    if (CompanyData) {
-      if (CompanyData.error == null) {
+    const AgentsData = await GetAllAgents(companyId);
+    const ClientsData = await GetClientsData(companyId);
+
+    if (AgentsData && ClientsData ) {
+      if (ClientsData.error == null && AgentsData.error==null ) {
         setData({
-          agents: CompanyData.agents,
-          sales: CompanyData.sales,
-          clients: CompanyData.clients,
+          agents: AgentsData.agents,
+          sales: [],
+          clients: ClientsData.clients,
         });
         setLoading(false);
       } else {

@@ -9,7 +9,7 @@ async function GetAllAgents(CompanyId: string) {
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { agents: r.data.payload, error: null };
+          return { agents: r.data.payload, error: null, totalItems:r.data.totalItems };
         }
         if (r.data.message == "error") {
           return { error: Error("Failed to retrieve agents"), agents: null };

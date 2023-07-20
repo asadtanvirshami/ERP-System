@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-async function getAllTasks(CompanyId: string) {
+async function GetAllTasks(CompanyId: string) {
   try {
     const response = await axios
       .get(process.env.NEXT_PUBLIC_ERP_POST_GET_TASK as string, {
@@ -24,6 +24,7 @@ async function getAllTasks(CompanyId: string) {
     return { error: "error", tasks: null, users: null };
   }
 }
+
 async function CreateNewTask(data: any) {
   try {
     const response = await axios
@@ -139,4 +140,4 @@ async function DeleteTask(taskId: string) {
   }
 }
 
-export { getAllTasks, CreateNewTask, AssignTask, UpdateTask, DeleteTask, DeleteUserTask };
+export { GetAllTasks, CreateNewTask, AssignTask, UpdateTask, DeleteTask, DeleteUserTask };
