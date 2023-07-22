@@ -60,6 +60,7 @@ const Modal = (props: Props) => {
           </Fragment>
         </DialogBody>
         <DialogFooter>
+          <></>
         </DialogFooter>
       </Dialog>
     </Fragment>

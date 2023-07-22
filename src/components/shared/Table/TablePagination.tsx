@@ -8,14 +8,32 @@ type Props = {
 
 };
 
+
 const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
   const handlePrevClick = (currentPage:any, setCurrentPage:any) => {
     if (currentPage > 1) {
       setCurrentPage((prevPage:any) => prevPage - 1);
     }
   };
+  
+  const getPagesToShow = () => {
+    if (totalPages <= 2) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
 
-  console.log(currentPage)
+    if (currentPage === 1) {
+      return [1, 2];
+    } else if (currentPage === 2) {
+      return [1, 2, 3];
+    } else if (currentPage === totalPages) {
+      return [totalPages - 1, totalPages];
+    } else if (currentPage === totalPages - 1) {
+      return [totalPages - 2, totalPages - 1, totalPages];
+    } else {
+      return [currentPage, currentPage + 1];
+    }
+  };
+  const pagesToShow = getPagesToShow();
 
   const handleNextClick = (currentPage:any, setCurrentPage:any) => {
     if (currentPage ) {
@@ -23,11 +41,11 @@ const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
     }
   };
 
-  // const handlePageClick = (pageNumber:number) => {
-  //   if (pageNumber >= 1 && pageNumber <= totalPages) {
-  //     onPageChange(pageNumber);
-  //   }
-  // };
+  const handlePageClick = (pageNumber:number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
   return (
     <div>
       {" "}
@@ -39,6 +57,15 @@ const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
           <Button  onClick={()=>handlePrevClick(currentPage,setCurrentPage)} disabled={currentPage === 1} variant="outlined" color="blue-gray" size="sm">
             Previous
           </Button>
+          {pagesToShow.map(page => (
+        <button
+          key={page}
+          onClick={() =>handlePageClick(page)}
+          className={page === currentPage ? 'text-custom-red-500' : ''}
+        >
+          {page}
+        </button>
+      ))}
           <Button  onClick={()=>handleNextClick(currentPage,setCurrentPage)} disabled={currentPage === totalPages} variant="outlined" color="blue-gray" size="sm">
             Next
           </Button>
