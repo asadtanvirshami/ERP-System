@@ -1,34 +1,36 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useCallback } from "react";
 //Interface Imports
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
-import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
+import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
 //Redux
 import { useSelector } from "react-redux";
-import { getAllTasks, DeleteTask, DeleteUserTask } from "@/src/utils/api/tasks";
+import { GetAllTasks, DeleteTask, DeleteUserTask } from "@/src/utils/api/tasks";
 
 type Props = {};
 
 const Index = (props: Props) => {
   const [tasks, setTasks] = useState<any[]>([]);
-  const [agents, setAgents] = useState<any[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 5;
 
   const userData = useSelector((state: any) => state.user.user);
   const CompanyId = userData.companyId;
 
-  async function GetAllTasks() {
-    const Tasks = await getAllTasks(CompanyId);
+  async function getAllTasks() {
+    const Tasks = await GetAllTasks(CompanyId, currentPage, pageSize);
     if (Tasks) {
+      console.log(Tasks.totalTasks)
       if (Tasks.error == null) {
-        setAgents(Tasks.users);
         setTasks(Tasks.tasks);
+        setTotalPages(Math.ceil(Tasks.totalTasks / pageSize));
       } else {
-        setAgents([]);
         setTasks([]);
       }
     } else {
-      setAgents([]);
       setTasks([]);
     }
   }
@@ -36,12 +38,12 @@ const Index = (props: Props) => {
   const handleDeleteTask = async (id: string) => {
     const deltetedTask = await DeleteTask(id);
     if (deltetedTask?.error == null) {
-    const newData = tasks?.filter((item: any) => item.id !== id);
-    setTasks(newData);
+      const newData = tasks?.filter((item: any) => item.id !== id);
+      setTasks(newData);
     }
   };
 
-  const handleDeleteUserTask = async (id: string, taskId:string) => {
+  const handleDeleteUserTask = async (id: string, taskId: string) => {
     const tempData: any[] = [...tasks];
     const deletedUserTask = await DeleteUserTask(id, taskId);
     if (deletedUserTask?.error == null) {
@@ -53,19 +55,16 @@ const Index = (props: Props) => {
         const updatedTask = { ...tempData[i], asignees: updatedAsignees };
         tempData[i] = updatedTask;
         setTasks(tempData);
-      } 
+      }
     } else {
       return null;
     }
   };
 
   useEffect(() => {
-    try {
-      GetAllTasks();
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+    getAllTasks();
+  }, [currentPage]);
+  console.log(currentPage);
 
   return (
     <div className="">
@@ -88,17 +87,13 @@ const Index = (props: Props) => {
             "Delete",
             "Assigned To",
           ]}
+          modalTitle="Tasks"
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
           data={tasks}
           setData={setTasks}
-          modalTitle="Tasks"
-          renderModalComponent={
-            <TaskCE
-              setAgents={setAgents}
-              setTasks={setTasks}
-              _agents={agents}
-              _data={tasks}
-            />
-          }
+          totalPages={totalPages}
+          renderModalComponent={<TaskCE setTasks={setTasks} _data={tasks} />}
           onClick={handleDeleteTask}
           deleteFunc={handleDeleteUserTask}
         />

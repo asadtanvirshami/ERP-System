@@ -35,13 +35,12 @@ const Table = ({
   modalTitle,
   renderModalComponent: Component,
   data,
-  setData,
   cols,
-  allData,
-  index,
-  url,
+  setCurrentPage,
   deleteFunc,
   onClick,
+  totalPages,
+  currentPage
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
@@ -304,9 +303,10 @@ const Table = ({
         ) : (
           <EmptyTable cols={cols} />
         )}
-        <TablePagination/>
+        <TablePagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
       </Card>
       <Modal
+      onScroll={null}
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
@@ -318,6 +318,7 @@ const Table = ({
         {Component}
       </Modal>
       <Modal
+      onScroll={null}
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="sm"

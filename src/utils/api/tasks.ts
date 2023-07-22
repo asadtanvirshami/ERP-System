@@ -1,27 +1,36 @@
 import axios, { AxiosResponse } from "axios";
 
-async function GetAllTasks(CompanyId: string) {
+async function GetAllTasks(
+  CompanyId: string,
+  currentPage: number,
+  pageSize: number
+) {
   try {
     const response = await axios
       .get(process.env.NEXT_PUBLIC_ERP_POST_GET_TASK as string, {
-        headers: { id: CompanyId },
+        headers: { id: CompanyId, page: currentPage, limit: pageSize },
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { tasks: r.data.payload, users: r.data.users, error: null };
+          return {
+            tasks: r.data.payload,
+            totalTasks: r.data.totalItems,
+            error: null,
+          };
         }
         if (r.data.message == "error") {
           return {
             error: Error("Failed to retrieve tasks"),
             tasks: null,
             users: null,
+            totalTasks:null
           };
         }
       });
     return response;
   } catch (e) {
-    return { error: "error", tasks: null, users: null };
+    return { error: "error", tasks: null, totalTasks: null };
   }
 }
 
@@ -56,7 +65,7 @@ async function AssignTask(
         data: asignee,
         asignees: isCheck,
         taskId: taskId,
-        companyId:companyId
+        companyId: companyId,
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
@@ -73,14 +82,11 @@ async function AssignTask(
   }
 }
 
-async function DeleteUserTask(
-  userId: string,
-  taskId:string
-) {
+async function DeleteUserTask(userId: string, taskId: string) {
   try {
     const response = await axios
       .delete(process.env.NEXT_PUBLIC_ERP_DELETE_USER_TASK as string, {
-        headers: { id: userId, taskId:taskId },
+        headers: { id: userId, taskId: taskId },
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
@@ -140,4 +146,11 @@ async function DeleteTask(taskId: string) {
   }
 }
 
-export { GetAllTasks, CreateNewTask, AssignTask, UpdateTask, DeleteTask, DeleteUserTask };
+export {
+  GetAllTasks,
+  CreateNewTask,
+  AssignTask,
+  UpdateTask,
+  DeleteTask,
+  DeleteUserTask,
+};

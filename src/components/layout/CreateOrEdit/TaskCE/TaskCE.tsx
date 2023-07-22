@@ -1,12 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useForm } from "react-hook-form";
-import axios, { AxiosResponse } from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Cookies from "js-cookie";
 import moment from "moment";
-//Material Tailwind Import
-import { Checkbox } from "@material-tailwind/react";
 //Interface Imports
 import { Agents } from "@/src/interfaces/Agents";
 //Components Imports
@@ -15,14 +11,19 @@ import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
-import LoadingButton from "../../shared/Buttons/Loading";
+import LoadingButton from "../../../shared/Buttons/Loading";
+import TaskAssign from "./TaskAssign";
 //Redux
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { tasksBaseValues } from "@/src/utils/baseValues";
 //Functions Import
 import { checkList } from "@/src/functions/isCheckList";
+//Provider
+import { User } from "../../User/UserProvider";
+//Utils
 import { CreateNewTask, AssignTask, UpdateTask } from "@/src/utils/api/tasks";
+import { GetAllAgents } from "@/src/utils/api/team";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -35,19 +36,22 @@ const SignupSchema = yup.object().shape({
 
 type Props = {
   _data: Array<any>;
-  _agents: Array<any>;
   setTasks: any;
-  setAgents: any;
 };
 
-const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
+const TaskCE = ({ _data, setTasks }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
-  const [asignees, setAsignees] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5; // Number of users to show per page
 
   const [proceed, setProceed] = useState<boolean>(false);
 
@@ -56,6 +60,11 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
   const openState = useSelector((state: any) => state.form.value.open);
   const task_data = useSelector((state: any) => state.form.value.values);
   const user_data = useSelector((state: any) => state.user.user);
+
+  const {
+    user: { companyId: userCompanyId },
+  } = User();
+  const companyId = userCompanyId;
 
   const {
     register,
@@ -69,21 +78,39 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
     defaultValues: task_data,
   });
 
+  const fetchUsers = async () => {
+    setLoadingData(true);
+    const Users = await GetAllAgents(companyId, currentPage, pageSize)
+    if(Users){
+      if(Users.error==null){
+        const newUsers = users.concat(Users.agents);
+        setUsers(newUsers);
+        setTotalUsers(Users.totalItems);
+        setLoadingData(false);
+      }else{
+        setLoadingData(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [currentPage]);
+
   useEffect(() => {
     if (edit) {
       setTaskId(task_data.id);
-      (openState && edit) ? setProceed(true) : setProceed(false);
+      openState && edit ? setProceed(true) : setProceed(false);
       const tempData = { ...task_data };
       let agentsData: any = [];
 
       if (task_data && tempData.asignees) {
-        
         const asigneeIds = tempData.asignees
           .map((asignee: any) => asignee.id)
           .filter(Boolean);
         const updatedAgentsArr = [...asigneeIds];
 
-        _agents.forEach((ele, inx) => {
+        users.forEach((ele, inx) => {
           agentsData.push({ ...ele, check: false });
           tempData.asignees.forEach((e: any, i: number) => {
             if (ele.id == e.id) {
@@ -91,8 +118,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
             }
           });
         });
-        setAsignees(agentsData);
-        setIsCheck(updatedAgentsArr)
+        setIsCheck(updatedAgentsArr);
       }
       reset(tempData);
     }
@@ -103,11 +129,9 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
       tempData.forEach((e, i) => {
         return (tempState = { ...e });
       });
-      setAsignees(_agents);
       reset(tasksBaseValues);
     }
   }, [edit]);
-  
 
   const onSubmit = async (data: any) => {
     if (!proceed) {
@@ -144,15 +168,15 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
     }
     if (proceed) {
       setLoading(true);
-      const tempStateList = _agents;
+      const tempStateList = users;
       const asignees: any = [];
-   
+
       tempStateList.forEach((y: any) => {
         if (isCheck.includes(y.id)) {
           asignees.push({
             id: y.id,
             email: y.email,
-            taskId:taskId
+            taskId: taskId,
           });
         }
       });
@@ -164,14 +188,14 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
         user_data.companyId
       );
       setLoading(true);
-      
+
       if (assignedTask) {
         if (assignedTask.error == null) {
           setLoading(false);
           const tempState: Array<any> = [..._data];
           const i = tempState.findIndex((item) => item.id === taskId);
           if (i !== -1) {
-            console.log(tempState[i].asignees)
+            console.log(tempState[i].asignees);
             const updatedItem = { ...tempState[i], asignees };
             tempState[i] = updatedItem;
             return setTasks ? setTasks(tempState) : null;
@@ -226,7 +250,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
     }
     if (proceed) {
       setLoading(true);
-      const tempStateList = _agents;
+      const tempStateList = users;
       const asignees: any = [];
 
       tempStateList.forEach((y: any) => {
@@ -234,7 +258,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
           asignees.push({
             id: y.id,
             email: y.email,
-            taskId:taskId
+            taskId: taskId,
           });
         }
       });
@@ -253,7 +277,7 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
           if (i !== -1) {
             const updatedItem = { ...tempState[i], asignees };
             tempState[i] = updatedItem;
-             setTasks ? setTasks(tempState) : null;
+            setTasks ? setTasks(tempState) : null;
           }
           setMessage("Task assigned successfully.");
           setLoading(false);
@@ -266,17 +290,16 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
         setLoading(true);
       }
     }
-  };  
+  };
 
   return (
     <Fragment>
       {proceed && <h1>Select agent to assign task.</h1>}
-      {_agents?.length >= 1 || _data?.length >= 1 ? (
         <>
           {!proceed && (
             <form
               className="w-auto mx-auto lg:w-full justify-center grid"
-              onSubmit={handleSubmit(edit==true ? onEdit : onSubmit)}
+              onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
             >
               <div className="grid grid-cols-2 items-center gap-4 mb-2">
                 <Input
@@ -350,82 +373,22 @@ const TaskCE = ({ _data, _agents, setTasks, setAgents }: Props) => {
             </form>
           )}
         </>
-      ) : (
-        <div>
-          <h1>You cannot create a task until you have agents in your firm.</h1>
-        </div>
-      )}
 
       {proceed && (
-        <form onSubmit={handleSubmit(edit==true ? onEdit : onSubmit)} className="">
-          <div className="p-0 min-h-[39px] overflow-y-auto">
-            {asignees?.length >= 1 ? (
-              <>
-                {asignees?.map((item: any, index: number) => (
-                  <label
-                    key={item.id}
-                    htmlFor="vertical-list-react"
-                    className="flex items-center w-full cursor-pointer"
-                  >
-                    <div className="mr-3">
-                      {item?.check == true ? (
-                        <div className="m-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="red"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                      ) : (
-                        <Checkbox
-                          id="vertical-list-react"
-                          className="hover:before:opacity-0"
-                          type="checkbox"
-                          onChange={(e) =>
-                            checkList(e, item, setIsCheck, isCheck)
-                          }
-                          checked={isCheck.includes(item.id)}
-                        />
-                      )}
-                    </div>
-                    <p className="text-sm mb-1">{item.email}</p>
-                  </label>
-                ))}
-              </>
-            ) : (
-              <div>
-                <h1>There are no agents to assign a task.</h1>
-              </div>
-            )}
-          </div>
-          <hr />
-          <div className="mb-3 mt-2">
-            {loading ? (
-              <LoadingButton style="btn-secondary" />
-            ) : (
-              <>
-                {asignees?.length >= 1 && (
-                  <div>
-                    <Button
-                      style="btn-secondary"
-                      label={edit ? "Update" : "Create"}
-                      type="submit"
-                    />
-                    <p className="mt-2">{message}</p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+        <form onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}>
+          <TaskAssign
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            Loading={loadingData}
+            isCheck={isCheck}
+            setIsCheck={setIsCheck}
+            edit={edit}
+            users={users}
+            loading={loading}
+            message={message}
+            totalUsers={totalUsers}
+            checkList={checkList}
+          />
         </form>
       )}
     </Fragment>

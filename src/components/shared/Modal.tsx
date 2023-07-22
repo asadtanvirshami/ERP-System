@@ -1,9 +1,15 @@
 import React, { Fragment, useState } from "react";
-import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
 //SVG Import
 import CrossIcon from "../../../public/Image/Icons/svgs/cross.svg";
 //Redux
 import { useSelector } from "react-redux";
+import Button from "./Buttons/Button";
 
 type Props = {
   showModal: boolean;
@@ -11,8 +17,8 @@ type Props = {
   children: React.ReactNode;
   modalSize: any;
   label: string;
-  viewTable:any
-  onScroll:any
+  viewTable: any;
+  onScroll: any;
 };
 
 const Modal = (props: Props) => {
@@ -29,12 +35,10 @@ const Modal = (props: Props) => {
         <div className="flex outline-none">
           <div className="mt-2 mb-2 w-full justify-center flex font-body text-2xl text-blue-gray-700">
             {props.viewTable ? (
-               <>{`${props.label} Info` }</>
-              
+              <>{`${props.label} Info`}</>
             ) : (
               <>{edit ? `Edit ${props.label}` : `Create ${props.label}`}</>
-            )
-            }
+            )}
           </div>
           <div className="justify-center w-10 ">
             <CrossIcon
@@ -44,10 +48,19 @@ const Modal = (props: Props) => {
             />
           </div>
         </div>
-        <DialogBody onScroll={props.onScroll}  divider className="max-h-[10rem] max-w-[90rem] overflow-x-auto">
-        {/* <DialogBody divider className="max-h-[40rem] max-w-[90rem] overflow-x-auto"> */}
-          <Fragment><div onScroll={props.onScroll}>{props.children}</div></Fragment>
+        <DialogBody
+          onScroll={props.onScroll}
+          divider
+          // className="max-h-[10rem] max-w-[90rem] overflow-x-auto"
+          className="max-h-[40rem] max-w-[90rem] overflow-x-auto"
+        >
+          {/* <DialogBody divider className="max-h-[40rem] max-w-[90rem] overflow-x-auto"> */}
+          <Fragment>
+            <div onScroll={props.onScroll}>{props.children}</div>
+          </Fragment>
         </DialogBody>
+        <DialogFooter>
+        </DialogFooter>
       </Dialog>
     </Fragment>
   );

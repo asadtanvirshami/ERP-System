@@ -13,7 +13,7 @@ import CreateCard from "@/src/components/shared/Cards/CreateCard";
 import Graph from "@/src/components/shared/Graph/Graph";
 // EDIT OR CREATE FORMS
 import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
-import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE";
+import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
 import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
@@ -42,7 +42,7 @@ const Index = () => {
   const companyId = userCompanyId;
 
   const getCompanyData = useCallback(async () => {
-    const AgentsData = await GetAllAgents(companyId);
+    const AgentsData = await GetAllAgents(companyId, 1, 5);
     const ClientsData = await GetClientsData(companyId);
 
     if (AgentsData && ClientsData ) {
@@ -207,9 +207,7 @@ const Index = () => {
               renderModalComponent={
                 <TaskCE
                   setTasks={null}
-                  setAgents={null}
                   _data={data.agents}
-                  _agents={data.agents}
                 />
               }
               label="Create Task"
