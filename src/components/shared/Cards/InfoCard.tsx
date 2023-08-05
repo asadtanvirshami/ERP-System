@@ -1,8 +1,7 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import axios from "axios";
 // Component Imports
 import Modal from "../Modal";
-import Table from "../Table";
 import CricleSpinner from "../Loader/CricleSpinner";
 // SVGs Imports
 import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
@@ -11,6 +10,7 @@ import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
 
 const InfoCard = ({
   label,
@@ -18,11 +18,9 @@ const InfoCard = ({
   modalTitle,
   renderModalComponent: Component,
   data,
-  allData,
-  index,
   setData,
-  cols,
   url,
+  link,
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
@@ -50,8 +48,8 @@ const InfoCard = ({
       .delete(url as string, { headers: { id: id } })
       .then((response) => {
         if (response.data.status === "success") {
-            const newData = data?.filter((item: any) => item.id !== id);
-            setData(newData);
+          const newData = data?.filter((item: any) => item.id !== id);
+          setData(newData);
         }
       })
       .catch((error) => {
@@ -89,8 +87,8 @@ const InfoCard = ({
                       {data?.map((item: any, index: any) => (
                         <div key={item["id"]}>
                           <div className="flex">
-                            <li  className="w-full p-3">
-                              {index + 1}. {item[keys]}
+                            <li className="w-full p-3">
+                              <strong>{index + 1}. </strong> {item[keys]}
                             </li>
                             <div className="w-full p-3 justify-end flex text-right">
                               <li className="px-5">
@@ -138,20 +136,17 @@ const InfoCard = ({
           <div className="flex-grow" />
           <hr />
           <div className="flex justify-center">
-            <div
-              className="font-body cursor-pointer"
-              onClick={() => {
-                setState((prevState) => ({ ...prevState, viewModal: true }));
-                dispatch(form_({ edit: false }));
-              }}
-            >
-              View More
+            <div className="font-body cursor-pointer pt-0">
+              <Link href={link}>
+                <p className="pt-2">View More</p>
+              </Link>
             </div>
           </div>
         </div>
       </>
 
       <Modal
+        onScroll={null}
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
@@ -163,6 +158,7 @@ const InfoCard = ({
         {Component}
       </Modal>
       <Modal
+        onScroll={null}
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="lg"
@@ -170,18 +166,7 @@ const InfoCard = ({
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
-      >
-        <Table
-          modalTitle={modalTitle}
-          renderModalComponent={Component}
-          url={url}
-          cols={cols}
-          index={index}
-          allData={allData}
-          data={data || undefined}
-          setData={setData}
-        />
-      </Modal>
+      ></Modal>
     </Fragment>
   );
 };

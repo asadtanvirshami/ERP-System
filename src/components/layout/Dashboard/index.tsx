@@ -32,7 +32,6 @@ const Dashboard = (props: Props) => {
       {type == "admin" && (
         <Fragment>
           <Admin />
-          {/* <Agent /> */}
         </Fragment>
       )}
       {type == "agent" && (

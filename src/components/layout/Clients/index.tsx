@@ -9,7 +9,7 @@ import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import EmptyTable from "../../shared/EmptyComponents/EmptyTable";
 
 import { useSelector } from "react-redux";
-import { getClientsData } from "@/src/utils/api/clients";
+import { GetClientsData } from "@/src/utils/api/clients";
 
 type Props = {};
 
@@ -21,7 +21,7 @@ const Index = (props: Props) => {
 
   async function dataCall() {
     try {
-      const Clients = await getClientsData(CompanyId);
+      const Clients = await GetClientsData(CompanyId);
       if (Clients) {
         if(Clients.error == null){
           setData(Clients.clients);
@@ -45,48 +45,29 @@ const Index = (props: Props) => {
   return (
     <div className="">
       <Fragment>
-        {!loading ? (
-          <Table
-            cols={[
-              "Name",
-              "Address",
-              "City",
-              "Country",
-              "Email",
-              "Phone",
-              "Source",
-              "Source Link",
-              "Edit",
-              "Edit",
-              "Delete",
-              "View",
-            ]}
-            data={data}
-            setData={setData}
-            modalTitle="Client"
-            renderModalComponent={<ClientsCE setData={setData} data={data} />}
-            url={process.env.NEXT_PUBLIC_ERP_DELETE_CLIENT}
-          />
-        ) : (
-          <div>
-            <EmptyTable
-              cols={[
-                "Name",
-                "Address",
-                "City",
-                "Country",
-                "Email",
-                "Phone",
-                "Source",
-                "Source Link",
-                "Edit",
-                "Edit",
-                "Delete",
-                "View",
-              ]}
-            />
-          </div>
-        )}
+        <Table
+          cols={[
+            "No",
+            "Name",
+            "Phone.",
+            "Password",
+            "Email",
+            "Designation",
+            "Signature",
+            "Edit",
+            "Delete",
+          ]}
+          data={data || undefined}
+          setData={setData}
+          modalTitle="Clients"
+          renderModalComponent={
+            <ClientsCE setData={setData} data={data || undefined} />
+          }
+          // totalPages={totalPages}
+          // currentPage={currentPage}
+          // setCurrentPage={setCurrentPage}
+          // onClick={handleDeleteUser}
+        />
       </Fragment>
     </div>
   );

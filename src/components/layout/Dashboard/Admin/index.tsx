@@ -29,12 +29,17 @@ type InfoCardData = {
   label: string;
   component: JSX.Element;
   url: string | null;
-  cols: string[];
+  page:string
+  // cols: string[];
 };
 
 const Index = () => {
   const [data, setData] = useState<any>({ agents: [], sales: [], clients: [] });
   const [loading, setLoading] = useState<boolean>(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 5;
 
   const {
     user: { companyId: userCompanyId },
@@ -42,13 +47,15 @@ const Index = () => {
   const companyId = userCompanyId;
 
   const getCompanyData = useCallback(async () => {
-    const AgentsData = await GetAllAgents(companyId, 1, 5);
+    const AgentsData = await GetAllAgents(companyId, currentPage, pageSize);
     const ClientsData = await GetClientsData(companyId);
+    //scroll table attach karna hai 
 
-    if (AgentsData && ClientsData ) {
-      if (ClientsData.error == null && AgentsData.error==null ) {
+    if (AgentsData && ClientsData) {
+      if (ClientsData.error == null && AgentsData?.error == null) {
+        setTotalPages(Math.ceil(AgentsData.totalItems / pageSize));
         setData({
-          agents: AgentsData.agents,
+          agents: AgentsData?.agents,
           sales: [],
           clients: ClientsData.clients,
         });
@@ -75,6 +82,7 @@ const Index = () => {
         title: "Agents",
         modalTitle: "Agent",
         label: "List of Agents",
+        page:'/team',
         component: (
           <AgentCE
             setData={(agents: any) =>
@@ -85,21 +93,12 @@ const Index = () => {
         ),
         url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
         name: "agents",
-        cols: [
-          "Name",
-          "Phone.",
-          "Password",
-          "Email",
-          "Designation",
-          "Signature",
-          "Edit",
-          "Delete",
-        ],
       },
       {
         title: "Sales",
         modalTitle: "Sales",
         label: "List of Sales",
+        page:'/sales',
         component: (
           <SalesCE
             setData={(agents: any) =>
@@ -110,21 +109,12 @@ const Index = () => {
         ),
         url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
         name: "sales",
-        cols: [
-          "Name",
-          "Phone.",
-          "Password",
-          "Email",
-          "Designation",
-          "Signature",
-          "Edit",
-          "Delete",
-        ],
       },
       {
         title: "Clients",
         modalTitle: "Client",
         label: "List of Clients",
+        page:'/clients',
         component: (
           <ClientsCE
             setData={(clients: any) =>
@@ -135,16 +125,6 @@ const Index = () => {
         ),
         url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
         name: "clients",
-        cols: [
-          "Name",
-          "Phone.",
-          "Password",
-          "Email",
-          "Designation",
-          "Signature",
-          "Edit",
-          "Delete",
-        ],
       },
       // Add other InfoCardData objects for sales and clients
     ],
@@ -169,7 +149,6 @@ const Index = () => {
             <div key={i} className="w-full p-2 lg:w-1/3 ">
               <div className="rounded-lg bg-card h-80">
                 <InfoCard
-                  cols={infoCard.cols}
                   label={infoCard.label}
                   title={infoCard.title}
                   modalTitle={infoCard.modalTitle}
@@ -178,7 +157,10 @@ const Index = () => {
                   data_loading={loading}
                   index={i}
                   data={data[infoCard.name]}
-                  allData={data}
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  link={infoCard.page}
+                  setCurrentPage={setCurrentPage}
                   setData={(updatedData: any) =>
                     setData((prevData: any) => ({
                       ...prevData,
@@ -205,10 +187,7 @@ const Index = () => {
           <div className="rounded-lg bg-white shad h-80">
             <CreateCard
               renderModalComponent={
-                <TaskCE
-                  setTasks={null}
-                  _data={data.agents}
-                />
+                <TaskCE setTasks={null} _data={data.agents} />
               }
               label="Create Task"
               description="Create a task for agents."

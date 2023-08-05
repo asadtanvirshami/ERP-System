@@ -96,7 +96,7 @@ const Signin = (props: Props) => {
           <div className="text-center mb-4 ">
             {props.loading ? <Loading style={"btn-primary"} /> : <Button style={"btn-primary"} type="submit" label="Login" />}
           </div>
-          <p className="text-white">{message}</p>
+          <p className="text-white text-sm">{message}</p>
         </form>
         <span className="mt-4 flex w-100">
           <p className="text-white font-extralight text-sm mx-1">

@@ -8,7 +8,6 @@ type Props = {
 
 };
 
-
 const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
   const handlePrevClick = (currentPage:any, setCurrentPage:any) => {
     if (currentPage > 1) {
@@ -61,7 +60,7 @@ const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
         <button
           key={page}
           onClick={() =>handlePageClick(page)}
-          className={page === currentPage ? 'text-custom-red-500' : ''}
+          className={page === currentPage ? 'font-bold text-gray-800' : ''}
         >
           {page}
         </button>

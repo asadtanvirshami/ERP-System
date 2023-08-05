@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup"
+import moment from "moment";
 //Components Import
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
@@ -15,14 +16,14 @@ import { useSelector } from "react-redux";
 import { agentBaseValues } from "@/src/utils/baseValues";
 import SelectType from "../../shared/Form/SelectType";
 //API Calls
-import { CreateNewClient, UpdateClient } from "@/src/utils/api/clients";
+import { CreatNewSale } from "@/src/utils/api/sale";
 
 type Props = {
   data: Array<Agents>;
   setData: any;
 };
 
-const SignupSchema = yup.object().shape({
+const SalesSchema = yup.object().shape({
   //Yup schema to set the values
   type: yup.string().required("Required"),
   description: yup.string().required("Required"),
@@ -34,18 +35,17 @@ const SignupSchema = yup.object().shape({
   total_amount: yup.number().required("Required"),
   total_amount_txt: yup.string().required("Required"),
   deadline: yup.string().required("Required"),
-  assigned_to: yup.string().required("Required"),
 });
 
 const SalesCE = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  // const [clientId, setClientId] = useState("");
+
   //Redux initialize
   const edit = useSelector((state: any) => state.form.value.edit);
   const sale_id = useSelector((state: any) => state.form.value._id);
   const sale_data = useSelector((state: any) => state.form.value.values);
-  const companyId = useSelector((state: any) => state.user.user.companyId);
+  const user_data = useSelector((state: any) => state.user.user);
 
   const {
     register,
@@ -55,7 +55,7 @@ const SalesCE = (props: Props) => {
     formState: { errors },
   } = useForm({
     //passing the props in the useForm yupResolver
-    resolver: yupResolver(SignupSchema),
+    resolver: yupResolver(SalesSchema),
     defaultValues: sale_data,
   });
 
@@ -78,24 +78,33 @@ const SalesCE = (props: Props) => {
   const onSubmit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
-    const createdClient = await CreateNewClient(companyId, data);
-    if (createdClient) {
-      if (createdClient.error == null) {
+    const newData = {
+      ...data,
+      start_date: moment().format("L"),
+      end_date: moment().format("L"),
+      start_time: moment().format("h:mm:ss a"),
+      end_time: moment().format("h:mm:ss a"),
+      userId: user_data.loginId,
+      companyId: user_data.companyId,
+    };
+    const createdSale = await CreatNewSale(newData);
+    if (createdSale) {
+      if (createdSale.error == null) {
         let tempArr;
         setLoading(false);
-        setMessage("Client created successfully.");
-        tempArr = [...props.data, createdClient.client];
+        setMessage("Sale created successfully.");
+        tempArr = [...props.data, createdSale.sale];
         return props.setData(tempArr);
       } else {
         setLoading(false);
-        setMessage("Client not created.");
+        setMessage("Sale not created.");
       }
     } else {
       setLoading(true);
       setMessage("Error occured please wait.");
     }
   };
-
+  
   const onEdit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
@@ -124,7 +133,7 @@ const SalesCE = (props: Props) => {
     <Fragment>
       <form
         className="w-auto mx-auto lg:w-full justify-center grid"
-        onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
+        onSubmit={handleSubmit(edit ?onEdit:onSubmit )}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
@@ -140,14 +149,6 @@ const SalesCE = (props: Props) => {
             name="status"
             control={control}
             label="Status"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="source"
-            control={control}
-            label="Source"
             width={"w-30"}
             color={"text-gray"}
           />
@@ -221,7 +222,7 @@ const SalesCE = (props: Props) => {
         </div>
         <TextArea
           register={register}
-          name="comments"
+          name="description"
           control={control}
           label=""
           width={"w-30"}
