@@ -2,11 +2,11 @@ import Cookies from "js-cookie";
 import { useContext, useState, createContext, useEffect, useRef } from "react";
 
 const UserContext = createContext();
-
+// million-ignore
 export function User() {
   return useContext(UserContext);
 }
-
+// million-ignore
 export function UserProvider({ children }) {
   const [userData, setUserData] = useState({
     loggedIn: false,
@@ -28,11 +28,6 @@ export function UserProvider({ children }) {
     setUserData((prev) => {
       return { ...prev, user: { ...prev.user, ...data  }, loggedIn:true };
     });
-  };
-
-  const getUserFromCookie = () => {
-    
-   
   };
 
 

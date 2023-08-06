@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Modal from "../Modal";
-import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
+import Image from "next/image";
 //Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,8 @@ type Props = {
   title: string;
   modalTitle: string;
   renderModalComponent: React.ReactNode;
+  icon:any,
+  heroicon:any
 };
 
 const CreateCard = (props: Props) => {
@@ -39,14 +41,19 @@ const CreateCard = (props: Props) => {
               borderRadius: "999px",
             }}
           >
-            <img
+             <Image
+              src={props.icon}
+              alt=""
+              className="w-12 h-12 mx-auto mt-4"
+            />
+            {/* <img
               src="https://assets.codepen.io/3685267/res-react-dash-rocket.svg"
               alt=""
               className="w-full h-full"
-            />
+            /> */}
           </div>
           <div className="mt-7 font-body font-semibold">{props.title}</div>
-          <div className="mt-1 font-body">{props.description}</div>
+          <div className="mt-1 font-body text-sm text-center">{props.description}</div>
           <div
             className="flex items-center p-3 mt-3 bg-blue-gray-300"
             style={{
@@ -59,13 +66,13 @@ const CreateCard = (props: Props) => {
             {/* <Icon path="res-react-dash-add-component" className="w-5 h-5" /> */}
             <div className="ml-2 font-body">{props.label}</div>
             <div
-              className="ml-2 "
+              className=" "
               style={{
                 borderRadius: "10px",
                 padding: "4px 8px 4px 8px",
               }}
             >
-              <SquaresPlusIcon
+              <props.heroicon
                 onClick={() => {
                   setShowModal(true);
                   dispatch(form_({ edit: false }));
@@ -78,6 +85,7 @@ const CreateCard = (props: Props) => {
         </div>
       </div>
       <Modal
+      onScroll={null}
         label={props.modalTitle}
         showModal={showModal}
         modalSize="xs"

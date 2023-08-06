@@ -23,6 +23,13 @@ import { GetClientsData } from "@/src/utils/api/clients";
 import SalesCE from "../../CreateOrEdit/SalesCE";
 import InfoSection from "@/src/components/shared/DashboardLayout/InfoSection";
 
+import salesPNG from "../../../../../public/Image/Icons/pngs/sales.png";
+import tasksPNG from "../../../../../public/Image/Icons/pngs/task.png";
+import projectPNG from "../../../../../public/Image/Icons/pngs/project.png";
+import { ArrowTrendingUpIcon } from "@heroicons/react/24/solid";
+import { Square3Stack3DIcon } from "@heroicons/react/24/solid";
+import { SquaresPlusIcon } from "@heroicons/react/24/solid";
+
 type InfoCardData = {
   title: string;
   name: string;
@@ -30,7 +37,7 @@ type InfoCardData = {
   label: string;
   component: JSX.Element;
   url: string | null;
-  page:string
+  page: string;
   // cols: string[];
 };
 
@@ -44,8 +51,8 @@ const Index = () => {
 
   const getCompanyData = useCallback(async () => {
     const AgentsData = await GetAllAgents(companyId, 1, 5);
-    const ClientsData = await GetClientsData(companyId,1,5);
-    //scroll table attach karna hai 
+    const ClientsData = await GetClientsData(companyId, 1, 5);
+    //scroll table attach karna hai
 
     if (AgentsData && ClientsData) {
       if (ClientsData.error == null && AgentsData?.error == null) {
@@ -77,7 +84,7 @@ const Index = () => {
         title: "Agents",
         modalTitle: "Agent",
         label: "List of Agents",
-        page:'/team',
+        page: "/team",
         component: (
           <AgentCE
             setData={(agents: any) =>
@@ -89,38 +96,38 @@ const Index = () => {
         url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
         name: "agents",
       },
-      {
-        title: "Sales",
-        modalTitle: "Sales",
-        label: "List of Sales",
-        page:'/sales',
-        component: (
-          <SalesCE
-            setData={(agents: any) =>
-              setData((prevData: any) => ({ ...prevData, agents }))
-            }
-            data={data.clients}
-          />
-        ),
-        url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
-        name: "sales",
-      },
-      {
-        title: "Clients",
-        modalTitle: "Client",
-        label: "List of Clients",
-        page:'/clients',
-        component: (
-          <ClientsCE
-            setData={(clients: any) =>
-              setData((prevData: any) => ({ ...prevData, clients }))
-            }
-            data={data.clients}
-          />
-        ),
-        url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
-        name: "clients",
-      },
+      // {
+      //   title: "Sales",
+      //   modalTitle: "Sales",
+      //   label: "List of Sales",
+      //   page:'/sales',
+      //   component: (
+      //     <SalesCE
+      //       setData={(agents: any) =>
+      //         setData((prevData: any) => ({ ...prevData, agents }))
+      //       }
+      //       data={data.clients}
+      //     />
+      //   ),
+      //   url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
+      //   name: "sales",
+      // },
+      // {
+      //   title: "Clients",
+      //   modalTitle: "Client",
+      //   label: "List of Clients",
+      //   page:'/clients',
+      //   component: (
+      //     <ClientsCE
+      //       setData={(clients: any) =>
+      //         setData((prevData: any) => ({ ...prevData, clients }))
+      //       }
+      //       data={data.clients}
+      //     />
+      //   ),
+      //   url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
+      //   name: "clients",
+      // },
       // Add other InfoCardData objects for sales and clients
     ],
     [data] // Add dependencies if necessary
@@ -129,67 +136,99 @@ const Index = () => {
   return (
     <Fragment>
       <Container>
-      <InfoSection />
-      <div className="h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
-        <ProgressCard />
-        <ProgressCard />
-        <ProgressCard />
+        <InfoSection />
+        <div className="h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
+          <ProgressCard />
+          <ProgressCard />
+          <ProgressCard />
 
-        <div className="w-full p-2 lg:w-2/3">
-          <div className="rounded-lg bg-card sm:h-80 h-60">
-            <Graph />
-          </div>
-        </div>
-
-        {Object.entries(data).length >= 1 && !loading ? (
-          infoCardObj.map((infoCard, i) => (
-            <div key={i} className="w-full p-2 lg:w-1/3 ">
-              <div className="rounded-lg bg-card h-80">
-                <InfoCard
-                  label={infoCard.label}
-                  title={infoCard.title}
-                  modalTitle={infoCard.modalTitle}
-                  renderModalComponent={infoCard.component}
-                  url={infoCard.url}
-                  data_loading={loading}
-                  index={i}
-                  data={data[infoCard.name]}
-                  link={infoCard.page}
-                  setData={(updatedData: any) =>
-                    setData((prevData: any) => ({
-                      ...prevData,
-                      [infoCard.name]: updatedData,
-                    }))
-                  }
-                />
-              </div>
+          <div className="w-full p-2 lg:w-2/3">
+            <div className="rounded-lg bg-card sm:h-80 h-60">
+              <Graph />
             </div>
-          ))
-        ) : (
-          <Fragment>
-            {[...Array(3)].map((_, i) => (
+          </div>
+
+          {Object.entries(data).length >= 1 && !loading ? (
+            infoCardObj.map((infoCard, i) => (
               <div key={i} className="w-full p-2 lg:w-1/3 ">
                 <div className="rounded-lg bg-card h-80">
-                  <CardLoader />
+                  <InfoCard
+                    label={infoCard.label}
+                    title={infoCard.title}
+                    modalTitle={infoCard.modalTitle}
+                    renderModalComponent={infoCard.component}
+                    url={infoCard.url}
+                    data_loading={loading}
+                    index={i}
+                    data={data[infoCard.name]}
+                    link={infoCard.page}
+                    setData={(updatedData: any) =>
+                      setData((prevData: any) => ({
+                        ...prevData,
+                        [infoCard.name]: updatedData,
+                      }))
+                    }
+                  />
                 </div>
               </div>
-            ))}
-          </Fragment>
-        )}
+            ))
+          ) : (
+            <Fragment>
+              {[...Array(1)].map((_, i) => (
+                <div key={i} className="w-full p-2 lg:w-1/3 ">
+                  <div className="rounded-lg bg-card h-80">
+                    <CardLoader />
+                  </div>
+                </div>
+              ))}
+            </Fragment>
+          )}
 
-        <div className="w-full p-2 lg:w-1/3">
-          <div className="rounded-lg bg-white shad h-80">
-            <CreateCard
-              renderModalComponent={
-                <TaskCE setTasks={null} _data={data.agents} />
-              }
-              label="Create Task"
-              description="Create a task for agents."
-              title="Tasks"
-              modalTitle="Task"
-            />
+          <div className="w-full p-2 lg:w-1/3">
+            <div className="rounded-lg bg-white shad h-80">
+              <CreateCard
+                icon={salesPNG}
+                heroicon={ArrowTrendingUpIcon}
+                renderModalComponent={
+                  <SalesCE setData={null} data={data.agents} />
+                }
+                label="Create Sale"
+                description="You can create sale attached with the client and generate invoice."
+                title="Sale Creation"
+                modalTitle="Sale"
+              />
+            </div>
           </div>
-        </div>
+          <div className="w-full p-2 lg:w-1/3">
+            <div className="rounded-lg bg-white shad h-80">
+              <CreateCard
+                icon={projectPNG}
+                heroicon={Square3Stack3DIcon}
+                renderModalComponent={
+                  <TaskCE setTasks={null} _data={data.agents} />
+                }
+                label="Create Project"
+                description="You can create project and assign agents."
+                title="Project Creation"
+                modalTitle="Project"
+              />
+            </div>
+          </div>
+          <div className="w-full p-2 lg:w-1/3">
+            <div className="rounded-lg bg-white shad h-80">
+              <CreateCard
+                heroicon={SquaresPlusIcon}
+                icon={tasksPNG}
+                renderModalComponent={
+                  <TaskCE setTasks={null} _data={data.agents} />
+                }
+                label="Create Task"
+                description="Create a task for agents."
+                title="Tasks Creation"
+                modalTitle="Task"
+              />
+            </div>
+          </div>
         </div>
       </Container>
     </Fragment>

@@ -8,11 +8,11 @@ import ThreeDots from "../components/shared/Loader/ThreeDots";
 import { store } from "../redux/store";
 import { Provider } from "react-redux";
 
-import {UserProvider} from "../components/layout/User/UserProvider";
+import {UserProvider} from "../components/layout/User/UserProvider/index";
 
 //Styles Imports
 import "../../styles/globals.css";
-
+// million-ignore
 function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();

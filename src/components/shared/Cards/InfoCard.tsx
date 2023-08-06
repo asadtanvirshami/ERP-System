@@ -1,6 +1,10 @@
 import React, { Fragment, useState } from "react";
 import axios from "axios";
-import { TrashIcon, PencilSquareIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
+import {
+  TrashIcon,
+  PencilSquareIcon,
+  PlusSmallIcon,
+} from "@heroicons/react/24/outline";
 // Component Imports
 import Modal from "../Modal";
 import CricleSpinner from "../Loader/CricleSpinner";
@@ -151,16 +155,16 @@ const InfoCard = ({
       >
         {Component}
       </Modal>
-      <Modal
+      {/* <Modal
         onScroll={null}
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="lg"
-        viewTable={true}
+        viewTable={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }
-      ></Modal>
+      ></Modal> */}
     </Fragment>
   );
 };
