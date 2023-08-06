@@ -80,7 +80,7 @@ const AgentCE = (props: Props) => {
         setMessage("Agent created successfully.");
         tempArr = [...props.data, createdAgent.agent];
         return props.setData(tempArr);
-      } 
+      }
     } else {
       setLoading(false);
       setMessage("Email already registered.");
@@ -170,10 +170,10 @@ const AgentCE = (props: Props) => {
         </div>
         <div className="mb-1">
           {loading ? (
-            <Loader style="btn-secondary" />
+            <Loader style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
           ) : (
             <Button
-              style="btn-secondary"
+              style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
               label={edit ? "Update" : "Create"}
               type="submit"
             />

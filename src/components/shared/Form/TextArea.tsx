@@ -27,7 +27,7 @@ const TextArea = (props: Props) => {
               {props.label}
             </label>
             <textarea
-              className=" h-32 outline-none lock p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="border text-sm rounded-md border-gray-300 p-2 w-full h-24 resize-none focus:outline-none focus:border-blue-500"
               placeholder={props.placeholder}
               {...field}
             ></textarea>

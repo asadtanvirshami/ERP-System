@@ -21,6 +21,7 @@ import { User } from "../../User/UserProvider";
 import { GetAllAgents } from "@/src/utils/api/team";
 import { GetClientsData } from "@/src/utils/api/clients";
 import SalesCE from "../../CreateOrEdit/SalesCE";
+import InfoSection from "@/src/components/shared/DashboardLayout/InfoSection";
 
 type InfoCardData = {
   title: string;
@@ -36,24 +37,18 @@ type InfoCardData = {
 const Index = () => {
   const [data, setData] = useState<any>({ agents: [], sales: [], clients: [] });
   const [loading, setLoading] = useState<boolean>(true);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 5;
-
   const {
     user: { companyId: userCompanyId },
   } = User();
   const companyId = userCompanyId;
 
   const getCompanyData = useCallback(async () => {
-    const AgentsData = await GetAllAgents(companyId, currentPage, pageSize);
-    const ClientsData = await GetClientsData(companyId);
+    const AgentsData = await GetAllAgents(companyId, 1, 5);
+    const ClientsData = await GetClientsData(companyId,1,5);
     //scroll table attach karna hai 
 
     if (AgentsData && ClientsData) {
       if (ClientsData.error == null && AgentsData?.error == null) {
-        setTotalPages(Math.ceil(AgentsData.totalItems / pageSize));
         setData({
           agents: AgentsData?.agents,
           sales: [],
@@ -134,6 +129,8 @@ const Index = () => {
   return (
     <Fragment>
       <Container>
+      <InfoSection />
+      <div className="h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
         <ProgressCard />
         <ProgressCard />
         <ProgressCard />
@@ -157,10 +154,7 @@ const Index = () => {
                   data_loading={loading}
                   index={i}
                   data={data[infoCard.name]}
-                  totalPages={totalPages}
-                  currentPage={currentPage}
                   link={infoCard.page}
-                  setCurrentPage={setCurrentPage}
                   setData={(updatedData: any) =>
                     setData((prevData: any) => ({
                       ...prevData,
@@ -195,6 +189,7 @@ const Index = () => {
               modalTitle="Task"
             />
           </div>
+        </div>
         </div>
       </Container>
     </Fragment>

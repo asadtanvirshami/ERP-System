@@ -81,13 +81,13 @@ const TaskAssign = ({
       <hr />
       <div className="mb-3 mt-2">
         {loading ? (
-          <LoadingButton style="btn-secondary" />
+          <LoadingButton   style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
         ) : (
           <>
             {users?.length >= 1 && (
               <div>
                 <Button
-                  style="btn-secondary"
+                style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
                   label={edit ? "Update" : "Create"}
                   type="submit"
                 />

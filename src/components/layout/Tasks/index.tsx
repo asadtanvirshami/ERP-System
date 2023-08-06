@@ -7,11 +7,14 @@ import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
 //Redux
 import { useSelector } from "react-redux";
 import { GetAllTasks, DeleteTask, DeleteUserTask } from "@/src/utils/api/tasks";
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
 type Props = {};
 
 const Index = (props: Props) => {
   const [tasks, setTasks] = useState<any[]>([]);
+
+  const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -21,12 +24,13 @@ const Index = (props: Props) => {
   const CompanyId = userData.companyId;
 
   async function getAllTasks() {
+    setLoading(true)
     const Tasks = await GetAllTasks(CompanyId, currentPage, pageSize);
     if (Tasks) {
-      console.log(Tasks.totalTasks)
       if (Tasks.error == null) {
         setTasks(Tasks.tasks);
         setTotalPages(Math.ceil(Tasks.totalTasks / pageSize));
+        setLoading(false)
       } else {
         setTasks([]);
       }
@@ -64,10 +68,9 @@ const Index = (props: Props) => {
   useEffect(() => {
     getAllTasks();
   }, [currentPage]);
-  console.log(currentPage);
 
   return (
-    <div className="">
+    <Container>
       <Fragment>
         <Table
           cols={[
@@ -80,13 +83,14 @@ const Index = (props: Props) => {
             "Title",
             "Code",
             "Status",
-            "Status",
+            "Start Date",
             "End Date",
             "Deadline",
             "Edit",
             "Delete",
             "Assigned To",
           ]}
+          loading={loading}
           modalTitle="Tasks"
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -98,7 +102,7 @@ const Index = (props: Props) => {
           deleteFunc={handleDeleteUserTask}
         />
       </Fragment>
-    </div>
+    </Container>
   );
 };
 

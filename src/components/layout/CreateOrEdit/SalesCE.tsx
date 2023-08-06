@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup"
+import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
 //Components Import
 import Input from "@/src/components/shared/Form/Input";
@@ -104,7 +104,7 @@ const SalesCE = (props: Props) => {
       setMessage("Error occured please wait.");
     }
   };
-  
+
   const onEdit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
@@ -133,7 +133,7 @@ const SalesCE = (props: Props) => {
     <Fragment>
       <form
         className="w-auto mx-auto lg:w-full justify-center grid"
-        onSubmit={handleSubmit(edit ?onEdit:onSubmit )}
+        onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
@@ -231,10 +231,10 @@ const SalesCE = (props: Props) => {
         />
         <div className="mt-3">
           {loading ? (
-            <Loader style="btn-secondary" />
+            <Loader style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
           ) : (
             <Button
-              style="btn-secondary"
+              style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
               label={edit ? "Update" : "Create"}
               type="submit"
             />

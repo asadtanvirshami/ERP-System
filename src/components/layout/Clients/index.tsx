@@ -10,6 +10,7 @@ import EmptyTable from "../../shared/EmptyComponents/EmptyTable";
 
 import { useSelector } from "react-redux";
 import { GetClientsData } from "@/src/utils/api/clients";
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
 type Props = {};
 
@@ -17,21 +18,27 @@ const Index = (props: Props) => {
   const [data, setData] = useState<Agents[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 5;
+
+
   const CompanyId = useSelector((state: any) => state.user.user.companyId);
 
   async function dataCall() {
     try {
-      const Clients = await GetClientsData(CompanyId);
+      const Clients = await GetClientsData(CompanyId,currentPage,pageSize );
       if (Clients) {
         if(Clients.error == null){
           setData(Clients.clients);
+          setTotalPages(Math.ceil(Clients.totalItems / pageSize));
           setLoading(false);
         }else{
           setData([])
         }
       }else{
         setData([])
-        setLoading(true)
+        setLoading(false)
       }
     } catch (e) {
       console.log(e);
@@ -40,10 +47,10 @@ const Index = (props: Props) => {
 
   useEffect(() => {
     dataCall();
-  }, []);
+  }, [currentPage]);
 
   return (
-    <div className="">
+    <Container>
       <Fragment>
         <Table
           cols={[
@@ -63,13 +70,13 @@ const Index = (props: Props) => {
           renderModalComponent={
             <ClientsCE setData={setData} data={data || undefined} />
           }
-          // totalPages={totalPages}
-          // currentPage={currentPage}
-          // setCurrentPage={setCurrentPage}
-          // onClick={handleDeleteUser}
+          loading={loading}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       </Fragment>
-    </div>
+    </Container>
   );
 };
 

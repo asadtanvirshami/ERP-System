@@ -1,12 +1,9 @@
 import React, { Fragment, useState } from "react";
 import axios from "axios";
+import { TrashIcon, PencilSquareIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
 // Component Imports
 import Modal from "../Modal";
 import CricleSpinner from "../Loader/CricleSpinner";
-// SVGs Imports
-import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
-import EditIcon from "../../../../public/Image/Icons/svgs/edit.svg";
-import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
 // Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,12 +64,11 @@ const InfoCard = ({
           <div className="flex justify-between items-center">
             <div className="text-theme-700 font-bold font-body">{title}</div>
             <div className="text-theme-700 font-bold ">
-              <AddIcon
+              <PlusSmallIcon
                 onClick={() => {
                   setState((prevState) => ({ ...prevState, showModal: true }));
                   dispatch(form_({ edit: false }));
                 }}
-                fill="gray"
                 className="w-6 h-6 text-gray-500 cursor-pointer"
               />
             </div>
@@ -87,12 +83,12 @@ const InfoCard = ({
                       {data?.map((item: any, index: any) => (
                         <div key={item["id"]}>
                           <div className="flex">
-                            <li className="w-full p-3">
+                            <li className="w-full p-3 text-[15px]">
                               <strong>{index + 1}. </strong> {item[keys]}
                             </li>
                             <div className="w-full p-3 justify-end flex text-right">
                               <li className="px-5">
-                                <EditIcon
+                                <PencilSquareIcon
                                   onClick={() => {
                                     setState((prevState) => ({
                                       ...prevState,
@@ -106,14 +102,12 @@ const InfoCard = ({
                                       })
                                     );
                                   }}
-                                  fill="gray"
                                   className="w-5 h-5 cursor-pointer"
                                 />
                               </li>
                               <li className="">
                                 <TrashIcon
                                   onClick={() => handleOnClick(item.id)}
-                                  fill="gray"
                                   className="w-5 h-5 cursor-pointer"
                                 />
                               </li>

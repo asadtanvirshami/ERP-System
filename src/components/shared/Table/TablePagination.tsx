@@ -56,9 +56,9 @@ const TablePagination = ({setCurrentPage, totalPages, currentPage}: Props) => {
           <Button  onClick={()=>handlePrevClick(currentPage,setCurrentPage)} disabled={currentPage === 1} variant="outlined" color="blue-gray" size="sm">
             Previous
           </Button>
-          {pagesToShow.map(page => (
+          {pagesToShow.map((page,index) => (
         <button
-          key={page}
+          key={index}
           onClick={() =>handlePageClick(page)}
           className={page === currentPage ? 'font-bold text-gray-800' : ''}
         >

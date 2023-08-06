@@ -9,11 +9,14 @@ import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
 //Redux
 import { useSelector } from "react-redux";
 import { DeleteAgent, GetAllAgents } from "@/src/utils/api/team";
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
 type Props = {};
 
 const Index = (props: Props) => {
   const [agents, setAgents] = useState<any[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -28,8 +31,10 @@ const Index = (props: Props) => {
       if (Team.error  == null) {
         setAgents(Team.agents);
         setTotalPages(Math.ceil(Team.totalItems / pageSize));
+        setLoading(false)
       } else {
         setAgents([]);
+        setLoading(false)
       }
     } else {
       setAgents([]);
@@ -50,7 +55,7 @@ const Index = (props: Props) => {
   }, [currentPage]);
 
   return (
-    <div className="">
+    <Container>
       <Fragment>
         <Table
           cols={[
@@ -72,11 +77,12 @@ const Index = (props: Props) => {
           }
           totalPages={totalPages}
           currentPage={currentPage}
+          loading={loading}
           setCurrentPage={setCurrentPage}
           onClick={handleDeleteUser}
         />
       </Fragment>
-    </div>
+    </Container>
   );
 };
 

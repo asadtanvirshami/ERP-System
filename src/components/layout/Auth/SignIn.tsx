@@ -6,9 +6,8 @@ import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {User} from "../User/UserProvider/index"; 
 //Components
-import Input from "../../shared/Form/Input";
+import Input from "../../shared/Form/SecondaryInput";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
 //Redux

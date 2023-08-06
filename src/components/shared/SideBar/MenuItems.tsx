@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 type Props = {
   menu_: any;
-  collapsed:boolean
+  collapsed: boolean;
 };
 
 const color = {
@@ -20,7 +20,7 @@ const MenuItems = (props: Props) => {
       <a
         href={props.menu_.link}
         className={classNames({
-          "text-indigo-100 hover:bg-red-700 flex": true, //colors
+          "text-indigo-100 flex": true, //colors
           "transition-colors duration-200": true, //animation
           "rounded-md p-2 mx-3 gap-2": !props.collapsed,
           "rounded-full p-2 mx-3 w-10 h-10": props.collapsed,
@@ -28,14 +28,12 @@ const MenuItems = (props: Props) => {
       >
         {router.route == props.menu_.link ? (
           <props.menu_.svg
-            className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
-            fill={"white"}
+            className="w-6 h-6 text-gray-500 hover:text-white transition duration-75"
             alt={props.menu_.text}
           />
         ) : (
           <props.menu_.svg
-            className="w-6 h-6 text-gray-500 hover:text-gray-900 transition duration-75"
-            fill={"#9e9e9e"}
+            className="w-6 h-6 text-gray-500 hover:text-white transition duration-75"
             alt={props.menu_.text}
           />
         )}

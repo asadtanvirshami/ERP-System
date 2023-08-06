@@ -40,7 +40,8 @@ const Table = ({
   deleteFunc,
   onClick,
   totalPages,
-  currentPage
+  loading,
+  currentPage,
 }: any) => {
   const [state, setState] = useState({
     showModal: false,
@@ -83,7 +84,8 @@ const Table = ({
 
   return (
     <Fragment>
-      <Card className="xl:max-h-[80rem] md:max-h-[45rem] relative z-10">
+      {/* <Card className="xl:max-h-[80rem] md:max-h-[45rem] relative z-10"></Card> */}
+      <Card className="flex flex-1 rounded-lg border border-silver  p-2  mt-3 px-4 sm:px-6 lg:px-8">
         <div className="mb-0 flex items-center justify-between p-3">
           <div>
             <Typography variant="h5" color="blue-gray">
@@ -116,31 +118,34 @@ const Table = ({
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row p-3">
           <div className="w-full md:w-72">
-            <Input
-              label="Search"
-              color="gray"
-              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-            />
+            <div className="flex items-center border border-gray-300 rounded-md p-2">
+              <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
+              <input
+                type="text"
+                className="flex-grow focus:outline-none"
+                placeholder="Search"
+              />
+            </div>
           </div>
-          <Tabs value="all" className="w-full md:w-max">
+          {/* <Tabs value="all" className="w-full md:w-max">
             <TabsHeader>
-              {/* {cols.map(({ label, value }) => (
+              {cols.map(({ label, value }) => (
                 <Tab key={value} value={value}>
                   &nbsp;&nbsp;{label}&nbsp;&nbsp;
                 </Tab>
-              ))} */}
+              ))}
             </TabsHeader>
-          </Tabs>
+          </Tabs> */}
         </div>
 
-        {data.length >= 1 ? (
+        {data.length >= 1 && loading == false ? (
           <CardBody className="overflow-scroll px-0">
             <table className="mt-2 w-full min-w-max table-auto text-left">
               <thead className="">
                 <tr>
-                  {cols.map((head: string) => (
+                  {cols.map((head: string, index: number) => (
                     <th
-                      key={head}
+                      key={index}
                       className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
                     >
                       <Typography
@@ -162,43 +167,38 @@ const Table = ({
                     : "p-4 border-b border-blue-gray-50";
 
                   return (
-                    <>
-                      <tr key={ele.id}>
-                        <>
-                          <td className={classes}>
+                    <tr key={ele.id}>
+                      <td  className={classes}>
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal font-bold"
+                            >
+                              {index + 1}.
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      {Keys.map((key: string, i: number) => {
+                        return (
+                          <td key={i} className={classes}>
                             <div className="flex items-center gap-3">
                               <div className="flex flex-col">
                                 <Typography
                                   variant="small"
                                   color="blue-gray"
-                                  className="font-normal font-bold"
+                                  className="font-normal"
                                 >
-                                  {index + 1}.
+                                  {data[index][key]}
                                 </Typography>
                               </div>
                             </div>
                           </td>
-                          {Keys.map((key: string, i: number) => {
-                            return (
-                              <>
-                                <td key={i} className={classes}>
-                                  <div className="flex items-center gap-3">
-                                    <div className="flex flex-col">
-                                      <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-normal"
-                                      >
-                                        {data[index][key]}
-                                      </Typography>
-                                    </div>
-                                  </div>
-                                </td>
-                              </>
-                            );
-                          })}
-                        </>
-                        <td className={classes}>
+                        );
+                      })}
+                       <td className={classes}>
                           <Tooltip content="Edit Item">
                             <IconButton
                               variant="text"
@@ -221,7 +221,7 @@ const Table = ({
                             </IconButton>
                           </Tooltip>
                         </td>
-                        <td className={classes}>
+                        <td  className={classes}>
                           <Tooltip content="Delete Item">
                             <IconButton
                               variant="text"
@@ -293,20 +293,23 @@ const Table = ({
                             </div>
                           </td>
                         )}
-                      </tr>
-                    </>
+                    </tr>
                   );
                 })}
               </tbody>
             </table>
           </CardBody>
         ) : (
-          <EmptyTable cols={cols} />
+          <EmptyTable loading={loading} cols={cols} />
         )}
-        <TablePagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+        <TablePagination
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </Card>
       <Modal
-      onScroll={null}
+        onScroll={null}
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
@@ -318,7 +321,7 @@ const Table = ({
         {Component}
       </Modal>
       <Modal
-      onScroll={null}
+        onScroll={null}
         label={modalTitle}
         showModal={state.viewModal}
         modalSize="sm"

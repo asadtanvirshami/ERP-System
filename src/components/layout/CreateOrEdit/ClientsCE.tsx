@@ -208,10 +208,10 @@ const ClientsCE = (props: Props) => {
         />
         <div className="mt-3">
           {loading ? (
-            <Loader style="btn-secondary" />
+            <Loader style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
           ) : (
             <Button
-              style="btn-secondary"
+              style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
               label={edit ? "Update" : "Create"}
               type="submit"
             />

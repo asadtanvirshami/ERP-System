@@ -47,7 +47,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
         {/* logo and collapse button */}
         <div
           className={classNames({
-            "flex items-center border-b border-b-custom-red-700 transition-none":
+            "flex items-center border-b border-b-white transition-none":
               true,
             "p-4 justify-between": !collapsed,
             "py-4 justify-center": collapsed,

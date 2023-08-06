@@ -80,14 +80,14 @@ const TaskCE = ({ _data, setTasks }: Props) => {
 
   const fetchUsers = async () => {
     setLoadingData(true);
-    const Users = await GetAllAgents(companyId, currentPage, pageSize)
-    if(Users){
-      if(Users.error==null){
+    const Users = await GetAllAgents(companyId, currentPage, pageSize);
+    if (Users) {
+      if (Users.error == null) {
         const newUsers = users.concat(Users.agents);
         setUsers(newUsers);
         setTotalUsers(Users.totalItems);
         setLoadingData(false);
-      }else{
+      } else {
         setLoadingData(false);
       }
     }
@@ -295,84 +295,84 @@ const TaskCE = ({ _data, setTasks }: Props) => {
   return (
     <Fragment>
       {proceed && <h1>Select agent to assign task.</h1>}
-        <>
-          {!proceed && (
-            <form
-              className="w-auto mx-auto lg:w-full justify-center grid"
-              onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
-            >
-              <div className="grid grid-cols-2 items-center gap-4 mb-2">
-                <Input
-                  register={register}
-                  name="title"
-                  control={control}
-                  label="Title"
-                  width="w-30"
-                  color="text-gray"
-                />
+      <>
+        {!proceed && (
+          <form
+            className="w-auto mx-auto lg:w-full justify-center grid"
+            onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
+          >
+            <div className="grid grid-cols-2 items-center gap-4 mb-2">
+              <Input
+                register={register}
+                name="title"
+                control={control}
+                label="Title"
+                width="w-30"
+                color="text-gray"
+              />
 
-                <SelectType
-                  register={register}
-                  name="priority"
-                  control={control}
-                  label="Priority"
-                  width="w-30"
-                  color="text-gray"
-                />
+              <SelectType
+                register={register}
+                name="priority"
+                control={control}
+                label="Priority"
+                width="w-30"
+                color="text-gray"
+              />
 
-                <DatePicker
-                  register={register}
-                  name="deadline"
-                  control={control}
-                  label="Deadline of task"
-                  width="w-40"
-                  color="text-gray"
-                />
+              <DatePicker
+                register={register}
+                name="deadline"
+                control={control}
+                label="Deadline of task"
+                width="w-40"
+                color="text-gray"
+              />
 
-                <Input
-                  register={register}
-                  name="bonus"
-                  control={control}
-                  label="Bonus"
-                  width="w-42"
-                  color="text-gray"
+              <Input
+                register={register}
+                name="bonus"
+                control={control}
+                label="Bonus"
+                width="w-42"
+                color="text-gray"
+              />
+            </div>
+            <>
+              <hr />
+            </>
+            <div className="mt-5 grid mb-2">
+              <p className="text-sm mb-1">
+                Write the job description for the brief understanding of task.
+              </p>
+              <TextArea
+                register={register}
+                name="description"
+                control={control}
+                label=""
+                width="w-30"
+                placeholder="Write job description"
+                color="text-gray"
+              />
+            </div>
+            <>
+              <hr />
+            </>
+            <div className="mb-3 mt-2">
+              {loading ? (
+                <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
+              ) : (
+                <Button
+                  style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
+                  label={edit ? "Update" : "Create"}
+                  type="submit"
                 />
-              </div>
-              <>
-                <hr />
-              </>
-              <div className="mt-5 grid mb-2">
-                <p className="text-sm mb-1">
-                  Write the job description for the brief understanding of task.
-                </p>
-                <TextArea
-                  register={register}
-                  name="description"
-                  control={control}
-                  label=""
-                  width="w-30"
-                  placeholder="Write job description"
-                  color="text-gray"
-                />
-              </div>
-              <>
-                <hr />
-              </>
-              <div className="mb-3 mt-2">
-                {loading ? (
-                  <LoadingButton style="btn-secondary" />
-                ) : (
-                  <Button
-                    style="btn-secondary"
-                    label={edit ? "Update" : "Create"}
-                    type="submit"
-                  />
-                )}
-                <p className="mt-2">{message}</p>
-              </div>
-            </form>
-          )}
-        </>
+              )}
+              <p className="mt-2">{message}</p>
+            </div>
+          </form>
+        )}
+      </>
 
       {proceed && (
         <form onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}>

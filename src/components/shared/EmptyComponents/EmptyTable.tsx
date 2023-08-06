@@ -1,11 +1,13 @@
 import React from "react";
-import { Typography, CardBody } from "@material-tailwind/react";
+import { Typography, CardBody, Spinner } from "@material-tailwind/react";
+import { DotLoader } from "react-spinners";
 
 type Props = {
   cols: any;
+  loading:boolean
 };
 
-const EmptyTable = ({ cols }: Props) => {
+const EmptyTable = ({ cols, loading }: Props) => {
   return (
     <React.Fragment>
         <CardBody className="overflow-scroll px-0">
@@ -30,9 +32,13 @@ const EmptyTable = ({ cols }: Props) => {
         </thead>
         <tbody>
           <tr>
-            <td className="py-5">
+           {loading==false&&
+           <td className="py-5">
               <span className="ml-4">No data to show.</span>
-            </td>
+            </td>}
+             {loading==true&&<td className="py-5 flex align-middle items-center justify-center px-[32rem]">
+              <span className="ml-4 flex align-middle items-center justify-center mx-auto"><Spinner color="red" height={300} width={50}/></span>
+            </td>}
           </tr>
         </tbody>
       </table>

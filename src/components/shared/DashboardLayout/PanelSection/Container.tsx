@@ -3,11 +3,11 @@ import InfoSection from "../InfoSection";
 
 function Container({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full">
-      <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">
-        <InfoSection />
+    // <div className="w-full">
+    <div className="bg-white rounded-xl mx-auto px-3 sm:px-6 max-w-6xl 2xl:max-w-7xl w-full">
+      <>
         {children}
-      </div>
+      </>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import AddIcon from "../../../../public/Image/Icons/svgs/Add.svg";
 //Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch } from "react-redux";
+import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   label: string;
@@ -58,19 +59,19 @@ const CreateCard = (props: Props) => {
             {/* <Icon path="res-react-dash-add-component" className="w-5 h-5" /> */}
             <div className="ml-2 font-body">{props.label}</div>
             <div
-              className="ml-2 bg-blue-gray-100"
+              className="ml-2 "
               style={{
                 borderRadius: "10px",
                 padding: "4px 8px 4px 8px",
               }}
             >
-              <AddIcon
+              <SquaresPlusIcon
                 onClick={() => {
                   setShowModal(true);
                   dispatch(form_({ edit: false }));
                 }}
                 fill={"white"}
-                className="w-6 h-6 text-gray-500 cursor-pointer"
+                className="w-6 h-6 cursor-pointer"
               />
             </div>
           </div>

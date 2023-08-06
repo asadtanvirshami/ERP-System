@@ -7,7 +7,7 @@ type Props = {}
 const setting = (props: Props) => {
   return (
     <div>
-  <TaskAssigningPage/>
+      <Info/>
     </div>
   )
 }

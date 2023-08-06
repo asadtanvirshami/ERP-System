@@ -22,18 +22,18 @@ const SelectType = (props: Props) => {
         control={props.control}
         {...props.register(`${props.name}`)}
         render={({ field }: any) => (
-          <div className="relative z-0 mb-6">
+          <div className="block text-sm font-medium text-gray-700 mb-1">
             <select
               className={clsx(
-                " py-2.5 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-300 w-full dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus: peer",
+                "p-2 border w-full border-[0.5]px rounded-md text-sm focus:outline-none focus:border-blue-500",
                 props.width,
                 props.color
               )}
               {...field}
             >
-              <option className="hidden">{props.label}</option>
+              <option className="hidden  rounded-md">{props.label}</option>
 
-              <option className=" cursor-pointer rounded">High</option>
+              <option className=" cursor-pointer rounded  rounded-md">High</option>
             </select>
           </div>
         )}
