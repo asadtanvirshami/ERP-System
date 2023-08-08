@@ -17,11 +17,17 @@ import { agentBaseValues } from "@/src/utils/baseValues";
 import SelectType from "../../shared/Form/SelectType";
 //API Calls
 import { CreatNewSale } from "@/src/utils/api/sale";
+import DefaultStepper from "../../shared/Stepper";
+import AddRow from "../../shared/AddRow";
 
 type Props = {
   data: Array<Agents>;
   setData: any;
 };
+interface Row {
+  service: string;
+  price: number;
+}
 
 const SalesSchema = yup.object().shape({
   //Yup schema to set the values
@@ -40,6 +46,11 @@ const SalesSchema = yup.object().shape({
 const SalesCE = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [rows, setRows] = useState<Row[]>([]);
+
+  const handleAddRow = (newRow: Row) => {
+    setRows([...rows, newRow]);
+  };
 
   //Redux initialize
   const edit = useSelector((state: any) => state.form.value.edit);
@@ -128,71 +139,103 @@ const SalesCE = (props: Props) => {
       setMessage("Error ocurred please wait.");
     }
   };
+  const handleRowsChange = (newRows: any) => {
+    // Do something with the updated rows
+    console.log(newRows);
+  };
+
+  // types.ts
+  interface Row {
+    service: string;
+    price: string;
+  }
 
   return (
     <Fragment>
-      <form
-        className="w-auto mx-auto lg:w-full justify-center grid"
-        onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
-      >
-        <div className="grid grid-cols-2 items-center gap-4 mb-2">
-          <Input
-            register={register}
-            name="type"
-            control={control}
-            label="Work Type"
-            width={"w-full"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="status"
-            control={control}
-            label="Status"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="amount_paid"
-            control={control}
-            label="Amount Paid"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="amount_left"
-            control={control}
-            label="Amount Left"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="total_amount"
-            control={control}
-            label="Total Amount"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="total_amount_txt"
-            control={control}
-            label="Total Amount in Text"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <DatePicker
-            register={register}
-            name="deadline"
-            control={control}
-            label="Deadline of task"
-            width="w-40"
-            color="text-gray"
-          />
-          {/* <SelectType
+   <DefaultStepper />
+  <div className="flex flex-wrap">
+    <div className="w-full lg:w-1/2 p-1 border-r">
+      {/* Content for the left column */}
+      <div className="w-full lg:w-full mx-auto px-4">
+        <h1 className="mb-4">Add Services & amount included in package.</h1>
+        <div className="container">
+          <AddRow onRowsChange={handleRowsChange} />
+        </div>
+        <hr className="m-4"></hr>
+      </div>
+    </div>
+    <div className="w-full lg:w-1/2 p-4">
+          {/* Content for the right column */}
+          <div className="p-4">
+            <form
+              className="w-auto mx-auto lg:w-full justify-center grid"
+              onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
+            >
+              {/* <div className="grid grid-cols-2 items-center gap-4 mb-2"> */}
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                <Input
+                  register={register}
+                  name="type"
+                  control={control}
+                  label="Work Type"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g web package"
+                />
+                <Input
+                  register={register}
+                  name="status"
+                  control={control}
+                  label="Status"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g high"
+                />
+                <Input
+                  register={register}
+                  name="amount_paid"
+                  control={control}
+                  label="Amount Paid"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="0000"
+                />
+                <Input
+                  register={register}
+                  name="amount_left"
+                  control={control}
+                  label="Amount Left"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="0000"
+                />
+                <Input
+                  register={register}
+                  name="total_amount"
+                  control={control}
+                  label="Total Amount $"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="0000"
+                />
+                <Input
+                  register={register}
+                  name="total_amount_txt"
+                  control={control}
+                  label="Total Amount in Text"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g Five Hundred Dollars"
+                />
+                <DatePicker
+                  register={register}
+                  name="deadline"
+                  control={control}
+                  label="Deadline of task"
+                  width={"w-full"}
+                  color="text-gray"
+                />
+                {/* <SelectType
             register={register}
             name="source"
             control={control}
@@ -200,48 +243,53 @@ const SalesCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           /> */}
-          <Input
-            register={register}
-            name="source"
-            control={control}
-            label="Source"
-            width={"w-30"}
-            color={"text-gray"}
-          />
-          <Input
-            register={register}
-            name="source_link"
-            control={control}
-            label="Source Link"
-            width={"w-30"}
-            color={"text-gray"}
-          />
+                <Input
+                  register={register}
+                  name="source"
+                  control={control}
+                  label="Source"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g Upwork"
+                />
+                <Input
+                  register={register}
+                  name="source_link"
+                  control={control}
+                  label="Source Link"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g www.Upwork.com"
+                />
+              </div>
+              <div className="mb-3">
+                <hr></hr>
+              </div>
+              <TextArea
+                register={register}
+                name="description"
+                control={control}
+                label=""
+                width={"w-30"}
+                placeholder={"Write the details about the sale."}
+                color={"text-gray"}
+              />
+              <div className="mt-3">
+                {loading ? (
+                  <Loader style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
+                ) : (
+                  <Button
+                    style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
+                    label={edit ? "Update" : "Create"}
+                    type="submit"
+                  />
+                )}
+              </div>
+              <p className="text-sm mt-2">{message}</p>
+            </form>
+          </div>
         </div>
-        <div className="mb-3">
-          <hr></hr>
-        </div>
-        <TextArea
-          register={register}
-          name="description"
-          control={control}
-          label=""
-          width={"w-30"}
-          placeholder={"Write the details about the sale."}
-          color={"text-gray"}
-        />
-        <div className="mt-3">
-          {loading ? (
-            <Loader style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
-          ) : (
-            <Button
-              style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-              label={edit ? "Update" : "Create"}
-              type="submit"
-            />
-          )}
-        </div>
-        <p className="text-sm mt-2">{message}</p>
-      </form>
+      </div>
     </Fragment>
   );
 };

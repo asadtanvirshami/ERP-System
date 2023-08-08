@@ -196,6 +196,7 @@ const Index = () => {
                 description="You can create sale attached with the client and generate invoice."
                 title="Sale Creation"
                 modalTitle="Sale"
+                modalSize={'xl'}
               />
             </div>
           </div>
@@ -211,6 +212,7 @@ const Index = () => {
                 description="You can create project and assign agents."
                 title="Project Creation"
                 modalTitle="Project"
+                modalSize={'sm'}
               />
             </div>
           </div>
@@ -226,6 +228,7 @@ const Index = () => {
                 description="Create a task for agents."
                 title="Tasks Creation"
                 modalTitle="Task"
+                modalSize={'sm'}
               />
             </div>
           </div>

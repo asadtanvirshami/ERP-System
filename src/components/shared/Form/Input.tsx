@@ -8,7 +8,8 @@ type Props = {
     label:string
     control:any,
     width:string,
-    color:string
+    color:string,
+    placeholder:string
 };
 
 
@@ -33,7 +34,7 @@ const Input = (props: Props) => {
               {props.label}
             </label>
             <input
-              placeholder=" "
+              placeholder={props.placeholder}
               className={clsx(
                 "p-2 border border-[0.5]px rounded-md text-sm focus:outline-none focus:border-blue-500",
                 props.width,

@@ -13,7 +13,8 @@ type Props = {
   modalTitle: string;
   renderModalComponent: React.ReactNode;
   icon:any,
-  heroicon:any
+  heroicon:any,
+  modalSize:any
 };
 
 const CreateCard = (props: Props) => {
@@ -88,7 +89,7 @@ const CreateCard = (props: Props) => {
       onScroll={null}
         label={props.modalTitle}
         showModal={showModal}
-        modalSize="xs"
+        modalSize={props.modalSize}
         setShowModal={setShowModal}
         viewTable={false}
       >

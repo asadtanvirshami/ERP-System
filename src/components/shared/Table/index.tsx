@@ -1,8 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
-import Cookies from "js-cookie";
-import axios from "axios";
 //Icons & SVGs
-import TrashIcon from "../../../../public/Image/Icons/svgs/trash.svg";
+import {
+  TrashIcon,
+  PencilSquareIcon,
+  PlusSmallIcon,
+} from "@heroicons/react/24/outline";
 //Components
 import EmptyTable from "../EmptyComponents/EmptyTable";
 import Modal from "../Modal";
@@ -99,7 +101,7 @@ const Table = ({
             <Button variant="outlined" color="blue-gray" size="sm">
               view all
             </Button>
-            <Button
+           {modalTitle !== 'Clients' && <Button
               className="flex items-center gap-3"
               color="red"
               size="sm"
@@ -113,7 +115,7 @@ const Table = ({
             >
               <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add{" "}
               {modalTitle}
-            </Button>
+            </Button>}
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row p-3">
@@ -139,14 +141,14 @@ const Table = ({
         </div>
 
         {data.length >= 1 && loading == false ? (
-          <CardBody className="overflow-scroll px-0">
-            <table className="mt-2 w-full min-w-max table-auto text-left">
-              <thead className="">
-                <tr>
+          <div className="overflow-scroll px-0 border rounded-lg mt-5 mb-5">
+            <table className="table rounded-lg border-collapse mt-0 w-full min-w-max table-auto text-left border">
+              <thead className="border">
+                <tr className="border">
                   {cols.map((head: string, index: number) => (
                     <th
                       key={index}
-                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                      className="border-b border-blue-gray-100 bg-blue-gray-50 p-4 "
                     >
                       <Typography
                         variant="small"
@@ -232,7 +234,6 @@ const Table = ({
                             >
                               <TrashIcon
                                 className="w-5 h-5 cursor-pointer"
-                                fill={"gray"}
                               />
                             </IconButton>
                           </Tooltip>
@@ -298,7 +299,7 @@ const Table = ({
                 })}
               </tbody>
             </table>
-          </CardBody>
+          </div>
         ) : (
           <EmptyTable loading={loading} cols={cols} />
         )}
