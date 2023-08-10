@@ -6,8 +6,8 @@ import moment from "moment";
 //Interface Imports
 import { Agents } from "@/src/interfaces/Agents";
 //Components Imports
+import { Button } from "@material-tailwind/react";
 import Input from "@/src/components/shared/Form/Input";
-import Button from "@/src/components/shared/Buttons/Button";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import SelectType from "@/src/components/shared/Form/SelectType";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
@@ -29,18 +29,18 @@ const SignupSchema = yup.object().shape({
   //Yup schema to set the values
   title: yup.string().required("Required"),
   description: yup.string().required("Required"),
-  priority: yup.string().required("Required"),
+  status: yup.string().required("Required"),
   deadline: yup.string().required("Required"),
-  bonus: yup.string().required("Required"),
+  project_length: yup.string().required("Required"),
 });
 
 type Props = {
   _data: Array<any>;
-  setTasks: any;
+  setData: any;
 };
 
-const TaskCE = ({ _data, setTasks }: Props) => {
-  const [taskId, setTaskId] = useState<string>("");
+const ProjectCE = ({ _data, setData }: Props) => {
+  const [projectId, setProjectId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,12 +53,12 @@ const TaskCE = ({ _data, setTasks }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Number of users to show per page
 
-  const [proceed, setProceed] = useState<boolean>(false);
+  const [proceed, setProceed] = useState<boolean>(true);
 
   //Redux Selectors
   const edit = useSelector((state: any) => state.form.value.edit);
   const openState = useSelector((state: any) => state.form.value.open);
-  const task_data = useSelector((state: any) => state.form.value.values);
+  const project_data = useSelector((state: any) => state.form.value.values);
   const user_data = useSelector((state: any) => state.user.user);
 
   const {
@@ -75,7 +75,7 @@ const TaskCE = ({ _data, setTasks }: Props) => {
   } = useForm({
     //passing the props in the useForm yupResolver
     resolver: yupResolver(SignupSchema),
-    defaultValues: task_data,
+    defaultValues: project_data,
   });
 
   const fetchUsers = async () => {
@@ -99,12 +99,12 @@ const TaskCE = ({ _data, setTasks }: Props) => {
 
   useEffect(() => {
     if (edit) {
-      setTaskId(task_data.id);
+      setProjectId(project_data.id);
       openState && edit ? setProceed(true) : setProceed(false);
-      const tempData = { ...task_data };
+      const tempData = { ...project_data };
       let agentsData: any = [];
 
-      if (task_data && tempData.asignees) {
+      if (project_data && tempData.asignees) {
         const asigneeIds = tempData.asignees
           .map((asignee: any) => asignee.id)
           .filter(Boolean);
@@ -145,19 +145,21 @@ const TaskCE = ({ _data, setTasks }: Props) => {
         userId: user_data.loginId,
         companyId: user_data.companyId,
       };
-      const createdTask = await CreateNewTask(newData);
-      console.log(createdTask);
-      if (createdTask) {
-        if (createdTask.error == null) {
-          setMessage("Task created successfully.");
+      const createdProject = await CreateNewTask(newData);
+      console.log(createdProject);
+      if (createdProject) {
+        if (createdProject.error == null) {
+          setMessage("Project created successfully.");
           setLoading(false);
           setProceed(true);
-          setTaskId(createdTask.task.id);
-          let tempArr = [..._data, createdTask.task];
-          return setTasks ? setTasks(tempArr) : null;
+          setProjectId(createdProject.task.id);
+          let tempArr = [..._data, createdProject.task];
+          return setData ? setData(tempArr) : null;
         } else {
           return (
-            setProceed(false), setLoading(true), setMessage("Task not created")
+            setProceed(false),
+            setLoading(true),
+            setMessage("Project not created")
           );
         }
       } else {
@@ -176,33 +178,33 @@ const TaskCE = ({ _data, setTasks }: Props) => {
           asignees.push({
             id: y.id,
             email: y.email,
-            taskId: taskId,
+            projectId: projectId,
           });
         }
       });
 
-      const assignedTask = await AssignTask(
+      const assignedProject = await AssignTask(
         isCheck,
-        taskId,
+        projectId,
         asignees,
         user_data.companyId
       );
       setLoading(true);
 
-      if (assignedTask) {
-        if (assignedTask.error == null) {
+      if (assignedProject) {
+        if (assignedProject.error == null) {
           setLoading(false);
           const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === taskId);
+          const i = tempState.findIndex((item) => item.id === projectId);
           if (i !== -1) {
             console.log(tempState[i].asignees);
             const updatedItem = { ...tempState[i], asignees };
             tempState[i] = updatedItem;
-            return setTasks ? setTasks(tempState) : null;
+            return setData ? setData(tempState) : null;
           }
-          setMessage("Task assigned successfully.");
+          setMessage("Project assigned successfully.");
         } else {
-          setMessage("Task not assigned.");
+          setMessage("Project not assigned.");
           setLoading(true);
         }
       } else {
@@ -225,20 +227,20 @@ const TaskCE = ({ _data, setTasks }: Props) => {
         companyId: user_data.companyId,
       };
 
-      const updatedTask = await UpdateTask(task_data.id, newData);
-      if (updatedTask) {
-        if (updatedTask.error == null) {
-          setMessage("Task updated successfully.");
+      const updatedProject = await UpdateTask(project_data.id, newData);
+      if (updatedProject) {
+        if (updatedProject.error == null) {
+          setMessage("Project updated successfully.");
           const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === task_data.id);
+          const i = tempState.findIndex((item) => item.id === project_data.id);
           if (i !== -1) {
             tempState[i] = data;
             setLoading(false);
-            return setTasks(tempState);
+            return setData(tempState);
           }
           setProceed(true);
         } else {
-          setMessage("Task not created");
+          setMessage("Project not created");
           setLoading(true);
           setProceed(false);
         }
@@ -258,14 +260,14 @@ const TaskCE = ({ _data, setTasks }: Props) => {
           asignees.push({
             id: y.id,
             email: y.email,
-            taskId: taskId,
+            projectId: projectId,
           });
         }
       });
 
       const assignedTask = await AssignTask(
         isCheck,
-        taskId,
+        projectId,
         asignees,
         user_data.companyId
       );
@@ -273,11 +275,11 @@ const TaskCE = ({ _data, setTasks }: Props) => {
       if (assignedTask) {
         if (assignedTask.error == null) {
           const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === taskId);
+          const i = tempState.findIndex((item) => item.id === projectId);
           if (i !== -1) {
             const updatedItem = { ...tempState[i], asignees };
             tempState[i] = updatedItem;
-            setTasks ? setTasks(tempState) : null;
+            setData ? setData(tempState) : null;
           }
           setMessage("Task assigned successfully.");
           setLoading(false);
@@ -294,88 +296,96 @@ const TaskCE = ({ _data, setTasks }: Props) => {
 
   return (
     <Fragment>
-      {proceed && <h1>Select agent to assign task.</h1>}
-
+      {/* {proceed && <h1>Select agent to assign task.</h1>} */}
       <div className="flex flex-wrap">
         <div className="w-full lg:w-1/2 p-1 border-r">
-          <form
-            className="w-auto mx-auto lg:w-full justify-center grid"
-            onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
-          >
-            <div className="grid grid-cols-2 items-center gap-4 mb-2">
-              <Input
-                register={register}
-                name="title"
-                control={control}
-                label="Title"
-                width="w-30"
-                color="text-gray"
-                placeholder="10 Leads"
-              />
-
-              <SelectType
-                register={register}
-                name="priority"
-                control={control}
-                label="Priority"
-                width="w-30"
-                color="text-gray"
-              />
-
-              <DatePicker
-                register={register}
-                name="deadline"
-                control={control}
-                label="Deadline of task"
-                width="w-40"
-                color="text-gray"
-              />
-
-              <Input
-                register={register}
-                name="bonus"
-                control={control}
-                label="Bonus"
-                width="w-42"
-                color="text-gray"
-                placeholder="10%"
-              />
-            </div>
-            <>
-              <hr />
-            </>
-            <div className="mt-5 grid mb-2">
-              <p className="text-sm mb-1">
-                Write the job description for the brief understanding of task.
-              </p>
-              <TextArea
-                register={register}
-                name="description"
-                control={control}
-                label=""
-                width="w-30"
-                placeholder="Write job description"
-                color="text-gray"
-              />
-            </div>
-            <>
-              <hr />
-            </>
-            <div className="mb-3 mt-2">
-              {loading ? (
-                <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
-              ) : (
-                <Button
-                  style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-                  label={edit ? "Update" : "Create"}
-                  type="submit"
+          {/* Content for the left column */}
+          <div className="w-full lg:w-full mx-auto px-4">
+            <form
+              className="w-auto mx-auto lg:w-full justify-center grid"
+              onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
+              >
+              <h1  className="mt-4">Create project to assign agents.</h1>
+              <div className="grid grid-cols-2 items-center gap-4 mb-2 mt-4">
+                <Input
+                  register={register}
+                  name="title"
+                  control={control}
+                  label="Title"
+                  width="w-30"
+                  color="text-gray"
+                  placeholder="Market-place project"
                 />
-              )}
-              <p className="mt-2">{message}</p>
-            </div>
-          </form>
+
+                <SelectType
+                  register={register}
+                  name="status"
+                  control={control}
+                  label="Status"
+                  width="w-30"
+                  color="text-gray"
+                />
+
+                <DatePicker
+                  register={register}
+                  name="deadline"
+                  control={control}
+                  label="Deadline of project"
+                  width="w-40"
+                  color="text-gray"
+                />
+
+                <Input
+                  register={register}
+                  name="project_length"
+                  control={control}
+                  label="Project Length"
+                  width="w-42"
+                  color="text-gray"
+                  placeholder="1 to 3 months"
+                />
+              </div>
+              <>
+                <hr />
+              </>
+              <div className="mt-5 grid mb-2">
+                <p className="text-sm mb-1">
+                  Write the job description for the brief understanding of project.
+                </p>
+                <TextArea
+                  register={register}
+                  name="description"
+                  control={control}
+                  label=""
+                  width="w-30"
+                  placeholder="Write job description"
+                  color="text-gray"
+                />
+              </div>
+              <>
+                <hr />
+              </>
+              <div className="mb-3 mt-2">
+                {loading ? (
+                  <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
+                ) : (
+                  <Button
+                  ripple={false}
+                  className="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
+                  type="submit"
+                  size="md"
+                >
+                  {edit ? "Update" : "Create"}
+                </Button>
+                )}
+                <p className="mt-2">{message}</p>
+              </div>
+            </form>
+          </div>
         </div>
-        <div className="w-full lg:w-1/2 p-1 border-r">
+      <div className="w-full lg:w-1/2 p-4">
+        <h1  className="m-2">Assign agents to this project.</h1>
+        <hr className="m-2"></hr>
           <form onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}>
             <TaskAssign
               currentPage={currentPage}
@@ -389,115 +399,13 @@ const TaskCE = ({ _data, setTasks }: Props) => {
               message={message}
               totalUsers={totalUsers}
               checkList={checkList}
+              disabled={proceed}
             />
           </form>
-        </div>
+      </div>
       </div>
     </Fragment>
   );
 };
 
-export default TaskCE;
-
-
-{/* <Fragment>
-{proceed && <h1>Select agent to assign task.</h1>}
-<>
-  {!proceed && (
-    <form
-      className="w-auto mx-auto lg:w-full justify-center grid"
-      onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
-    >
-      <div className="grid grid-cols-2 items-center gap-4 mb-2">
-        <Input
-          register={register}
-          name="title"
-          control={control}
-          label="Title"
-          width="w-30"
-          color="text-gray"
-          placeholder="10 Leads"
-        />
-
-        <SelectType
-          register={register}
-          name="priority"
-          control={control}
-          label="Priority"
-          width="w-30"
-          color="text-gray"
-        />
-
-        <DatePicker
-          register={register}
-          name="deadline"
-          control={control}
-          label="Deadline of task"
-          width="w-40"
-          color="text-gray"
-        />
-
-        <Input
-          register={register}
-          name="bonus"
-          control={control}
-          label="Bonus"
-          width="w-42"
-          color="text-gray"
-          placeholder="10%"
-        />
-      </div>
-      <>
-        <hr />
-      </>
-      <div className="mt-5 grid mb-2">
-        <p className="text-sm mb-1">
-          Write the job description for the brief understanding of task.
-        </p>
-        <TextArea
-          register={register}
-          name="description"
-          control={control}
-          label=""
-          width="w-30"
-          placeholder="Write job description"
-          color="text-gray"
-        />
-      </div>
-      <>
-        <hr />
-      </>
-      <div className="mb-3 mt-2">
-        {loading ? (
-          <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
-        ) : (
-          <Button
-            style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-            label={edit ? "Update" : "Create"}
-            type="submit"
-          />
-        )}
-        <p className="mt-2">{message}</p>
-      </div>
-    </form>
-  )}
-</>
-
-{proceed && (
-  <form  onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}>
-    <TaskAssign
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      Loading={loadingData}
-      isCheck={isCheck}
-      setIsCheck={setIsCheck}
-      edit={edit}
-      users={users}
-      loading={loading}
-      message={message}
-      totalUsers={totalUsers}
-      checkList={checkList}
-    />
-  </form>
-)}
-</Fragment> */}
+export default ProjectCE;

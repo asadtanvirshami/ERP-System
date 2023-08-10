@@ -43,6 +43,7 @@ const Table = ({
   onClick,
   totalPages,
   loading,
+  modalSize,
   currentPage,
 }: any) => {
   const [state, setState] = useState({
@@ -313,7 +314,7 @@ const Table = ({
         onScroll={null}
         label={modalTitle}
         showModal={state.showModal}
-        modalSize="xs"
+        modalSize={modalSize}
         viewTable={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, showModal: show }))
@@ -325,7 +326,7 @@ const Table = ({
         onScroll={null}
         label={modalTitle}
         showModal={state.viewModal}
-        modalSize="sm"
+        modalSize={modalSize}
         viewTable={true}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))

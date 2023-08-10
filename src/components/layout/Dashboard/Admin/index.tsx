@@ -29,6 +29,7 @@ import projectPNG from "../../../../../public/Image/Icons/pngs/project.png";
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/solid";
 import { Square3Stack3DIcon } from "@heroicons/react/24/solid";
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
+import ProjectCE from "../../CreateOrEdit/ProjectCE/ProjectCE";
 
 type InfoCardData = {
   title: string;
@@ -206,13 +207,13 @@ const Index = () => {
                 icon={projectPNG}
                 heroicon={Square3Stack3DIcon}
                 renderModalComponent={
-                  <TaskCE setTasks={null} _data={data.agents} />
+                  <ProjectCE setData={null} _data={data.agents} />
                 }
                 label="Create Project"
                 description="You can create project and assign agents."
                 title="Project Creation"
                 modalTitle="Project"
-                modalSize={'sm'}
+                modalSize={'lg'}
               />
             </div>
           </div>
@@ -228,7 +229,7 @@ const Index = () => {
                 description="Create a task for agents."
                 title="Tasks Creation"
                 modalTitle="Task"
-                modalSize={'sm'}
+                modalSize={'lg'}
               />
             </div>
           </div>

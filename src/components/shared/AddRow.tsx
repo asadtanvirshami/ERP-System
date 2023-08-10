@@ -8,10 +8,11 @@ interface Row {
 
 interface AddRowProps {
   onRowsChange: (rows: Row[]) => void;
+  rows:any,
+  setRows:any
 }
 
-const AddRow: React.FC<AddRowProps> = ({ onRowsChange }) => {
-  const [rows, setRows] = useState<Row[]>([{ service: "", price: "" }]);
+const AddRow: React.FC<AddRowProps> = ({ onRowsChange, rows, setRows, }) => {
 
   const handleServiceChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -56,7 +57,7 @@ const AddRow: React.FC<AddRowProps> = ({ onRowsChange }) => {
             </tr>
           </thead>
           <tbody className="min-h-[200px] md:min-h-0 overflow-y-auto w-full">
-            {rows.map((row, index) => (
+            {rows.map((row:any, index:any) => (
               <tr key={index}>
                 <td className="m-2">
                   <input

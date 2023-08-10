@@ -126,6 +126,7 @@ const AgentCE = (props: Props) => {
             label="Full name"
             width={"w-30"}
             color={"text-gray"}
+            placeholder="John Doe"
           />
           <Input
             register={register}
@@ -134,6 +135,7 @@ const AgentCE = (props: Props) => {
             label="Phone No."
             width={"w-30"}
             color={"text-gray"}
+            placeholder="+1 334 422 5333"
           />
           <Input
             register={register}
@@ -142,6 +144,7 @@ const AgentCE = (props: Props) => {
             label="Designation"
             width={"w-30"}
             color={"text-gray"}
+            placeholder="sales-agent"
           />
           <Input
             register={register}
@@ -150,6 +153,7 @@ const AgentCE = (props: Props) => {
             label="Address"
             width={"w-30"}
             color={"text-gray"}
+            placeholder="west blvd, 12th street"
           />
           <Input
             register={register}
@@ -158,6 +162,7 @@ const AgentCE = (props: Props) => {
             label="Email"
             width={"w-30"}
             color={"text-gray"}
+            placeholder="johndoe@gmail.com"
           />
           <Input
             register={register}
@@ -166,6 +171,7 @@ const AgentCE = (props: Props) => {
             label="Password"
             width={"w-30"}
             color={"text-gray"}
+            placeholder="$1234admin"
           />
         </div>
         <div className="mb-1">

@@ -92,6 +92,7 @@ const Index = (props: Props) => {
           ]}
           loading={loading}
           modalTitle="Tasks"
+          modalSize={'lg'}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           data={tasks}

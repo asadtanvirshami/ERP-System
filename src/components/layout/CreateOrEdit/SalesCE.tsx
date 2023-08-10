@@ -44,9 +44,15 @@ const SalesSchema = yup.object().shape({
 });
 
 const SalesCE = (props: Props) => {
+  // types.ts
+  interface Row {
+    service: string;
+    price: string;
+  }
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<Row[]>([{ service: "", price: "" }]);
 
   const handleAddRow = (newRow: Row) => {
     setRows([...rows, newRow]);
@@ -144,27 +150,25 @@ const SalesCE = (props: Props) => {
     console.log(newRows);
   };
 
-  // types.ts
-  interface Row {
-    service: string;
-    price: string;
-  }
-
   return (
     <Fragment>
-   <DefaultStepper />
-  <div className="flex flex-wrap">
-    <div className="w-full lg:w-1/2 p-1 border-r">
-      {/* Content for the left column */}
-      <div className="w-full lg:w-full mx-auto px-4">
-        <h1 className="mb-4">Add Services & amount included in package.</h1>
-        <div className="container">
-          <AddRow onRowsChange={handleRowsChange} />
+      <DefaultStepper />
+      <div className="flex flex-wrap">
+        <div className="w-full lg:w-1/2 p-1 border-r">
+          {/* Content for the left column */}
+          <div className="w-full lg:w-full mx-auto px-4">
+            <h1 className="mb-4">Add Services & amount included in package.</h1>
+            <div className="container">
+              <AddRow
+                onRowsChange={handleRowsChange}
+                rows={rows}
+                setRows={setRows}
+              />
+            </div>
+            <hr className="m-4"></hr>
+          </div>
         </div>
-        <hr className="m-4"></hr>
-      </div>
-    </div>
-    <div className="w-full lg:w-1/2 p-4">
+        <div className="w-full lg:w-1/2 p-4">
           {/* Content for the right column */}
           <div className="p-4">
             <form
