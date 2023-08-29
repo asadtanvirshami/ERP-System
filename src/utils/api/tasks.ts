@@ -41,15 +41,15 @@ async function CreateNewTask(data: any) {
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { task: r.data.payload, error: null };
+          return { task: r.data.taskPayload, error: null, updatePayload:r.data.updatePayload };
         }
         if (r.data.message == "error") {
-          return { error: Error("Failed to retrieve tasks"), task: null };
+          return { error: Error("Failed to retrieve tasks"), task: null, updatePayload:null };
         }
       });
     return response;
   } catch (e) {
-    return { error: "error", task: null };
+    return { error: "error", task: null, updatePayload:null };
   }
 }
 
@@ -103,25 +103,24 @@ async function DeleteUserTask(userId: string, taskId: string) {
   }
 }
 
-async function UpdateTask(taskId: string, data: any) {
+async function UpdateTask( data: any) {
   try {
     const response = await axios
       .post(process.env.NEXT_PUBLIC_ERP_UPDATE_TASK as string, {
-        taskId: taskId,
         data: data,
       })
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { task: r.data.payload, error: null };
+          return { task: r.data.taskPayload, error: null, updatePayload:r.data.updatePayload, assignedUsers:r.data.assignedUsers };
         }
         if (r.data.message == "error") {
-          return { error: Error("Failed to retrieve tasks"), task: null };
+          return { error: Error("Failed to retrieve tasks"), task: null, updatePayload:null,assignedUsers:null   };
         }
       });
     return response;
   } catch (e) {
-    return { error: "error", task: null };
+    return { error: "error", task: null,updatePayload:null,assignedUsers:null };
   }
 }
 

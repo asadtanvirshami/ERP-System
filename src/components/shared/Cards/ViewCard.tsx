@@ -26,7 +26,7 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
           <ul className="p-3 w-full">
             {data.map((items, index) => {
               return (
-                <Fragment>
+                <div key={index}>
                   {
                     <li key={index} className=" p-3">
                       {Keys.map((key: any, i) => (
@@ -37,7 +37,7 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
                     </li>
                   }
                   <hr />
-                </Fragment>
+                </div>
               );
             })}
           </ul>
@@ -51,6 +51,7 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
         </div>
       </div>
       <Modal
+        onScroll={false}
         label={modalTitle}
         showModal={showModal}
         modalSize="lg"

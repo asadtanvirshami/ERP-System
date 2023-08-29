@@ -16,7 +16,7 @@ const TaskAssign = ({
   totalUsers,
   users,
   Loading,
-  disabled
+  disabled,
 }: any) => {
   const handleScroll = debounce(() => {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
@@ -54,6 +54,7 @@ const TaskAssign = ({
                   <div className="mr-3">
                     <>
                       <Checkbox
+                        ripple={false}
                         className="hover:before:opacity-0"
                         type="checkbox"
                         onChange={(e: any) =>

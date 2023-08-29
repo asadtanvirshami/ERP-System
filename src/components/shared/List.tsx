@@ -3,8 +3,6 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Button,
-  Checkbox,
 } from "@material-tailwind/react";
 
 import { useDispatch } from "react-redux";
@@ -44,7 +42,7 @@ export const List = ({ onClick, state, deleteFunc, data }: Props) => {
                             values: data,
                           })
                         );
-                        deleteFunc(ele.id ,ele.taskId);
+                        deleteFunc(ele.id ,data.id);
                       }}
                     >
                       <svg
@@ -62,6 +60,7 @@ export const List = ({ onClick, state, deleteFunc, data }: Props) => {
                         />
                       </svg>
                     </button>
+                 
                     {ele.email}
                   </label>
                 </li>

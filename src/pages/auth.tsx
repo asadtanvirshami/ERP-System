@@ -12,7 +12,7 @@ type Props = {
   sessionData: object;
 };
 
-const auth = (props: Props) => {
+const Auth = (props: Props) => {
   const [signUp, setSignUp] = React.useState<boolean>(false);
   const [companyReg, setCompanyReg] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -69,7 +69,7 @@ const auth = (props: Props) => {
   );
 };
 
-export default auth;
+export default Auth;
 
 export const getStaticProps: GetStaticProps = async () => {
   // Fetch data from external API

@@ -48,6 +48,7 @@ const Index = (props: Props) => {
   };
 
   const handleDeleteUserTask = async (id: string, taskId: string) => {
+    console.log(id,)
     const tempData: any[] = [...tasks];
     const deletedUserTask = await DeleteUserTask(id, taskId);
     if (deletedUserTask?.error == null) {

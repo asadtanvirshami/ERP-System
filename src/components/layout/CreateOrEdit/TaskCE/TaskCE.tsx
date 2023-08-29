@@ -134,163 +134,177 @@ const TaskCE = ({ _data, setTasks }: Props) => {
   }, [edit]);
 
   const onSubmit = async (data: any) => {
-    if (!proceed) {
-      setLoading(true);
-      //setting the data object
-      const newData = {
-        ...data,
-        startDate: moment().format("L"),
-        startTime: moment().format("h:mm:ss a"),
-        deadline: data.deadline,
-        userId: user_data.loginId,
-        companyId: user_data.companyId,
-      };
-      const createdTask = await CreateNewTask(newData);
-      console.log(createdTask);
-      if (createdTask) {
-        if (createdTask.error == null) {
-          setMessage("Task created successfully.");
-          setLoading(false);
-          setProceed(true);
-          setTaskId(createdTask.task.id);
-          let tempArr = [..._data, createdTask.task];
-          return setTasks ? setTasks(tempArr) : null;
-        } else {
-          return (
-            setProceed(false), setLoading(true), setMessage("Task not created")
-          );
-        }
-      } else {
-        setProceed(false),
-          setLoading(true),
-          setMessage("Error occured please wait.");
+    setLoading(true);
+    const tempStateList = users;
+    const asignees: any = [];
+
+    tempStateList.forEach((y: any) => {
+      if (isCheck.includes(y.id)) {
+        asignees.push({
+          id: y.id,
+          email: y.email,
+        });
       }
-    }
-    if (proceed) {
-      setLoading(true);
-      const tempStateList = users;
-      const asignees: any = [];
+    });
 
-      tempStateList.forEach((y: any) => {
-        if (isCheck.includes(y.id)) {
-          asignees.push({
-            id: y.id,
-            email: y.email,
-            taskId: taskId,
-          });
-        }
-      });
+    const newData = {
+      ...data,
+      startDate: moment().format("L"),
+      startTime: moment().format("h:mm:ss a"),
+      deadline: data.deadline,
+      userId: user_data.loginId,
+      companyId: user_data.companyId,
+      isCheck: isCheck,
+      asignees: asignees,
+    };
 
-      const assignedTask = await AssignTask(
-        isCheck,
-        taskId,
-        asignees,
-        user_data.companyId
-      );
-      setLoading(true);
+    const createdTask = await CreateNewTask(newData);
+    if (createdTask) {
+      if (createdTask.error == null) {
+        setMessage("Task created successfully.");
+        setLoading(false);
 
-      if (assignedTask) {
-        if (assignedTask.error == null) {
-          setLoading(false);
-          const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === taskId);
-          if (i !== -1) {
-            console.log(tempState[i].asignees);
-            const updatedItem = { ...tempState[i], asignees };
-            tempState[i] = updatedItem;
-            return setTasks ? setTasks(tempState) : null;
-          }
-          setMessage("Task assigned successfully.");
-        } else {
-          setMessage("Task not assigned.");
-          setLoading(true);
-        }
+        let tempArr = [..._data, createdTask.task];
+        const tempState: Array<any> = [..._data];
+        const i = tempState.findIndex((item) => item.id === taskId);
+        return setTasks ? setTasks(tempArr) : null;
       } else {
-        setMessage("Error occurred please wait.");
-        setLoading(true);
+        return setLoading(true), setMessage("Task not created");
       }
+    } else {
+      setLoading(true), setMessage("Error occured please wait.");
     }
   };
 
   const onEdit = async (data: any) => {
-    if (!proceed) {
-      setLoading(true);
-      //setting the data object
-      const newData = {
-        ...data,
-        startDate: moment().format("L"),
-        startTime: moment().format("h:mm:ss a"),
-        deadline: data.deadline,
-        userId: user_data.id,
-        companyId: user_data.companyId,
-      };
+    setLoading(true);
+    const tempStateList = users;
+    const asignees: any = [];
 
-      const updatedTask = await UpdateTask(task_data.id, newData);
-      if (updatedTask) {
-        if (updatedTask.error == null) {
-          setMessage("Task updated successfully.");
-          const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === task_data.id);
-          if (i !== -1) {
-            tempState[i] = data;
-            setLoading(false);
-            return setTasks(tempState);
-          }
-          setProceed(true);
-        } else {
-          setMessage("Task not created");
-          setLoading(true);
-          setProceed(false);
-        }
-      } else {
-        setMessage("Error occured please wait.");
-        setLoading(true);
-        setProceed(false);
+    tempStateList.forEach((y: any) => {
+      if (isCheck.includes(y.id)) {
+        asignees.push({
+          id: y.id,
+          email: y.email,
+        });
       }
-    }
-    if (proceed) {
-      setLoading(true);
-      const tempStateList = users;
-      const asignees: any = [];
+    });
 
-      tempStateList.forEach((y: any) => {
-        if (isCheck.includes(y.id)) {
-          asignees.push({
-            id: y.id,
-            email: y.email,
-            taskId: taskId,
-          });
-        }
-      });
+    const newData = {
+      ...data,
+      startDate: moment().format("L"),
+      startTime: moment().format("h:mm:ss a"),
+      deadline: data.deadline,
+      userId: user_data.loginId,
+      companyId: user_data.companyId,
+      isCheck: isCheck,
+      asignees: asignees,
+    };
 
-      const assignedTask = await AssignTask(
-        isCheck,
-        taskId,
-        asignees,
-        user_data.companyId
-      );
+    const updatedTask = await UpdateTask(newData);
+    console.log(updatedTask)
+    if (updatedTask) {
+      if (updatedTask.error == null) {
+        setMessage("Task created successfully.");
+        setLoading(false);
 
-      if (assignedTask) {
-        if (assignedTask.error == null) {
-          const tempState: Array<any> = [..._data];
-          const i = tempState.findIndex((item) => item.id === taskId);
-          if (i !== -1) {
-            const updatedItem = { ...tempState[i], asignees };
-            tempState[i] = updatedItem;
-            setTasks ? setTasks(tempState) : null;
-          }
-          setMessage("Task assigned successfully.");
+        let tempArr = [..._data, updatedTask.task];
+        const tempState: Array<any> = [..._data];
+        const i = tempState.findIndex((item) => item.id === task_data.id);
+        if (i !== -1) {
+          tempState[i] = data;
           setLoading(false);
-        } else {
-          setMessage("Task not assigned.");
-          setLoading(true);
+          return setTasks(tempState);
         }
+        return setTasks ? setTasks(tempArr) : null;
       } else {
-        setMessage("Error occurred please wait.");
-        setLoading(true);
+        return setLoading(true), setMessage("Task not created");
       }
+    } else {
+      setLoading(true), setMessage("Error occured please wait.");
     }
   };
+
+  // const onEdit = async (data: any) => {
+  //   if (!proceed) {
+  //     setLoading(true);
+  //     //setting the data object
+  //     const newData = {
+  //       ...data,
+  //       startDate: moment().format("L"),
+  //       startTime: moment().format("h:mm:ss a"),
+  //       deadline: data.deadline,
+  //       userId: user_data.id,
+  //       companyId: user_data.companyId,
+  //     };
+
+  //     const updatedTask = await UpdateTask(task_data.id, newData);
+  //     if (updatedTask) {
+  //       if (updatedTask.error == null) {
+  //         setMessage("Task updated successfully.");
+  //         const tempState: Array<any> = [..._data];
+  //         const i = tempState.findIndex((item) => item.id === task_data.id);
+  //         if (i !== -1) {
+  //           tempState[i] = data;
+  //           setLoading(false);
+  //           return setTasks(tempState);
+  //         }
+  //         setProceed(true);
+  //       } else {
+  //         setMessage("Task not created");
+  //         setLoading(true);
+  //         setProceed(false);
+  //       }
+  //     } else {
+  //       setMessage("Error occured please wait.");
+  //       setLoading(true);
+  //       setProceed(false);
+  //     }
+  //   }
+
+  //   if (proceed) {
+  //     setLoading(true);
+  //     const tempStateList = users;
+  //     const asignees: any = [];
+
+  //     tempStateList.forEach((y: any) => {
+  //       if (isCheck.includes(y.id)) {
+  //         asignees.push({
+  //           id: y.id,
+  //           email: y.email,
+  //           taskId: taskId,
+  //         });
+  //       }
+  //     });
+
+  //     const assignedTask = await AssignTask(
+  //       isCheck,
+  //       taskId,
+  //       asignees,
+  //       user_data.companyId
+  //     );
+
+  //     if (assignedTask) {
+  //       if (assignedTask.error == null) {
+  //         const tempState: Array<any> = [..._data];
+  //         const i = tempState.findIndex((item) => item.id === taskId);
+  //         if (i !== -1) {
+  //           const updatedItem = { ...tempState[i], asignees };
+  //           tempState[i] = updatedItem;
+  //           setTasks ? setTasks(tempState) : null;
+  //         }
+  //         setMessage("Task assigned successfully.");
+  //         setLoading(false);
+  //       } else {
+  //         setMessage("Task not assigned.");
+  //         setLoading(true);
+  //       }
+  //     } else {
+  //       setMessage("Error occurred please wait.");
+  //       setLoading(true);
+  //     }
+  //   }
+  // };
 
   return (
     <Fragment>
@@ -399,8 +413,8 @@ const TaskCE = ({ _data, setTasks }: Props) => {
 
 export default TaskCE;
 
-
-{/* <Fragment>
+{
+  /* <Fragment>
 {proceed && <h1>Select agent to assign task.</h1>}
 <>
   {!proceed && (
@@ -500,4 +514,5 @@ export default TaskCE;
     />
   </form>
 )}
-</Fragment> */}
+</Fragment> */
+}
