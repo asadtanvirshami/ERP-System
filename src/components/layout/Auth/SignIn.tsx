@@ -99,7 +99,7 @@ const Signin = (props: Props) => {
         </form>
         <span className="mt-4 flex w-100">
           <p className="text-white font-extralight text-sm mx-1">
-            Don't have an account? &apos;
+            Start here.
           </p>
           <button
             onClick={() => {
@@ -107,7 +107,7 @@ const Signin = (props: Props) => {
             }}
             className="bg-transparent text-white font-semibold text-sm"
           >
-            <p> Create a company account. &apos;</p>
+            <p> Create a company account.</p>
           </button>
         </span>
       </div>
