@@ -99,7 +99,7 @@ const Signin = (props: Props) => {
         </form>
         <span className="mt-4 flex w-100">
           <p className="text-white font-extralight text-sm mx-1">
-            No existing account?
+            Start here.
           </p>
           <button
             onClick={() => {
