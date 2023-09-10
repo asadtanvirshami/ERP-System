@@ -202,7 +202,7 @@ const TaskCE = ({ _data, setTasks }: Props) => {
     };
 
     const updatedTask = await UpdateTask(newData);
-    console.log(updatedTask)
+    console.log(updatedTask?.assignedUsers)
     if (updatedTask) {
       if (updatedTask.error == null) {
         setMessage("Task created successfully.");
@@ -212,7 +212,8 @@ const TaskCE = ({ _data, setTasks }: Props) => {
         const tempState: Array<any> = [..._data];
         const i = tempState.findIndex((item) => item.id === task_data.id);
         if (i !== -1) {
-          tempState[i] = data;
+          const updatedData = 
+          tempState[i] = {...data, asignees:asignees};
           setLoading(false);
           return setTasks(tempState);
         }
