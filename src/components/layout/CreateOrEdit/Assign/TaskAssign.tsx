@@ -22,19 +22,20 @@ const TaskAssign = ({
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
     if (
       scrollTop + clientHeight >= scrollHeight - 400 &&
-      users.length < totalUsers
+      users.length < totalUsers &&
+      !Loading
     ) {
       setCurrentPage((prevPage: any) => prevPage + 1);
     }
-  }, 1000); // Adjust the debounce delay as needed (e.g., 200ms)
+  }, 1000);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
+    console.log(users);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [users.length, currentPage]);
+  }, []); // Empty dependency array to add and remove the listener only once
 
   return (
     <div>
@@ -68,7 +69,11 @@ const TaskAssign = ({
                 </label>
               </>
             ))}
-            {Loading && <p>Loading...</p>}
+            {Loading && (
+              <div className="flex justify-center items-center">
+                <Spinner fontSize={22} color="red" />
+              </div>
+            )}
           </>
         ) : (
           <div className="flex align-middle justify-center p-12">
