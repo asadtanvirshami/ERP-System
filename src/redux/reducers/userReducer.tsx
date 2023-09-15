@@ -8,8 +8,8 @@ import {
 const initialState = {
   isAuthenticated: false,
   user: {},
-  role: null,
-  error: null,
+  role: {},
+  error: {},
 };
 
 const userReducer = (state = initialState, action: any) => {
@@ -20,14 +20,14 @@ const userReducer = (state = initialState, action: any) => {
         isAuthenticated: true,
         user: action.payload.user,
         role: action.payload.role,
-        error: null,
+        error: {},
       };
     case USER_SIGNIN_FALIURE:
       return {
         ...state,
         isAuthenticated: false,
-        user: null,
-        role: null,
+        user: {},
+        role: {},
         error: action.payload.error,
       };
     case LOGOUT:
