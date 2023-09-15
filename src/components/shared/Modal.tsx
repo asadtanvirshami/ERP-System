@@ -6,7 +6,7 @@ import {
   DialogHeader,
 } from "@material-tailwind/react";
 //SVG Import
-import CrossIcon from "../../../public/Image/Icons/svgs/cross.svg";
+import {XMarkIcon} from "@heroicons/react/24/solid";
 //Redux
 import { useSelector } from "react-redux";
 import Button from "./Buttons/Button";
@@ -41,7 +41,7 @@ const Modal = (props: Props) => {
             )}
           </div>
           <div className="justify-center w-10 ">
-            <CrossIcon
+            <XMarkIcon
               onClick={() => props.setShowModal(false)}
               className=" h-5 w-5 mt-3 cursor-pointer"
               fill={"gray"}

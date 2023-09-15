@@ -10,7 +10,9 @@ import Container from "../../shared/DashboardLayout/PanelSection/Container";
 import { useSelector } from "react-redux";
 import { DeleteAgent, GetAllAgents } from "@/src/utils/api/team";
 
-type Props = {};
+type Props = {
+  sessionData:object
+};
 
 const Index = (props: Props) => {
   const [agents, setAgents] = useState<Agents[]>([]);
