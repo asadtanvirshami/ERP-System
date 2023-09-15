@@ -149,7 +149,6 @@ const SalesCE = (props: Props) => {
   };
   const handleRowsChange = (newRows: any) => {
     // Do something with the updated rows
-    console.log(newRows);
   };
 
   return (
