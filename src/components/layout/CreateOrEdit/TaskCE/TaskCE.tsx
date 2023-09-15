@@ -37,9 +37,10 @@ const SignupSchema = yup.object().shape({
 type Props = {
   _data: Array<any>;
   setTasks: any;
+  options:any
 };
 
-const TaskCE = ({ _data, setTasks }: Props) => {
+const TaskCE = ({ _data, setTasks, options }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
@@ -248,6 +249,7 @@ const TaskCE = ({ _data, setTasks }: Props) => {
               />
 
               <SelectType
+                options={options.status}
                 register={register}
                 name="priority"
                 control={control}

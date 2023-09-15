@@ -8,14 +8,19 @@ interface Row {
 
 interface AddRowProps {
   onRowsChange: (rows: Row[]) => void;
-  rows:any,
-  setRows:any
+  rows: any;
+  setRows: any;
+  options: any;
 }
 
-const AddRow: React.FC<AddRowProps> = ({ onRowsChange, rows, setRows, }) => {
-
+const AddRow: React.FC<AddRowProps> = ({
+  onRowsChange,
+  rows,
+  setRows,
+  options,
+}) => {
   const handleServiceChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ) => {
     const newRows = [...rows];
@@ -57,19 +62,27 @@ const AddRow: React.FC<AddRowProps> = ({ onRowsChange, rows, setRows, }) => {
             </tr>
           </thead>
           <tbody className="min-h-[200px] md:min-h-0 overflow-y-auto w-full">
-            {rows.map((row:any, index:any) => (
+            {rows.map((row: any, index: any) => (
               <tr key={index}>
                 <td className="m-2">
-                  <input
-                    type="text"
+                  <select
                     placeholder="Service"
                     className="p-2 mt-2 border h-10 w-full md:w-full border-[0.5]px rounded-md text-sm focus:outline-none focus:border-blue-500"
                     value={row.service}
                     onChange={(e) => handleServiceChange(e, index)}
-                  />
+                  >
+                    {options.map((x:string) => {
+                      return (
+                        <>
+                          <option className="hidden">Select Service</option>
+                          <option>{x}</option>
+                        </>
+                      );
+                    })}
+                  </select>
                 </td>
                 <td className="m-2">
-                  <input
+                <input
                     type="number"
                     placeholder="Price"
                     className="p-2 mx-2 mt-2 border h-10 w-full md:w-full border-[0.5]px rounded-md text-sm focus:outline-none focus:border-blue-500"
@@ -91,7 +104,7 @@ const AddRow: React.FC<AddRowProps> = ({ onRowsChange, rows, setRows, }) => {
                       className="bg-red-500 text-white py-2 px-1 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300 w-full md:w-auto"
                       onClick={handleAddRow}
                     >
-                   Add Row
+                      Add Row
                     </Button>
                   )}
                 </td>

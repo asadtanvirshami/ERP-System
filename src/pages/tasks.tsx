@@ -4,7 +4,7 @@ import Cookies from "cookies";
 import axios, { AxiosResponse } from 'axios';
 import Tasks from '../components/layout/Tasks/index'
 type Props = {
-  sessionData:object
+  sessionData:object,
 }
 
 

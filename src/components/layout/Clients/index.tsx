@@ -1,22 +1,26 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios, { AxiosResponse } from "axios";
 //Interface Imports
-import { Agents } from "@/src/interfaces/Agents";
+import { Clients } from "@/src/interfaces/Clients";
 //Component Imports
 import Table from "@/src/components/shared/Table";
 import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
-
-import EmptyTable from "../../shared/EmptyComponents/EmptyTable";
-
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
+//Redux
 import { useSelector } from "react-redux";
 import { GetClientsData } from "@/src/utils/api/clients";
-import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
 type Props = {};
 
 const Index = (props: Props) => {
-  const [data, setData] = useState<Agents[]>([]);
+  const [data, setData] = useState<Clients[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [options, setOptions] = useState<any>({
+    status: [],
+    services: [],
+    sources: [],
+    designation: [],
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -44,6 +48,21 @@ const Index = (props: Props) => {
       console.log(e);
     }
   }
+
+  async function getOptions() {
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string)
+      .then((response: AxiosResponse) => {
+        console.log(response.data[0].services);
+        setOptions({
+          status: response.data[0].status,
+          services: response.data[0].services,
+          sources: response.data[0].sources,
+          designation: response.data[0].designation,
+        });
+      });
+  }
+  useEffect(() => {getOptions()}, [])
 
   useEffect(() => {
     dataCall();

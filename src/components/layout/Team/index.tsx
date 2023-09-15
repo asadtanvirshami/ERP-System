@@ -1,20 +1,25 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios, { AxiosResponse } from "axios";
-import Cookies from "js-cookie";
 //Interface Imports
 import { Agents } from "@/src/interfaces/Agents";
 //Component Imports
 import Table from "@/src/components/shared/Table";
 import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
 //Redux
 import { useSelector } from "react-redux";
 import { DeleteAgent, GetAllAgents } from "@/src/utils/api/team";
-import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
 type Props = {};
 
 const Index = (props: Props) => {
-  const [agents, setAgents] = useState<any[]>([]);
+  const [agents, setAgents] = useState<Agents[]>([]);
+  const [options, setOptions] = useState<any>({
+    status: [],
+    services: [],
+    sources: [],
+    designation: [],
+  });
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -41,6 +46,20 @@ const Index = (props: Props) => {
     }
   }
 
+  async function getOptions() {
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string)
+      .then((response: AxiosResponse) => {
+        console.log(response.data[0].services);
+        setOptions({
+          status: response.data[0].status,
+          services: response.data[0].services,
+          sources: response.data[0].sources,
+          designation: response.data[0].designation,
+        });
+      });
+  }
+  useEffect(() => {getOptions()}, [])
   
   const handleDeleteUser = async (id: string) => {
     const deltetedTask = await DeleteAgent(id);
@@ -73,7 +92,7 @@ const Index = (props: Props) => {
           setData={setAgents}
           modalTitle="Agent"
           renderModalComponent={
-            <AgentCE setData={setAgents} data={agents || undefined} />
+            <AgentCE options={options} setData={setAgents} data={agents || undefined} />
           }
           totalPages={totalPages}
           currentPage={currentPage}

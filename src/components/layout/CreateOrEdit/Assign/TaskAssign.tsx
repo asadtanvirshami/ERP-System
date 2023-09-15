@@ -1,17 +1,14 @@
 import React, { useEffect } from "react";
 import debounce from "lodash.debounce";
 
-import { Checkbox, Spinner, Button } from "@material-tailwind/react";
-import LoadingButton from "@/src/components/shared/Buttons/Loading";
+import { Checkbox, Spinner } from "@material-tailwind/react";
+
+import { Agents } from "@/src/interfaces/Agents";
 
 const TaskAssign = ({
   checkList,
   isCheck,
   setIsCheck,
-  loading,
-  edit,
-  message,
-  currentPage,
   setCurrentPage,
   totalUsers,
   users,
@@ -31,7 +28,6 @@ const TaskAssign = ({
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    console.log(users);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -45,7 +41,7 @@ const TaskAssign = ({
       >
         {users?.length > 0 ? (
           <>
-            {users?.map((item: any, index: number) => (
+            {users?.map((item: Agents, index: number) => (
               <>
                 <label
                   key={item.id}
@@ -82,28 +78,6 @@ const TaskAssign = ({
         )}
       </div>
       <hr />
-      <div className="mb-3 mt-2">
-        {loading ? (
-          <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
-        ) : (
-          <>
-            {users?.length >= 1 && (
-              <div>
-                <Button
-                  ripple={false}
-                  disabled={disabled}
-                  className="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-                  type="submit"
-                  size="md"
-                >
-                  {edit ? "Update" : "Assign"}
-                </Button>
-                <p className="mt-2">{message}</p>
-              </div>
-            )}
-          </>
-        )}
-      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
+import SelectType from "../../shared/Form/SelectType";
 //Interface Import
 import { Agents } from "@/src/interfaces/Agents";
 //Redux
@@ -18,6 +19,7 @@ import { CreateNewAgent, UpdateAgent } from "@/src/utils/api/team";
 type Props = {
   data: Array<Agents>;
   setData: any;
+  options:any
 };
 
 const SignupSchema = yup.object().shape({
@@ -137,14 +139,14 @@ const AgentCE = (props: Props) => {
             color={"text-gray"}
             placeholder="+1 334 422 5333"
           />
-          <Input
+          <SelectType
+            options={props.options.designation}
             register={register}
             name="designation"
             control={control}
             label="Designation"
             width={"w-30"}
             color={"text-gray"}
-            placeholder="sales-agent"
           />
           <Input
             register={register}
