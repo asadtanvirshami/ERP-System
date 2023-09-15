@@ -19,10 +19,12 @@ import SelectType from "../../shared/Form/SelectType";
 import { CreatNewSale } from "@/src/utils/api/sale";
 import DefaultStepper from "../../shared/Stepper";
 import AddRow from "../../shared/AddRow";
+import { UpdateClient } from "@/src/utils/api/clients";
 
 type Props = {
   data: Array<Agents>;
   setData: any;
+  options: any;
 };
 interface Row {
   service: string;
@@ -160,6 +162,7 @@ const SalesCE = (props: Props) => {
             <h1 className="mb-4">Add Services & amount included in package.</h1>
             <div className="container">
               <AddRow
+                options={props.options.services}
                 onRowsChange={handleRowsChange}
                 rows={rows}
                 setRows={setRows}
@@ -175,7 +178,6 @@ const SalesCE = (props: Props) => {
               className="w-auto mx-auto lg:w-full justify-center grid"
               onSubmit={handleSubmit(edit ? onEdit : onSubmit)}
             >
-              {/* <div className="grid grid-cols-2 items-center gap-4 mb-2"> */}
               <div className="grid grid-cols-3 gap-2 mb-2">
                 <Input
                   register={register}
@@ -185,15 +187,6 @@ const SalesCE = (props: Props) => {
                   width={"w-full"}
                   color={"text-gray"}
                   placeholder="e.g web package"
-                />
-                <Input
-                  register={register}
-                  name="status"
-                  control={control}
-                  label="Status"
-                  width={"w-full"}
-                  color={"text-gray"}
-                  placeholder="e.g high"
                 />
                 <Input
                   register={register}
@@ -239,22 +232,23 @@ const SalesCE = (props: Props) => {
                   width={"w-full"}
                   color="text-gray"
                 />
-                {/* <SelectType
-            register={register}
-            name="source"
-            control={control}
-            label="Source"
-            width={"w-30"}
-            color={"text-gray"}
-          /> */}
-                <Input
+                <SelectType
+                  options={props.options.status}
+                  register={register}
+                  name="status"
+                  control={control}
+                  label="Status"
+                  width={"w-30"}
+                  color={"text-gray"}
+                />
+                <SelectType
+                  options={props.options.sources}
                   register={register}
                   name="source"
                   control={control}
                   label="Source"
-                  width={"w-full"}
+                  width={"w-30"}
                   color={"text-gray"}
-                  placeholder="e.g Upwork"
                 />
                 <Input
                   register={register}
@@ -273,7 +267,7 @@ const SalesCE = (props: Props) => {
                 register={register}
                 name="description"
                 control={control}
-                label=""
+                label="Write a proper detail of this sale."
                 width={"w-30"}
                 placeholder={"Write the details about the sale."}
                 color={"text-gray"}

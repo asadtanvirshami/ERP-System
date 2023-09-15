@@ -21,6 +21,8 @@ import { tasksBaseValues } from "@/src/utils/baseValues";
 import { checkList } from "@/src/functions/isCheckList";
 //Provider
 import { User } from "../../User/UserProvider";
+//Interface
+import { Options } from "@/src/interfaces/Options";
 //Utils
 import { CreateNewTask, AssignTask, UpdateTask } from "@/src/utils/api/tasks";
 import { GetAllAgents } from "@/src/utils/api/team";
@@ -37,6 +39,7 @@ const SignupSchema = yup.object().shape({
 type Props = {
   _data: Array<any>;
   setData: any;
+  options: Array<Options>
 };
 
 const ProjectCE = ({ _data, setData }: Props) => {
@@ -227,7 +230,7 @@ const ProjectCE = ({ _data, setData }: Props) => {
         companyId: user_data.companyId,
       };
 
-      const updatedProject = await UpdateTask(project_data.id, newData);
+      const updatedProject = await UpdateTask(project_data.id);
       if (updatedProject) {
         if (updatedProject.error == null) {
           setMessage("Project updated successfully.");
@@ -250,6 +253,7 @@ const ProjectCE = ({ _data, setData }: Props) => {
         setProceed(false);
       }
     }
+    
     if (proceed) {
       setLoading(true);
       const tempStateList = users;
@@ -318,6 +322,7 @@ const ProjectCE = ({ _data, setData }: Props) => {
                 />
 
                 <SelectType
+                  options={['Prices']}
                   register={register}
                   name="status"
                   control={control}

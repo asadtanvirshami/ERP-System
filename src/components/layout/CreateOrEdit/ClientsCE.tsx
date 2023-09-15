@@ -8,7 +8,7 @@ import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
 import TextArea from "@/src/components/shared/Form/TextArea";
 //Interface Import
-import { Agents } from "@/src/interfaces/Agents";
+import { Clients } from "@/src/interfaces/Clients";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
@@ -17,7 +17,7 @@ import SelectType from "../../shared/Form/SelectType";
 import { CreateNewClient, UpdateClient } from "@/src/utils/api/clients";
 
 type Props = {
-  data: Array<Agents>;
+  data: Array<Clients>;
   setData: any;
 };
 
@@ -125,6 +125,7 @@ const ClientsCE = (props: Props) => {
       >
         <div className="grid grid-cols-2 items-center gap-4 mb-2">
           <Input
+            placeholder="John Doe"
             register={register}
             name="name"
             control={control}
@@ -133,6 +134,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="+1"
             register={register}
             name="phone"
             control={control}
@@ -141,6 +143,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="xyz@gmail.com"
             register={register}
             name="email"
             control={control}
@@ -149,6 +152,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="West Ave street 2"
             register={register}
             name="address"
             control={control}
@@ -157,6 +161,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="United States"
             register={register}
             name="country"
             control={control}
@@ -165,6 +170,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="Salem, VA"
             register={register}
             name="city"
             control={control}
@@ -181,6 +187,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           /> */}
           <Input
+            placeholder="LinkedIn"
             register={register}
             name="source"
             control={control}
@@ -189,6 +196,7 @@ const ClientsCE = (props: Props) => {
             color={"text-gray"}
           />
           <Input
+            placeholder="www.LinkedIn.com"
             register={register}
             name="source_link"
             control={control}

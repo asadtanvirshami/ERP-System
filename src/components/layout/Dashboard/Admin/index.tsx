@@ -30,6 +30,7 @@ import { ArrowTrendingUpIcon } from "@heroicons/react/24/solid";
 import { Square3Stack3DIcon } from "@heroicons/react/24/solid";
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
 import ProjectCE from "../../CreateOrEdit/ProjectCE/ProjectCE";
+import axios, { AxiosResponse } from "axios";
 
 type InfoCardData = {
   title: string;
@@ -44,6 +45,12 @@ type InfoCardData = {
 
 const Index = () => {
   const [data, setData] = useState<any>({ agents: [], sales: [], clients: [] });
+  const [options, setOptions] = useState<any>({
+    status: [],
+    services: [],
+    sources: [],
+    designation: [],
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const {
     user: { companyId: userCompanyId },
@@ -71,8 +78,22 @@ const Index = () => {
     }
   }, [companyId]);
 
+  async function getOptions() {
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string)
+      .then((response: AxiosResponse) => {
+        setOptions({
+          status: response.data[0].status,
+          services: response.data[0].services,
+          sources: response.data[0].sources,
+          designation: response.data[0].designation,
+        });
+      });
+  }
+
   useEffect(() => {
     try {
+      getOptions();
       getCompanyData();
     } catch (e) {
       console.log(e);
@@ -88,6 +109,7 @@ const Index = () => {
         page: "/team",
         component: (
           <AgentCE
+            options={options}
             setData={(agents: any) =>
               setData((prevData: any) => ({ ...prevData, agents }))
             }
@@ -97,41 +119,8 @@ const Index = () => {
         url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
         name: "agents",
       },
-      // {
-      //   title: "Sales",
-      //   modalTitle: "Sales",
-      //   label: "List of Sales",
-      //   page:'/sales',
-      //   component: (
-      //     <SalesCE
-      //       setData={(agents: any) =>
-      //         setData((prevData: any) => ({ ...prevData, agents }))
-      //       }
-      //       data={data.clients}
-      //     />
-      //   ),
-      //   url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
-      //   name: "sales",
-      // },
-      // {
-      //   title: "Clients",
-      //   modalTitle: "Client",
-      //   label: "List of Clients",
-      //   page:'/clients',
-      //   component: (
-      //     <ClientsCE
-      //       setData={(clients: any) =>
-      //         setData((prevData: any) => ({ ...prevData, clients }))
-      //       }
-      //       data={data.clients}
-      //     />
-      //   ),
-      //   url: process.env.NEXT_PUBLIC_ERP_DELETE_AGENT || null,
-      //   name: "clients",
-      // },
-      // Add other InfoCardData objects for sales and clients
     ],
-    [data] // Add dependencies if necessary
+    [data]
   );
 
   return (
@@ -191,13 +180,17 @@ const Index = () => {
                 icon={salesPNG}
                 heroicon={ArrowTrendingUpIcon}
                 renderModalComponent={
-                  <SalesCE setData={null} data={data.agents} />
+                  <SalesCE
+                    options={options}
+                    setData={null}
+                    data={data.agents}
+                  />
                 }
                 label="Create Sale"
                 description="You can create sale attached with the client and generate invoice."
                 title="Sale Creation"
                 modalTitle="Sale"
-                modalSize={'xl'}
+                modalSize={"xl"}
               />
             </div>
           </div>
@@ -207,13 +200,13 @@ const Index = () => {
                 icon={projectPNG}
                 heroicon={Square3Stack3DIcon}
                 renderModalComponent={
-                  <ProjectCE setData={null} _data={data.agents} />
+                  <ProjectCE options={options} setData={null} _data={data.agents} />
                 }
                 label="Create Project"
                 description="You can create project and assign agents."
                 title="Project Creation"
                 modalTitle="Project"
-                modalSize={'lg'}
+                modalSize={"lg"}
               />
             </div>
           </div>
@@ -223,13 +216,13 @@ const Index = () => {
                 heroicon={SquaresPlusIcon}
                 icon={tasksPNG}
                 renderModalComponent={
-                  <TaskCE setTasks={null} _data={data.agents} />
+                  <TaskCE setTasks={null} options={options} _data={data.agents} />
                 }
                 label="Create Task"
                 description="Create a task for agents."
                 title="Tasks Creation"
                 modalTitle="Task"
-                modalSize={'lg'}
+                modalSize={"lg"}
               />
             </div>
           </div>

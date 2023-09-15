@@ -1,18 +1,27 @@
-import React, { useState, useEffect, Fragment, useCallback } from "react";
+import React, { useState, useEffect, Fragment } from "react";
+import axios, { AxiosResponse } from "axios";
 //Interface Imports
-import { Agents } from "@/src/interfaces/Agents";
+import { Tasks } from "@/src/interfaces/Tasks";
 //Component Imports
 import Table from "@/src/components/shared/Table";
 import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
+import Container from "../../shared/DashboardLayout/PanelSection/Container";
 //Redux
 import { useSelector } from "react-redux";
 import { GetAllTasks, DeleteTask, DeleteUserTask } from "@/src/utils/api/tasks";
-import Container from "../../shared/DashboardLayout/PanelSection/Container";
 
-type Props = {};
+type Props = {
+  sessionData:any
+};
 
-const Index = (props: Props) => {
-  const [tasks, setTasks] = useState<any[]>([]);
+const Index = ({sessionData}: Props) => {
+  const [tasks, setTasks] = useState<Tasks[]>([]);
+  const [options, setOptions] = useState<any>({
+    status: [],
+    services: [],
+    sources: [],
+    designation: [],
+  });
 
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +47,22 @@ const Index = (props: Props) => {
       setTasks([]);
     }
   }
+
+  async function getOptions() {
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string)
+      .then((response: AxiosResponse) => {
+        console.log(response.data[0].services);
+        setOptions({
+          status: response.data[0].status,
+          services: response.data[0].services,
+          sources: response.data[0].sources,
+          designation: response.data[0].designation,
+        });
+      });
+  }
+  useEffect(() => {getOptions()}, [])
+  
 
   const handleDeleteTask = async (id: string) => {
     const deltetedTask = await DeleteTask(id);
@@ -99,7 +124,7 @@ const Index = (props: Props) => {
           data={tasks}
           setData={setTasks}
           totalPages={totalPages}
-          renderModalComponent={<TaskCE setTasks={setTasks} _data={tasks} />}
+          renderModalComponent={<TaskCE options={options} setTasks={setTasks} _data={tasks} />}
           onClick={handleDeleteTask}
           deleteFunc={handleDeleteUserTask}
         />

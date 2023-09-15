@@ -59,14 +59,13 @@ const CompanyReg = (props: Props) => {
           setLoading(true);
         }
       });
-    console.log(data);
   };
 
   return (
     <div className="flex h-screen align-middle justify-center items-center bg-gradient-to-r from-custom-red-500 to-custom-red-700">
       <div className=" justify-center align-middle">
         <h1 className="text-center font-body mb-14 font-semibold text-5xl text-white">
-          Company Details {id}
+          Company Details
         </h1>
         <form
           className="w-auto lg:w-96  mx-auto"

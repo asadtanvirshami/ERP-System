@@ -31,7 +31,7 @@ const Settings = (props: Props) => {
           </div>
         </div>
         <div className="lg:w-2/3 p-5 overflow-y-auto  flex items-center justify-center align-middle">
-          <div className=" ">
+          <div className="">
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora
               voluptas aut esse, dolorem, maxime distinctio ducimus quidem
