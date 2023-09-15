@@ -1,5 +1,5 @@
 import React from "react";
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
 //Components
@@ -71,7 +71,7 @@ const Auth = (props: Props) => {
 
 export default Auth;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // Fetch data from external API
   const sessionData = await axios
     .get(process.env.NEXT_ERP_TOKEN_VERIFICATION as string, {
