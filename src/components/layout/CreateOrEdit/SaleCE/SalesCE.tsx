@@ -14,11 +14,11 @@ import { Agents } from "@/src/interfaces/Agents";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
-import SelectType from "../../shared/Form/SelectType";
+import SelectType from "../../../shared/Form/SelectType";
 //API Calls
 import { CreatNewSale } from "@/src/utils/api/sale";
-import DefaultStepper from "../../shared/Stepper";
-import AddRow from "../../shared/AddRow";
+import DefaultStepper from "../../../shared/Stepper";
+import AddRow from "../../../shared/AddRow";
 import { UpdateClient } from "@/src/utils/api/clients";
 
 type Props = {
@@ -237,7 +237,7 @@ const SalesCE = (props: Props) => {
                   name="status"
                   control={control}
                   label="Status"
-                  width={"w-30"}
+                  width={"w-full"}
                   color={"text-gray"}
                 />
                 <SelectType
@@ -246,7 +246,7 @@ const SalesCE = (props: Props) => {
                   name="source"
                   control={control}
                   label="Source"
-                  width={"w-30"}
+                  width={"w-full"}
                   color={"text-gray"}
                 />
                 <Input
@@ -267,7 +267,7 @@ const SalesCE = (props: Props) => {
                 name="description"
                 control={control}
                 label="Write a proper detail of this sale."
-                width={"w-30"}
+                width={"w-full"}
                 placeholder={"Write the details about the sale."}
                 color={"text-gray"}
               />
