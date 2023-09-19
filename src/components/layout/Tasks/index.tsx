@@ -132,5 +132,5 @@ const Index = ({sessionData}: Props) => {
     </Container>
   );
 };
-
-export default Index;
+const TasksHOC = React.memo(Index);
+export default TasksHOC;

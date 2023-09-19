@@ -99,4 +99,6 @@ const Index = (props: Props) => {
   );
 };
 
-export default Index;
+const ClientsHOC = React.memo(Index);
+export default ClientsHOC;
+

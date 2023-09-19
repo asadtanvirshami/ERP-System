@@ -15,4 +15,5 @@ const Button = (props: Props) => {
   );
 };
 
-export default Button;
+const ButtonHOC = React.memo(Button);
+export default ButtonHOC;

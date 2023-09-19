@@ -54,4 +54,5 @@ const SelectType = (props: Props) => {
   );
 };
 
-export default SelectType;
+const SelectTypeHOC = React.memo(SelectType);
+export default SelectTypeHOC;

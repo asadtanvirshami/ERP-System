@@ -115,4 +115,5 @@ const Signin = (props: Props) => {
   );
 };
 
-export default Signin;
+const SigninHOC = React.memo(Signin);
+export default SigninHOC;

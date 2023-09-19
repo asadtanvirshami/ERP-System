@@ -99,4 +99,5 @@ const CreateCard = (props: Props) => {
   );
 };
 
-export default CreateCard;
+const CreateCardHOC = React.memo(CreateCard);
+export default CreateCardHOC;

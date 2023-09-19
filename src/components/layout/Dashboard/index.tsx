@@ -43,4 +43,6 @@ const Dashboard = (props: Props) => {
   );
 };
 
-export default Dashboard;
+const DashboardHOC = React.memo(Dashboard);
+export default DashboardHOC;
+

@@ -64,4 +64,5 @@ const ViewCard = ({ label, title, modalTitle, data }: Props) => {
   );
 };
 
-export default ViewCard;
+const ViewCardHOC = React.memo(ViewCard);
+export default ViewCardHOC;

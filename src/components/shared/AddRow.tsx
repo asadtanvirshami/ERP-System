@@ -117,4 +117,5 @@ const AddRow: React.FC<AddRowProps> = ({
   );
 };
 
-export default AddRow;
+const AddRowHOC = React.memo(AddRow);
+export default AddRowHOC;

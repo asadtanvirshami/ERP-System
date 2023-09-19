@@ -11,4 +11,5 @@ const Index = (props: Props) => {
   )
 }
 
-export default Index
+const AgentsHOC = React.memo(Index);
+export default AgentsHOC;

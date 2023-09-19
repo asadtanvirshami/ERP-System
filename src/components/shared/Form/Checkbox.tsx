@@ -40,4 +40,5 @@ const Checkbox = (props: Props) => {
   );
 };
 
-export default Checkbox;
+const CheckboxHOC = React.memo(Checkbox);
+export default CheckboxHOC;

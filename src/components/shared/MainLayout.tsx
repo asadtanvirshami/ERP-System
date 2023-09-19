@@ -36,4 +36,5 @@ function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default Layout;
+const MainLayoutHOC = React.memo(Layout);
+export default MainLayoutHOC;

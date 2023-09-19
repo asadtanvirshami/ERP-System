@@ -16,4 +16,5 @@ const LoadingButton = (props: Props) => {
   );
 };
 
-export default LoadingButton;
+const LoadingButtonHOC = React.memo(LoadingButton);
+export default LoadingButtonHOC;

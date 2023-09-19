@@ -38,4 +38,5 @@ const TextArea = (props: Props) => {
   );
 };
 
-export default TextArea;
+const TextAreaHOC = React.memo(TextArea);
+export default TextAreaHOC;

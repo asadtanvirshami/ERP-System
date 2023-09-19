@@ -105,4 +105,5 @@ const Graph = (props: Props) => {
   );
 };
 
-export default Graph;
+const GraphHOC = React.memo(Graph);
+export default GraphHOC;

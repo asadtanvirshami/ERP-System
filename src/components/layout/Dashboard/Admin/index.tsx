@@ -231,4 +231,5 @@ const Index = () => {
   );
 };
 
-export default Index;
+const AdminHOC = React.memo(Index);
+export default AdminHOC;

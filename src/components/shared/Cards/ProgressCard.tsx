@@ -52,4 +52,5 @@ const Card = (props: Props) => {
   );
 };
 
-export default Card;
+const ProgressCardHOC = React.memo(Card);
+export default ProgressCardHOC;

@@ -169,4 +169,5 @@ const InfoCard = ({
   );
 };
 
-export default InfoCard;
+const InfoCardHOC = React.memo(InfoCard);
+export default InfoCardHOC;

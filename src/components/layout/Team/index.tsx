@@ -107,4 +107,5 @@ const Index = (props: Props) => {
   );
 };
 
-export default Index;
+const TeamHOC = React.memo(Index);
+export default TeamHOC;

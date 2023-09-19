@@ -12,4 +12,5 @@ function Container({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default Container;
+const ContainerHOC = React.memo(Container);
+export default ContainerHOC;;

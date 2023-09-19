@@ -35,4 +35,5 @@ const TabsCom = ({ title, onClick, activeTab, val }: Props) => {
   );
 };
 
-export default TabsCom;
+const TabsHOC = React.memo(TabsCom);
+export default TabsHOC;

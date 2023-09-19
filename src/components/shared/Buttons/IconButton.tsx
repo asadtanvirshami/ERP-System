@@ -12,4 +12,5 @@ const IconButton = (props: Props) => {
   );
 };
 
-export default IconButton;
+const IconButtonHOC = React.memo(IconButton);
+export default IconButtonHOC;

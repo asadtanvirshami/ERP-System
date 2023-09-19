@@ -50,7 +50,8 @@ const Input = (props: Props) => {
   );
 };
 
-export default Input;
+const InputHOC = React.memo(Input);
+export default InputHOC;
 
 
 

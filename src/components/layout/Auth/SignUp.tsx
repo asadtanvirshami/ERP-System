@@ -146,4 +146,5 @@ const Signup = (props: Props) => {
   );
 };
 
-export default Signup;
+const SignupHOC = React.memo(Signup);
+export default SignupHOC;

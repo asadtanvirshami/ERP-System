@@ -125,4 +125,5 @@ const CompanyReg = (props: Props) => {
   );
 };
 
-export default CompanyReg;
+const CompanyRegHOC = React.memo(CompanyReg);
+export default CompanyRegHOC;

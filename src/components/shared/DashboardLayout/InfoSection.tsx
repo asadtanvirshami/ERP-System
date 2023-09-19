@@ -47,4 +47,5 @@ const InfoSection = (props: Props) => {
   );
 };
 
-export default InfoSection;
+const InfoSectionHOC = React.memo(InfoSection);
+export default InfoSectionHOC;

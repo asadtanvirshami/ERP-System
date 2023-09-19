@@ -49,4 +49,5 @@ const DatePicker = (props: Props) => {
   );
 };
 
-export default DatePicker;
+const DatePickerHOC = React.memo(DatePicker);
+export default DatePickerHOC;

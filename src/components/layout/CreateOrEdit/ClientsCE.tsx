@@ -223,4 +223,5 @@ const ClientsCE = (props: Props) => {
   );
 };
 
-export default ClientsCE;
+const ClientsCEHOC = React.memo(ClientsCE);
+export default ClientsCEHOC;
