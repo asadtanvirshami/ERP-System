@@ -134,4 +134,5 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
     </div>
   );
 };
-export default Sidebar;
+const SidebarHOC = React.memo(Sidebar);
+export default SidebarHOC;

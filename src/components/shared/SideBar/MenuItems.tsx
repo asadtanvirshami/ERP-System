@@ -51,4 +51,6 @@ const MenuItems = (props: Props) => {
   );
 };
 
-export default MenuItems;
+const MenuItemsHOC = React.memo(MenuItems);
+export default MenuItemsHOC;
+
