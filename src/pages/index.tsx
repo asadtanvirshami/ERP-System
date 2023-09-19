@@ -12,7 +12,7 @@ type Props = {
   sessionData: any;
 };
 
-const index = ({ sessionData }: Props) => {
+const MainDashboard = ({ sessionData }: Props) => {
   const {
     user: { type },
   }: any = User();
@@ -32,7 +32,7 @@ const index = ({ sessionData }: Props) => {
   );
 };
 
-export default index;
+export default MainDashboard;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   // Fetch data from external API
