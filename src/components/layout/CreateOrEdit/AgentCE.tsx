@@ -126,7 +126,7 @@ const AgentCE = (props: Props) => {
             name="name"
             control={control}
             label="Full name"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
             placeholder="John Doe"
           />
@@ -135,7 +135,7 @@ const AgentCE = (props: Props) => {
             name="phone"
             control={control}
             label="Phone No."
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
             placeholder="+1 334 422 5333"
           />
@@ -145,7 +145,7 @@ const AgentCE = (props: Props) => {
             name="designation"
             control={control}
             label="Designation"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
           />
           <Input
@@ -153,7 +153,7 @@ const AgentCE = (props: Props) => {
             name="address"
             control={control}
             label="Address"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
             placeholder="west blvd, 12th street"
           />
@@ -162,7 +162,7 @@ const AgentCE = (props: Props) => {
             name="email"
             control={control}
             label="Email"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
             placeholder="johndoe@gmail.com"
           />
@@ -171,7 +171,7 @@ const AgentCE = (props: Props) => {
             name="password"
             control={control}
             label="Password"
-            width={"w-30"}
+            width={"w-full"}
             color={"text-gray"}
             placeholder="$1234admin"
           />
@@ -192,5 +192,5 @@ const AgentCE = (props: Props) => {
     </Fragment>
   );
 };
-
-export default AgentCE;
+const AgentHOC = React.memo(AgentCE);
+export default AgentHOC;

@@ -14,13 +14,12 @@ import Graph from "@/src/components/shared/Graph/Graph";
 // EDIT OR CREATE FORMS
 import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
 import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
-import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 import { User } from "../../User/UserProvider";
 import { GetAllAgents } from "@/src/utils/api/team";
 import { GetClientsData } from "@/src/utils/api/clients";
-import SalesCE from "../../CreateOrEdit/SalesCE";
+import SalesCE from "../../CreateOrEdit/SaleCE/SalesCE";
 import InfoSection from "@/src/components/shared/DashboardLayout/InfoSection";
 
 import salesPNG from "../../../../../public/Image/Icons/pngs/sales.png";

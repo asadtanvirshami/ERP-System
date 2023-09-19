@@ -8,7 +8,6 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
-// import User from "../../../../public/Image/Icons/svgs/User.svg";
 import Logout from "../../../../public/Image/Icons/svgs/Logout.svg";
 //Component imports
 import MenuItems from "./MenuItems";
@@ -118,7 +117,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
                 <button
                   className="float-right"
                   onClick={() => {
-                    Cookies.remove("user"), router.push("/auth");
+                    Cookies.remove("_hjSession"), router.push("/auth");
                   }}
                 >
                   <Logout

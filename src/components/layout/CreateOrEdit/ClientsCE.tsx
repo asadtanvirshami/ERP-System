@@ -178,14 +178,6 @@ const ClientsCE = (props: Props) => {
             width={"w-30"}
             color={"text-gray"}
           />
-          {/* <SelectType
-            register={register}
-            name="source"
-            control={control}
-            label="Source"
-            width={"w-30"}
-            color={"text-gray"}
-          /> */}
           <Input
             placeholder="LinkedIn"
             register={register}

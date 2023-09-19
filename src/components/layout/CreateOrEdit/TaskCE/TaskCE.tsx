@@ -22,7 +22,7 @@ import { checkList } from "@/src/functions/isCheckList";
 //Provider
 import { User } from "../../User/UserProvider";
 //Utils
-import { CreateNewTask, AssignTask, UpdateTask } from "@/src/utils/api/tasks";
+import { CreateNewTask, UpdateTask } from "@/src/utils/api/tasks";
 import { GetAllAgents } from "@/src/utils/api/team";
 
 const SignupSchema = yup.object().shape({
@@ -213,7 +213,6 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
         const tempState: Array<any> = [..._data];
         const i = tempState.findIndex((item) => item.id === task_data.id);
         if (i !== -1) {
-          const updatedData = 
           tempState[i] = {...data, asignees:asignees};
           setLoading(false);
           return setTasks(tempState);
@@ -237,13 +236,13 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
             className="w-auto mx-auto lg:w-full justify-center grid"
             onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
           >
-            <div className="grid grid-cols-2 items-center gap-4 mb-2">
+            <div className="grid grid-cols-2 items-center gap-4 mb-2 ">
               <Input
                 register={register}
                 name="title"
                 control={control}
                 label="Title"
-                width="w-30"
+                width={"w-full"}
                 color="text-gray"
                 placeholder="10 Leads"
               />
@@ -254,7 +253,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
                 name="priority"
                 control={control}
                 label="Priority"
-                width="w-30"
+                width={"w-full"}
                 color="text-gray"
               />
 
@@ -263,7 +262,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
                 name="deadline"
                 control={control}
                 label="Deadline of task"
-                width="w-40"
+                width={"w-full"}
                 color="text-gray"
               />
 
@@ -272,7 +271,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
                 name="bonus"
                 control={control}
                 label="Bonus"
-                width="w-42"
+                width={"w-full"}
                 color="text-gray"
                 placeholder="10%"
               />
@@ -289,7 +288,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
                 name="description"
                 control={control}
                 label=""
-                width="w-30"
+                width={"w-full"}
                 placeholder="Write job description"
                 color="text-gray"
               />
@@ -332,109 +331,5 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     </Fragment>
   );
 };
-
-export default TaskCE;
-
-{
-  /* <Fragment>
-{proceed && <h1>Select agent to assign task.</h1>}
-<>
-  {!proceed && (
-    <form
-      className="w-auto mx-auto lg:w-full justify-center grid"
-      onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}
-    >
-      <div className="grid grid-cols-2 items-center gap-4 mb-2">
-        <Input
-          register={register}
-          name="title"
-          control={control}
-          label="Title"
-          width="w-30"
-          color="text-gray"
-          placeholder="10 Leads"
-        />
-
-        <SelectType
-          register={register}
-          name="priority"
-          control={control}
-          label="Priority"
-          width="w-30"
-          color="text-gray"
-        />
-
-        <DatePicker
-          register={register}
-          name="deadline"
-          control={control}
-          label="Deadline of task"
-          width="w-40"
-          color="text-gray"
-        />
-
-        <Input
-          register={register}
-          name="bonus"
-          control={control}
-          label="Bonus"
-          width="w-42"
-          color="text-gray"
-          placeholder="10%"
-        />
-      </div>
-      <>
-        <hr />
-      </>
-      <div className="mt-5 grid mb-2">
-        <p className="text-sm mb-1">
-          Write the job description for the brief understanding of task.
-        </p>
-        <TextArea
-          register={register}
-          name="description"
-          control={control}
-          label=""
-          width="w-30"
-          placeholder="Write job description"
-          color="text-gray"
-        />
-      </div>
-      <>
-        <hr />
-      </>
-      <div className="mb-3 mt-2">
-        {loading ? (
-          <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
-        ) : (
-          <Button
-            style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-            label={edit ? "Update" : "Create"}
-            type="submit"
-          />
-        )}
-        <p className="mt-2">{message}</p>
-      </div>
-    </form>
-  )}
-</>
-
-{proceed && (
-  <form  onSubmit={handleSubmit(edit == true ? onEdit : onSubmit)}>
-    <TaskAssign
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      Loading={loadingData}
-      isCheck={isCheck}
-      setIsCheck={setIsCheck}
-      edit={edit}
-      users={users}
-      loading={loading}
-      message={message}
-      totalUsers={totalUsers}
-      checkList={checkList}
-    />
-  </form>
-)}
-</Fragment> */
-}
+const TaskHOC = React.memo(TaskCE);
+export default TaskHOC;
