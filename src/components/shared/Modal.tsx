@@ -1,15 +1,8 @@
 import React, { Fragment, useState } from "react";
-import {
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-} from "@material-tailwind/react";
 //SVG Import
 import { XMarkIcon } from "@heroicons/react/24/solid";
 //Redux
 import { useSelector } from "react-redux";
-import Button from "./Buttons/Button";
 
 type Props = {
   showModal: boolean;
@@ -17,7 +10,7 @@ type Props = {
   children: React.ReactNode;
   modalSize: any;
   label: string;
-  viewTable: any;
+  showTitle: any;
   onScroll: any;
 };
 
@@ -44,11 +37,11 @@ const Modal = (props: Props) => {
 
             <div className="modal-content py-4 text-left px-6">
               <div className="modal-title text-3xl font-semibold">
-                {props.viewTable ? (
-                  <>{`${props.label} Info`}</>
+                {props.showTitle ? (
+                  <>{`${props.label}`}</>
                 ) : (
                   <>
-                    {edit ? `Edit ${props.label}` : `Create ${props.label}`}
+                    {edit ? `Edit ${props.label}` : `${props.label}`}
                   </>
                 )}
               </div>

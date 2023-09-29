@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { Clients } from "@/src/interfaces/Clients";
 //Component Imports
 import Table from "@/src/components/shared/Table";
-import ClientsCE from "@/src/components/layout/CreateOrEdit/ClientsCE";
+import ClientsCE from "@/src/components/layout/CreateOrEdit/SaleCE/ClientsCE";
 import Container from "../../shared/DashboardLayout/PanelSection/Container";
 //Redux
 import { useSelector } from "react-redux";

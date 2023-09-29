@@ -19,8 +19,6 @@ const Dashboard = (props: Props) => {
     user: { type },
   } = User();
 
-  const userData = useSelector((state: any) => state.user.user);
-
   useEffect(() => {
     if (props.sessionData.isLoggedIn == false) {
       router.push("/auth");

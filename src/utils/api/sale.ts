@@ -40,15 +40,15 @@ async function CreatNewSale(data: any) {
       .then((r: AxiosResponse) => {
         console.log(r.data.payload, r.data.message);
         if (r.data.message == "success") {
-          return { sale: r.data.payload, error: null };
+          return { sale: r.data.payload, error: null , invoice_id:null};
         }
         if (r.data.message == "error") {
-          return { error: Error("Failed to retrieve sales"), sale: null };
+          return { error: Error("Failed to retrieve sales"), sale: null, invoice_id:null };
         }
       });
     return response;
   } catch (e) {
-    return { error: "error", sale: null };
+    return { error: "error", sale: null, invoice_id:null };
   }
 }
 

@@ -148,7 +148,7 @@ const InfoCard = ({
         label={modalTitle}
         showModal={state.showModal}
         modalSize="xs"
-        viewTable={false}
+        showTitle={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, showModal: show }))
         }

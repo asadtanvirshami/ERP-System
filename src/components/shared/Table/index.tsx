@@ -315,7 +315,7 @@ const Table = ({
         label={modalTitle}
         showModal={state.showModal}
         modalSize={modalSize}
-        viewTable={false}
+        showTitle={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, showModal: show }))
         }
@@ -327,7 +327,7 @@ const Table = ({
         label={modalTitle}
         showModal={state.viewModal}
         modalSize={modalSize}
-        viewTable={true}
+        showTitle={false}
         setShowModal={(show) =>
           setState((prevState) => ({ ...prevState, viewModal: show }))
         }

@@ -7,7 +7,7 @@ async function GetAllTasks(
 ) {
   try {
     const response = await axios
-      .get(process.env.NEXT_PUBLIC_ERP_POST_GET_TASK as string, {
+      .get(`${process.env.NEXT_PUBLIC_ERP_POST_GET_TASK}?id=${CompanyId}&page=${currentPage}&limit=${pageSize}` as string, {
         headers: { id: CompanyId, page: currentPage, limit: pageSize },
       })
       .then((r: AxiosResponse) => {

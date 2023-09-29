@@ -9,45 +9,41 @@ import Button from "@/src/components/shared/Buttons/Button";
 import Loader from "@/src/components/shared/Buttons/Loading";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
+import SelectType from "../../../shared/Form/SelectType";
+import AddRow from "../../../shared/AddRow";
 //Interface Import
 import { Agents } from "@/src/interfaces/Agents";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
-import SelectType from "../../../shared/Form/SelectType";
 //API Calls
 import { CreatNewSale } from "@/src/utils/api/sale";
-import DefaultStepper from "../../../shared/Stepper";
-import AddRow from "../../../shared/AddRow";
 import { UpdateClient } from "@/src/utils/api/clients";
 
 type Props = {
   data: Array<Agents>;
   setData: any;
   options: any;
+  active:any
+  setActive:any
+  setState:any
+  state:string
 };
-interface Row {
-  service: string;
-  price: number;
-}
 
 const SalesSchema = yup.object().shape({
   //Yup schema to set the values
-  type: yup.string().required("Required"),
   description: yup.string().required("Required"),
   status: yup.string().required("Required"),
   source: yup.string().required("Required"),
   source_link: yup.string().required("Required"),
-  amount_paid: yup.number().required("Required"),
-  amount_left: yup.number().required("Required"),
   total_amount: yup.number().required("Required"),
-  total_amount_txt: yup.string().required("Required"),
+  t_amount_txt: yup.string().required("Required"),
+  source_username: yup.string().required("Required"),
   deadline: yup.string().required("Required"),
 });
 
 const SalesCE = (props: Props) => {
-  // types.ts
-  interface Row {
+   interface Row {
     service: string;
     price: string;
   }
@@ -94,17 +90,27 @@ const SalesCE = (props: Props) => {
     }
   }, [edit]);
 
+  // project_stats: [
+  //   {
+  //     created_date: moment().format("L"),
+  //     created_month: moment().format("L"),
+  //     created_time: moment().format("L"),
+  //     created_status: moment().format("L"),
+  //   },
+  // ],
+
   const onSubmit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
     const newData = {
       ...data,
-      start_date: moment().format("L"),
-      end_date: moment().format("L"),
-      start_time: moment().format("h:mm:ss a"),
-      end_time: moment().format("h:mm:ss a"),
+      created_date:  moment().format('MM-DD-YY'),
+      created_time: moment().format("h:mm:ss a"),
+      created_month: moment().format("MMMM"),
+      service: rows,
       userId: user_data.loginId,
       companyId: user_data.companyId,
+      saleId:props.state
     };
     const createdSale = await CreatNewSale(newData);
     if (createdSale) {
@@ -113,7 +119,13 @@ const SalesCE = (props: Props) => {
         setLoading(false);
         setMessage("Sale created successfully.");
         tempArr = [...props.data, createdSale.sale];
-        return props.setData(tempArr);
+        props.setActive(1)
+        console.log(createdSale.sale)
+        props.setState((prevData: any) => ({
+          ...prevData,
+          sale:createdSale.sale.id,
+        }))
+        return props.setData? props.setData(tempArr): null;
       } else {
         setLoading(false);
         setMessage("Sale not created.");
@@ -153,7 +165,6 @@ const SalesCE = (props: Props) => {
 
   return (
     <Fragment>
-      <DefaultStepper />
       <div className="flex flex-wrap">
         <div className="w-full lg:w-1/2 p-1 border-r">
           {/* Content for the left column */}
@@ -180,43 +191,16 @@ const SalesCE = (props: Props) => {
               <div className="grid grid-cols-3 gap-2 mb-2">
                 <Input
                   register={register}
-                  name="type"
-                  control={control}
-                  label="Work Type"
-                  width={"w-full"}
-                  color={"text-gray"}
-                  placeholder="e.g web package"
-                />
-                <Input
-                  register={register}
-                  name="amount_paid"
-                  control={control}
-                  label="Amount Paid"
-                  width={"w-full"}
-                  color={"text-gray"}
-                  placeholder="0000"
-                />
-                <Input
-                  register={register}
-                  name="amount_left"
-                  control={control}
-                  label="Amount Left"
-                  width={"w-full"}
-                  color={"text-gray"}
-                  placeholder="0000"
-                />
-                <Input
-                  register={register}
                   name="total_amount"
                   control={control}
                   label="Total Amount $"
                   width={"w-full"}
                   color={"text-gray"}
-                  placeholder="0000"
+                  placeholder="0"
                 />
                 <Input
                   register={register}
-                  name="total_amount_txt"
+                  name="t_amount_txt"
                   control={control}
                   label="Total Amount in Text"
                   width={"w-full"}
@@ -249,6 +233,15 @@ const SalesCE = (props: Props) => {
                   width={"w-full"}
                   color={"text-gray"}
                 />
+                {/* <SelectType
+                  options={props.options.pay_method}
+                  register={register}
+                  name="pmethod"
+                  control={control}
+                  label="Payment Method"
+                  width={"w-full"}
+                  color={"text-gray"}
+                /> */}
                 <Input
                   register={register}
                   name="source_link"
@@ -257,6 +250,15 @@ const SalesCE = (props: Props) => {
                   width={"w-full"}
                   color={"text-gray"}
                   placeholder="e.g www.Upwork.com"
+                />
+                <Input
+                  register={register}
+                  name="source_username"
+                  control={control}
+                  label="Source Username"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g @kiryu123"
                 />
               </div>
               <div className="mb-3">
@@ -291,4 +293,5 @@ const SalesCE = (props: Props) => {
   );
 };
 
-export default SalesCE;
+const SalesHOC = React.memo(SalesCE);
+export default SalesHOC;

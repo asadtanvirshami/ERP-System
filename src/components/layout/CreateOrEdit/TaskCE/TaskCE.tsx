@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
-//Interface Imports
-import { Agents } from "@/src/interfaces/Agents";
 //Components Imports
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
@@ -296,7 +294,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
             <>
               <hr />
             </>
-            <div className="mb-3 mt-2">
+            <div className="mb-3 mt-5">
               {loading ? (
                 <LoadingButton style="bg-red-500 text-white py-1.5 px-5 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300" />
               ) : (

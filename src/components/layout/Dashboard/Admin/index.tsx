@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import axios, { AxiosResponse } from "axios";
 // COMPONENTS
 import Container from "@/src/components/shared/DashboardLayout/PanelSection/Container";
 import ProgressCard from "@/src/components/shared/Cards/ProgressCard";
@@ -19,7 +20,8 @@ import CardLoader from "@/src/components/shared/Loader/CardLoader";
 import { User } from "../../User/UserProvider";
 import { GetAllAgents } from "@/src/utils/api/team";
 import { GetClientsData } from "@/src/utils/api/clients";
-import SalesCE from "../../CreateOrEdit/SaleCE/SalesCE";
+import SalesCreation from "../../CreateOrEdit/SaleCE/Index";
+import ProjectCE from "../../CreateOrEdit/ProjectCE/ProjectCE";
 import InfoSection from "@/src/components/shared/DashboardLayout/InfoSection";
 
 import salesPNG from "../../../../../public/Image/Icons/pngs/sales.png";
@@ -28,8 +30,6 @@ import projectPNG from "../../../../../public/Image/Icons/pngs/project.png";
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/solid";
 import { Square3Stack3DIcon } from "@heroicons/react/24/solid";
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
-import ProjectCE from "../../CreateOrEdit/ProjectCE/ProjectCE";
-import axios, { AxiosResponse } from "axios";
 
 type InfoCardData = {
   title: string;
@@ -179,7 +179,7 @@ const Index = () => {
                 icon={salesPNG}
                 heroicon={ArrowTrendingUpIcon}
                 renderModalComponent={
-                  <SalesCE
+                  <SalesCreation
                     options={options}
                     setData={null}
                     data={data.agents}
@@ -188,7 +188,7 @@ const Index = () => {
                 label="Create Sale"
                 description="You can create sale attached with the client and generate invoice."
                 title="Sale Creation"
-                modalTitle="Sale"
+                modalTitle=""
                 modalSize={"xl"}
               />
             </div>
@@ -204,7 +204,7 @@ const Index = () => {
                 label="Create Project"
                 description="You can create project and assign agents."
                 title="Project Creation"
-                modalTitle="Project"
+                modalTitle="Project Creation"
                 modalSize={"lg"}
               />
             </div>
@@ -220,7 +220,7 @@ const Index = () => {
                 label="Create Task"
                 description="Create a task for agents."
                 title="Tasks Creation"
-                modalTitle="Task"
+                modalTitle="Task Creation"
                 modalSize={"lg"}
               />
             </div>

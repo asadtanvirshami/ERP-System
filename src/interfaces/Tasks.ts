@@ -9,6 +9,7 @@ export type Tasks = {
     end_time:string,
     priority:string,
     code:string,
+    asignees:Array<[{id:string, email:string}]>,
     status:string
   }
   

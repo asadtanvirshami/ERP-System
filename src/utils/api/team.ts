@@ -7,7 +7,7 @@ async function GetAllAgents(
 ) {
   try {
     const response = await axios
-      .get(process.env.NEXT_PUBLIC_ERP_GET_AGENTS as string, {
+      .get(`${process.env.NEXT_PUBLIC_ERP_GET_AGENTS}?id=${CompanyId}&page=${currentPage}&limit=${pageSize}` as string, {
         headers: { id: CompanyId, page: currentPage, limit: pageSize },
       })
       .then((r: AxiosResponse) => {

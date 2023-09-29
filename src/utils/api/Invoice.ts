@@ -25,7 +25,7 @@ async function GetClientsData(CompanyId: string, page: number, limit: number) {
   }
 }
 
-async function UpdateClient(CompanyId: string, data: any) {
+async function UpdateInvoice(CompanyId: string, data: any) {
   try {
     const response = await axios
       .post(process.env.NEXT_PUBLIC_ERP_UPDATE_CLIENT as string, {
@@ -48,25 +48,45 @@ async function UpdateClient(CompanyId: string, data: any) {
   }
 }
 
-async function CreateNewClient(CompanyId: string, data: any,) {
+async function CreateInvoice(CompanyId: string, data: any) {
   try {
     const response = await axios
-      .post(process.env.NEXT_PUBLIC_ERP_CREATE_CLIENT as string, {
+      .post(process.env.NEXT_PUBLIC_ERP_CREATE_INVOICE as string, {
         data,
-        id: CompanyId,
+        id: CompanyId
       })
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
-          return { client: r.data.payload, error: null };
+          return { invoice: r.data.payload, error: null };
         }
         if (r.data.message == "error") {
-          return { error: Error("Failed to create client"), client: null };
+          return { error: Error("Failed to create client"), invoice: null };
         }
       });
     return response;
   } catch (e) {
-    return { error: "error", client: null };
+    return { error: "error", invoice: null };
   }
 }
 
-export { GetClientsData, UpdateClient, CreateNewClient };
+async function GetInvoiceById(id:string) {
+  try {
+    const response = await axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_INVOICE_BY_ID as string, {
+        headers:{id: id}
+      })
+      .then((r: AxiosResponse) => {
+        if (r.data.message == "success") {
+          return { invoice: r.data.payload, error: null };
+        }
+        if (r.data.message == "error") {
+          return { error: Error("Failed to create client"), invoice: null };
+        }
+      });
+    return response;
+  } catch (e) {
+    return { error: "error", invoice: null };
+  }
+}
+
+export { GetClientsData, CreateInvoice, UpdateInvoice, GetInvoiceById };

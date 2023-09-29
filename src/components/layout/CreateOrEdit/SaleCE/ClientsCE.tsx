@@ -12,13 +12,16 @@ import { Clients } from "@/src/interfaces/Clients";
 import { useSelector } from "react-redux";
 //BaseValues for Schema
 import { agentBaseValues } from "@/src/utils/baseValues";
-import SelectType from "../../shared/Form/SelectType";
 //API Calls
 import { CreateNewClient, UpdateClient } from "@/src/utils/api/clients";
 
 type Props = {
-  data: Array<Clients>;
+  state: any;
+  data: any;
   setData: any;
+  active: number;
+  setActive: any;
+  setState: any;
 };
 
 const SignupSchema = yup.object().shape({
@@ -73,16 +76,30 @@ const ClientsCE = (props: Props) => {
   }, [edit]);
 
   const onSubmit = async (data: object) => {
+    console.log(props.state);
     setLoading(true);
     //submiting the values to the API and saving in the db
-    const createdClient = await CreateNewClient(companyId, data);
+    const newData={
+      ...data,
+      saleId:props.state
+    }
+
+    const createdClient = await CreateNewClient(
+      companyId,
+      newData,
+    );
     if (createdClient) {
+      console.log(createdClient.client);
       if (createdClient.error == null) {
-        let tempArr;
         setLoading(false);
+        props.setActive(2)
+        props.setState((prevData: any) => ({
+          ...prevData,
+          client:createdClient.client.id
+        }))
         setMessage("Client created successfully.");
-        tempArr = [...props.data, createdClient.client];
-        return props.setData(tempArr);
+        // tempArr = [...props.data, createdClient.client];
+        // return props.setData(tempArr);
       } else {
         setLoading(false);
         setMessage("Client not created.");
@@ -101,12 +118,12 @@ const ClientsCE = (props: Props) => {
       if (updatedClient.error === null) {
         setLoading(false);
         setMessage("Agent edited successfully.");
-        const tempState: Array<any> = [...props.data];
-        const i = tempState.findIndex((item) => item.id === client_id);
-        if (i !== -1) {
-          tempState[i] = data;
-          return props.setData(tempState);
-        }
+        // const tempState: Array<any> = [...props.data];
+        // const i = tempState.findIndex((item) => item.id === client_id);
+        // if (i !== -1) {
+        //   tempState[i] = data;
+        //   return props.setData(tempState);
+        // }
       } else {
         setLoading(true);
         setMessage("Client not edited!");
