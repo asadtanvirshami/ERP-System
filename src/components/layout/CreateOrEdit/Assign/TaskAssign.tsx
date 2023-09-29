@@ -36,7 +36,7 @@ const TaskAssign = ({
   return (
     <div>
       <div
-        className="max-h-[23rem] max-w-[90rem] overflow-y-auto"
+        className="sm:w-full max-h-[23rem] lg:w-[30rem] l overflow-y-auto"
         onScroll={handleScroll}
       >
         {users?.length > 0 ? (
