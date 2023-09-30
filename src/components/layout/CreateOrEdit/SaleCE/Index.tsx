@@ -18,7 +18,7 @@ type Props = {
 };
 
 const Index = ({ data, setData, options }: Props) => {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(0);
   const [state, setState] = useState({
     sale: "",
     client: "",

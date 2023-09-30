@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { settingMenu } from "@/src/utils/Menus";
+
+import CreateOptions from "./CreateOptions";
 
 type Props = {};
 
 const Settings = (props: Props) => {
+  const [active, setActive] = useState<number>(0);
+  const flattenedMenus = settingMenu.flatMap((item) => item.menu);
+
+  const renderStep = () => {
+    switch (active) {
+      case 5:
+        return <CreateOptions />;
+
+      default:
+        return null;
+    }
+  };
   return (
     <div className="container">
       <div className="flex flex-col lg:flex-row">
@@ -13,32 +29,42 @@ const Settings = (props: Props) => {
             </h2>
           </div>
           <div className="pl-12">
-            <span><h2 className="font-body font-semibold pt-2 pb-2">Account</h2></span>
-            <ul className="p-1">
-              <li className="p-1">Profile account</li>
-              <li className="p-1">Company account</li>
-            </ul>
-            <span><h2 className="font-body font-semibold pt-2 pb-2">Security & Privacy</h2></span>
-            <ul className=" p-1">
-              <li className="p-1">Reset Email</li>
-              <li className="p-1">Reset Password</li>
-            </ul>
-            <span><h2 className="font-body font-semibold pt-2 pb-2">Option sets</h2></span>
-            <ul className=" p-1">
-              <li className="p-1">Sources</li>
-              <li className="p-1">Reset Password</li>
-            </ul>
+            {settingMenu.map((item, index) => {
+              return (
+                <>
+                  <span>
+                    <h2
+                      key={item.title}
+                      className="font-body font-semibold pt-2 pb-2"
+                    >
+                      {item.title}
+                    </h2>
+                  </span>
+                  <ul className="p-1">
+                    {item.menu.map((menu, i) => {
+                      const flatIndex = flattenedMenus.findIndex(
+                        (flatMenu) => flatMenu.label === menu.label
+                      );
+                      return (
+                        <li
+                          onClick={() => setActive(flatIndex)}
+                          key={menu.label}
+                          className={`p-1 cursor-pointer ${
+                            active === flatIndex ? "text-custom-red-500" : ""
+                          }`}
+                        >
+                          {menu.label}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              );
+            })}
           </div>
         </div>
         <div className="lg:w-2/3 p-5 overflow-y-auto  flex items-center justify-center align-middle">
-          <div className="">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora
-              voluptas aut esse, dolorem, maxime distinctio ducimus quidem
-              molestias quas debitis ipsa hic odit natus. Sed eligendi incidunt
-              quibusdam nihil ipsam!
-            </p>
-          </div>
+          {renderStep()}
         </div>
       </div>
     </div>

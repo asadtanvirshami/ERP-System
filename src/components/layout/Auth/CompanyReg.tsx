@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from "axios";
 import Input from "../../shared/Form/SecondaryInput";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
+import InputFile from "../../shared/Form/InputFile";
 //Redux
 import { useSelector } from "react-redux";
 
@@ -23,12 +24,15 @@ const CompanyRegSchema = yup.object().shape({
   location: yup.string().required("Required"),
   address: yup.string().required("Required"),
   type: yup.string().required("Required"),
+  email: yup.string().required("Required"),
   businessno: yup.string().required("Required"),
 });
 
 const CompanyReg = (props: Props) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
+  const [uploadedImgURL, setUploadedImgURL] = React.useState<string>("");
+ 
   const id = useSelector((state: any) => state.form.value.id);
 
   const {
@@ -44,9 +48,13 @@ const CompanyReg = (props: Props) => {
   const onSubmit = async (data: object) => {
     setLoading(true);
     //submiting the values to the API and saving in the db
+    const newData={
+      ...data,
+      image:uploadedImgURL
+    }
     axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_COMPANY as string, {
-        data,
+        data:newData,
         id: id,
       })
       .then((r: AxiosResponse) => {
@@ -89,6 +97,14 @@ const CompanyReg = (props: Props) => {
           />
           <Input
             register={register}
+            name="email"
+            control={control}
+            label="Email"
+            width={'w-full'}
+            color={'text-white'}
+          />
+          <Input
+            register={register}
             name="address"
             control={control}
             label="Address"
@@ -111,7 +127,8 @@ const CompanyReg = (props: Props) => {
             width={'w-full'}
             color={'text-white'}
           />
-          <div className="text-center mb-4 ">
+           <InputFile setUploadedImgURL={setUploadedImgURL} uploadedImgURL={uploadedImgURL}/>
+          <div className="text-center mb-4 mt-4">
             {loading ? (
               <Loading style={"btn-primary"} />
             ) : (

@@ -1,5 +1,12 @@
-
-import { HomeIcon, UserGroupIcon, DocumentTextIcon, ChartBarIcon, RectangleStackIcon, Cog6ToothIcon, UsersIcon } from "@heroicons/react/24/outline";
+import {
+  HomeIcon,
+  UserGroupIcon,
+  DocumentTextIcon,
+  ChartBarIcon,
+  RectangleStackIcon,
+  Cog6ToothIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 
 const adminMenu = [
   { id: 0, text: "Dashboard", link: "/", svg: HomeIcon },
@@ -18,4 +25,40 @@ const agentMenu = [
   { id: 1, text: "Tasks", link: "/tasks", svg: HomeIcon },
 ];
 
-export {adminMenu,agentMenu}
+const settingMenu = [
+  {
+    id: 0,
+    title: "Account",
+    menu: [
+      {
+        id: 0,
+        label: "Profile account",
+      },
+      { id: 1, label: "Company account" },
+    ],
+  },
+  {
+    id: 1,
+    title: "Security & Privacy",
+    menu: [
+      {
+        id: 0,
+        label: "Reset email",
+      },
+      { id: 1, label: "Reset password" },
+      { id: 2, label: "Delete account" },
+    ],
+  },
+  {
+    id: 1,
+    title: "Option sets",
+    menu: [
+      {
+        id: 0,
+        label: "Create options",
+      },
+    ],
+  },
+];
+
+export { adminMenu, agentMenu, settingMenu };

@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from "axios";
 import Input from "../../shared/Form/SecondaryInput";
 import Button from "../../shared/Buttons/Button";
 import Loading from "../../shared/Buttons/Loading";
+import InputFile from "../../shared/Form/InputFile";
 //Redux
 import { form_ } from "@/src/redux/reducers/formReducer";
 import { useDispatch } from "react-redux";
@@ -34,6 +35,7 @@ const SignupSchema = yup.object().shape({
 const Signup = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [uploadedImgURL, setUploadedImgURL] = useState<string>("");
 
   //redux initialize
   const dispatch = useDispatch();
@@ -50,20 +52,24 @@ const Signup = (props: Props) => {
 
   const onSubmit = async (data: object) => {
     setLoading(true);
+    const newData={
+      ...data,
+      image:uploadedImgURL
+    }
     //submiting the values to the API and saving in the db
     axios
       .post(process.env.NEXT_PUBLIC_ERP_POST_SIGNUP as string, {
-        data,
+        data:newData,
         type: "admin",
         designation:"owner"
       })
       .then((r: AxiosResponse) => {
-        if (r.data.status == "success") {
+        if (r.data.message == "success") {
           setLoading(false);
           console.log(r.data.payload.id)
           dispatch(form_({ id: r.data.payload.id }));
           props.setCompanyReg(true);
-        } else if (r.data.status == "exists") {
+        } else if (r.data.message == "exists") {
           setLoading(false);
           setMessage("Account already exits!");
         }
@@ -76,6 +82,7 @@ const Signup = (props: Props) => {
         <h1 className="text-center font-body mb-14 font-semibold text-5xl text-white">
           Sign Up
         </h1>
+     
         <form className="w-auto lg:w-96 grid" onSubmit={handleSubmit(onSubmit)}>
           <Input
             register={register}
@@ -121,7 +128,8 @@ const Signup = (props: Props) => {
             width={'w-full'}
             color={'text-white'}
           />
-          <div className="text-center mb-4 ">
+             <InputFile setUploadedImgURL={setUploadedImgURL} uploadedImgURL={uploadedImgURL}/>
+          <div className="text-center mb-4 mt-4 ">
             {loading ? (
               <Loading style={"btn-primary"} />
             ) : (
