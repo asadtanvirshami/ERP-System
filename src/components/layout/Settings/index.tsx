@@ -20,8 +20,8 @@ const Settings = (props: Props) => {
     }
   };
   return (
-    <div className="container">
-      <div className="flex flex-col lg:flex-row">
+    <div className="">
+      <div className="flex flex w-full lg:flex-row">
         <div className="bg-gradient-to-r border rounded-lg from-gray-200 to-white lg:h-screen lg:w-1/4">
           <div className="flex p-12">
             <h2 className=" font-body font-semibold text-black lg:text-4xl">
@@ -63,9 +63,7 @@ const Settings = (props: Props) => {
             })}
           </div>
         </div>
-        <div className="lg:w-2/3 p-5 overflow-y-auto  flex items-center justify-center align-middle">
-          {renderStep()}
-        </div>
+        {renderStep()}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
+import { useQuery,useInfiniteQuery  } from '@tanstack/react-query';
 //Components Imports
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
@@ -22,6 +23,7 @@ import { User } from "../../User/UserProvider";
 //Utils
 import { CreateNewTask, UpdateTask } from "@/src/utils/api/tasks";
 import { GetAllAgents } from "@/src/utils/api/team";
+import { Agents } from "@/src/interfaces/Agents";
 
 const SignupSchema = yup.object().shape({
   //Yup schema to set the values
@@ -41,16 +43,14 @@ type Props = {
 const TaskCE = ({ _data, setTasks, options }: Props) => {
   const [taskId, setTaskId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingData, setLoadingData] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
 
-  const [totalUsers, setTotalUsers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5; // Number of users to show per page
+  const pageSize = 4; // Number of users to show per page
 
   const [proceed, setProceed] = useState<boolean>(false);
 
@@ -77,25 +77,46 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     defaultValues: task_data,
   });
 
-  const fetchUsers = async () => {
-    setLoadingData(true);
+  
+
+
+
+  const fetchUsers = async (companyId:any, currentPage:any, pageSize:any) => {
     const Users = await GetAllAgents(companyId, currentPage, pageSize);
-    if (Users) {
-      if (Users.error == null) {
-        const newUsers = users.concat(Users.agents);
-        setUsers(newUsers);
-        setTotalUsers(Users.totalItems);
-        setLoadingData(false);
-      } else {
-        setLoadingData(false);
-      }
+    if (Users?.error == null) {
+      return Users?.agents;
+    } else {
+      throw new Error('Error'); // Handle error using React Query's error handling
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage]);
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery(
+    ['users', companyId],
+    ({ pageParam = 1 }) => fetchUsers(companyId, pageParam, pageSize),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length < pageSize) {
+          // Indicates no more pages to fetch
+          return undefined;
+        }
+        return allPages.length + 1; // Increment page number
+      },
+    }
+  );  
 
+    useEffect(() => {
+      const pages:any = data?.pages.flatMap(x=>x)
+      setUsers(pages)
+    }, [data])
+      console.log(users)
   useEffect(() => {
     if (edit) {
       setTaskId(task_data.id);
@@ -124,13 +145,13 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     if (!edit) {
       let tempState: any = {};
       const tempData = [..._data];
-
       tempData.forEach((e, i) => {
         return (tempState = { ...e });
       });
       reset(tasksBaseValues);
     }
   }, [edit]);
+
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -175,11 +196,12 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     }
   };
 
+
   const onEdit = async (data: any) => {
     setLoading(true);
     const tempStateList = users;
     const asignees: any = [];
-
+    console.log(tempStateList,'puss')
     tempStateList.forEach((y: any) => {
       if (isCheck.includes(y.id)) {
         asignees.push({
@@ -199,6 +221,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
       isCheck: isCheck,
       asignees: asignees,
     };
+    console.log(newData,'New')
 
     const updatedTask = await UpdateTask(newData);
     console.log(updatedTask?.assignedUsers)
@@ -313,14 +336,15 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
             <TaskAssign
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              Loading={loadingData}
               isCheck={isCheck}
               setIsCheck={setIsCheck}
               edit={edit}
-              users={users}
-              loading={loading}
+              isFetchingNextPage={isFetchingNextPage}
+              users={data?.pages}
+              loading={isLoading}
+              fetchNextPage={fetchNextPage}
               message={message}
-              totalUsers={totalUsers}
+              hasNextPage={hasNextPage}
               checkList={checkList}
             />
           </form>

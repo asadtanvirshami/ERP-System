@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { GetAllTasks, DeleteTask, DeleteUserTask } from "@/src/utils/api/tasks";
 
 type Props = {
-  sessionData:any
+  sessionData: any;
 };
 
 const Index = ({ sessionData }: Props) => {
@@ -48,31 +48,46 @@ const Index = ({ sessionData }: Props) => {
   }
 
   async function getOptions() {
-    try {
-      const response: AxiosResponse = await axios.get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string);
-      const { status, services, sources, designation } = response.data[0];
-      setOptions({ status, services, sources, designation });
-    } catch (error) {
-      console.error("Failed to fetch options:", error);
-    }
+    axios
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string, {
+        headers: { id: CompanyId },
+      })
+      .then((response: AxiosResponse) => {
+        const payload = response.data.payload[0];
+        if (response.data.payload[0]) {
+          setOptions({
+            status: payload.status,
+            services: payload.services,
+            sources: payload.sources,
+            designation: payload.designation,
+          });
+        }
+      });
   }
 
   const handleDeleteTask = async (id: string) => {
     const deletedTask = await DeleteTask(id);
     if (deletedTask?.error == null) {
-      setTasks(prevTasks => prevTasks.filter(item => item.id !== id));
+      setTasks((prevTasks) => prevTasks.filter((item) => item.id !== id));
     }
   };
 
   const handleDeleteUserTask = async (id: string, taskId: string) => {
     const deletedUserTask = await DeleteUserTask(id, taskId);
+
     if (deletedUserTask?.error == null) {
-      setTasks(prevTasks => {
-        const updatedTasks = [...prevTasks];
-        const taskIndex = updatedTasks.findIndex(task => task.id === taskId);
+      setTasks((prevTasks) => {
+        // Create a deep copy of the tasks array
+        const updatedTasks = JSON.parse(JSON.stringify(prevTasks));
+
+        const taskIndex = updatedTasks.findIndex((task) => task.id === taskId);
+
         if (taskIndex !== -1) {
-          updatedTasks[taskIndex].asignees = updatedTasks[taskIndex].asignees.filter((asignee:any) => asignee.id !== id);
+          updatedTasks[taskIndex].asignees = updatedTasks[
+            taskIndex
+          ].asignees.filter((asignee: any) => asignee.id !== id);
         }
+
         return updatedTasks;
       });
     }
@@ -81,18 +96,22 @@ const Index = ({ sessionData }: Props) => {
   return (
     <Container>
       <Table
-        cols={[
-          //...columns
-        ]}
+        cols={
+          [
+            //...columns
+          ]
+        }
         loading={loading}
         modalTitle="Tasks"
-        modalSize={'lg'}
+        modalSize={"lg"}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         data={tasks}
         setData={setTasks}
         totalPages={totalPages}
-        renderModalComponent={<TaskCE options={options} setTasks={setTasks} _data={tasks} />}
+        renderModalComponent={
+          <TaskCE options={options} setTasks={setTasks} _data={tasks} />
+        }
         onClick={handleDeleteTask}
         deleteFunc={handleDeleteUserTask}
       />

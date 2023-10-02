@@ -1,6 +1,6 @@
 import React from "react";
 import { Stepper, Step, Button } from "@material-tailwind/react";
-import { HomeIcon, CogIcon, UserIcon } from "@heroicons/react/24/outline";
+import { UsersIcon, CurrencyDollarIcon, CheckBadgeIcon, NewspaperIcon ,BuildingLibraryIcon } from "@heroicons/react/24/outline";
  
 
 type Props = {
@@ -24,13 +24,16 @@ const DefaultStepper = ({activeStep, setActiveStep, items}:Props) => {
         isFirstStep={(value) => setIsFirstStep(value)}
       >
         <Step>
-          <HomeIcon className="h-5 w-5" />
+          <NewspaperIcon className="h-5 w-5" />
         </Step>
         <Step>
-          <UserIcon className="h-5 w-5" />
+          <UsersIcon className="h-5 w-5" />
         </Step>
         <Step>
-          <CogIcon className="h-5 w-5" />
+          <BuildingLibraryIcon className="h-5 w-5" />
+        </Step>
+        <Step>
+          <CheckBadgeIcon className="h-5 w-5" />
         </Step>
       </Stepper>
     </div>

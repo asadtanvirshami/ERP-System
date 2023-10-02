@@ -77,6 +77,7 @@ async function GetInvoiceById(id:string) {
       })
       .then((r: AxiosResponse) => {
         if (r.data.message == "success") {
+          console.log(r.data.payload,'data in tuils')
           return { invoice: r.data.payload, error: null };
         }
         if (r.data.message == "error") {

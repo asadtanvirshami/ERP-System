@@ -127,7 +127,9 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
                 <button
                   className="float-right "
                   onClick={() => {
-                    Cookies.remove("_hjSession"), router.push("/auth");
+                    Cookies.remove("_hjSession"), 
+                    Cookies.remove("user"), 
+                    router.push("/auth");
                   }}
                 >
                   <Logout

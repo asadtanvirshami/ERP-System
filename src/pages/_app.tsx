@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import Router, { useRouter } from "next/router";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
 
 import MainLayout from "../components/shared/MainLayout";
 import ThreeDots from "../components/shared/Loader/ThreeDots";
@@ -12,7 +17,9 @@ import {UserProvider} from "../components/layout/User/UserProvider/index";
 
 //Styles Imports
 import "../../styles/globals.css";
-// million-ignore
+
+const queryClient = new QueryClient()
+
 function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -29,10 +36,12 @@ function MyApp({ Component, pageProps }: AppProps) {
       {router.pathname != "/auth" && (
         <Provider store={store}>
           <UserProvider>
+          <QueryClientProvider client={queryClient}>
             <MainLayout>
               {loading && <ThreeDots />}
               {!loading && <Component {...pageProps} />}
             </MainLayout>
+            </QueryClientProvider>
           </UserProvider>
         </Provider>
       )}

@@ -79,14 +79,17 @@ const Index = () => {
 
   async function getOptions() {
     axios
-      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string)
+      .get(process.env.NEXT_PUBLIC_ERP_GET_OPTIONS as string,{headers:{id:companyId}})
       .then((response: AxiosResponse) => {
-        setOptions({
-          status: response.data[0].status,
-          services: response.data[0].services,
-          sources: response.data[0].sources,
-          designation: response.data[0].designation,
-        });
+        const payload = response.data.payload[0];
+        if(response.data.payload[0]){
+          setOptions({
+            status: payload.status,
+            services: payload.services,
+            sources: payload.sources,
+            designation: payload.designation,
+          });
+        }
       });
   }
 
