@@ -10,24 +10,29 @@ import Loader from "@/src/components/shared/Buttons/Loading";
 import TextArea from "@/src/components/shared/Form/TextArea";
 import DatePicker from "@/src/components/shared/Form/DatePicker";
 import SelectType from "../../../shared/Form/SelectType";
+import InputFile from "@/src/components/shared/Form/InputFile";
 import AddRow from "../../../shared/AddRow";
-//Interface Import
+
 import { Agents } from "@/src/interfaces/Agents";
 import { useSelector } from "react-redux";
-//BaseValues for Schema
+
 import { agentBaseValues } from "@/src/utils/baseValues";
-//API Calls
+
 import { CreatNewSale } from "@/src/utils/api/sale";
 import { UpdateClient } from "@/src/utils/api/clients";
+import InputFileSm from "@/src/components/shared/Form/InputFileSm";
+
+import { useDispatch } from "react-redux";
+import { setSaleData } from "@/src/redux/reducers/invoiceReducer";
 
 type Props = {
   data: Array<Agents>;
   setData: any;
   options: any;
-  active:any
-  setActive:any
-  setState:any
-  state:string
+  active: any;
+  setActive: any;
+  setState: any;
+  state: string;
 };
 
 const SalesSchema = yup.object().shape({
@@ -40,17 +45,24 @@ const SalesSchema = yup.object().shape({
   t_amount_txt: yup.string().required("Required"),
   source_username: yup.string().required("Required"),
   deadline: yup.string().required("Required"),
+  pay_method: yup.string().required("Required"),
+  accno: yup.string().required("Required"),
+  acc_name: yup.string().required("Required"),
 });
 
 const SalesCE = (props: Props) => {
-   interface Row {
+  interface Row {
     service: string;
     price: string;
   }
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [uploadedImgURLs, setUploadedImgURLs] = useState([]);
   const [rows, setRows] = useState<Row[]>([{ service: "", price: "" }]);
+
+  const dispatch = useDispatch()
 
   const handleAddRow = (newRow: Row) => {
     setRows([...rows, newRow]);
@@ -61,6 +73,7 @@ const SalesCE = (props: Props) => {
   const sale_id = useSelector((state: any) => state.form.value._id);
   const sale_data = useSelector((state: any) => state.form.value.values);
   const user_data = useSelector((state: any) => state.user.user);
+
 
   const {
     register,
@@ -90,27 +103,23 @@ const SalesCE = (props: Props) => {
     }
   }, [edit]);
 
-  // project_stats: [
-  //   {
-  //     created_date: moment().format("L"),
-  //     created_month: moment().format("L"),
-  //     created_time: moment().format("L"),
-  //     created_status: moment().format("L"),
-  //   },
-  // ],
-
   const onSubmit = async (data: object) => {
+    let lenghtOfRows = rows.length;
+    console.log(rows);
+    if (rows[0].service === "" && rows[0].price === "") {
+      return;
+    }
     setLoading(true);
     //submiting the values to the API and saving in the db
     const newData = {
       ...data,
-      created_date:  moment().format('MM-DD-YY'),
+      created_date: moment().format("MM-DD-YY"),
       created_time: moment().format("h:mm:ss a"),
       created_month: moment().format("MMMM"),
       service: rows,
       userId: user_data.loginId,
       companyId: user_data.companyId,
-      saleId:props.state
+      saleId: props.state,
     };
     const createdSale = await CreatNewSale(newData);
     if (createdSale) {
@@ -119,13 +128,16 @@ const SalesCE = (props: Props) => {
         setLoading(false);
         setMessage("Sale created successfully.");
         tempArr = [...props.data, createdSale.sale];
-        props.setActive(1)
-        console.log(createdSale.sale)
+        props.setActive(1);
+        console.log(createdSale.sale);
         props.setState((prevData: any) => ({
           ...prevData,
-          sale:createdSale.sale.id,
-        }))
-        return props.setData? props.setData(tempArr): null;
+          sale: createdSale.sale.id,
+        }));
+   
+        dispatch(setSaleData(tempArr));
+    
+        return props.setData ? props.setData(tempArr) : null;
       } else {
         setLoading(false);
         setMessage("Sale not created.");
@@ -211,7 +223,7 @@ const SalesCE = (props: Props) => {
                   register={register}
                   name="deadline"
                   control={control}
-                  label="Deadline of task"
+                  label="Deadline of Task"
                   width={"w-full"}
                   color="text-gray"
                 />
@@ -251,6 +263,36 @@ const SalesCE = (props: Props) => {
                   color={"text-gray"}
                   placeholder="e.g www.Upwork.com"
                 />
+                <SelectType
+                  options={props.options.status}
+                  register={register}
+                  name="pay_method"
+                  control={control}
+                  label="Pay Method"
+                  width={"w-full"}
+                  color={"text-gray"}
+                />
+       
+                <Input
+                  register={register}
+                  name="acc_name"
+                  control={control}
+                  label="Account Name"
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g John Doe"
+                />
+       
+                <Input
+                  register={register}
+                  name="accno"
+                  control={control}
+                  label="Account No."
+                  width={"w-full"}
+                  color={"text-gray"}
+                  placeholder="e.g 0124567891234568"
+                />
+       
                 <Input
                   register={register}
                   name="source_username"
@@ -261,6 +303,7 @@ const SalesCE = (props: Props) => {
                   placeholder="e.g @kiryu123"
                 />
               </div>
+              <InputFileSm text="Upload Screen Shot" setUploadedImgURLs={setUploadedImgURLs} uploadedImgURLs={uploadedImgURLs}/>
               <div className="mb-3">
                 <hr></hr>
               </div>

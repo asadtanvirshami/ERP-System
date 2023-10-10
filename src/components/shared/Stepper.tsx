@@ -23,7 +23,7 @@ const DefaultStepper = ({activeStep, setActiveStep, items}:Props) => {
         isLastStep={(value) => setIsLastStep(value)}
         isFirstStep={(value) => setIsFirstStep(value)}
       >
-        <Step>
+        <Step >
           <NewspaperIcon className="h-5 w-5" />
         </Step>
         <Step>

@@ -1,58 +1,53 @@
 import Cookies from "js-cookie";
-import { useContext, useState, createContext, useEffect, useRef } from "react";
+import { useContext, useState, createContext, useEffect } from "react";
 
 const UserContext = createContext();
-// million-ignore
-export function User() {
+
+export function useUser() {
   return useContext(UserContext);
 }
-// million-ignore
+
 export function UserProvider({ children }) {
   const [userData, setUserData] = useState({
     loggedIn: false,
-    isAuthenticated: false,
     user: {},
   });
 
   const deleteUser = () => {
-    setUserData((prev) => {
-      return {
-        ...prev,
-        loggedIn,
-        user: {},
-      };
+    setUserData({
+      loggedIn: false,
+      user: {},
     });
   };
 
-  const updateUser = async (data) => {
-    setUserData((prev) => {
-      return { ...prev, user: { ...prev.user, ...data  }, loggedIn:true };
-    });
+  const updateUser = (data) => {
+    setUserData((prev) => ({
+      ...prev,
+      user: { ...prev.user, ...data },
+      loggedIn: true,
+    }));
   };
-
 
   useEffect(() => {
-    async function getUserDataFromCookies() {
-      const userString = Cookies.get('user');
+    const getUserDataFromCookies = () => {
+      const userString = Cookies.get("user");
 
-    if (userString) {
-      try {
+      if (userString) {
+        try {
           const user = JSON.parse(userString);
           updateUser(user);
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
+        } catch (error) {
+          console.error("Error parsing user data from cookies:", error);
+        }
       }
-    }
-  }
-  getUserDataFromCookies()
+    };
+
+    getUserDataFromCookies();
   }, []);
 
-  const value = {
-    loggedIn: userData.loggedIn,
-    user: userData.user,
-    updateUser,
-    deleteUser,
-  };
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ ...userData, updateUser, deleteUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 }
-

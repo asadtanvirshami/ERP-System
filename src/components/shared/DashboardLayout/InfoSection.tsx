@@ -1,13 +1,13 @@
 import React from "react";
 import moment from "moment";
 
-import { User } from "../../layout/User/UserProvider";
+import { useUser } from "../../layout/User/UserProvider";
 
 type Props = {};
 
 const InfoSection = (props: Props) => {
 
-  const {user} = User()
+  const {user} = useUser()
 
   return (
     <>

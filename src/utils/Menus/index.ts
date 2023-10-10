@@ -20,9 +20,9 @@ const adminMenu = [
 
 const agentMenu = [
   { id: 0, text: "Dashboard", link: "/", svg: HomeIcon },
-  { id: 1, text: "Invoices", link: "/invoices", svg: HomeIcon },
-  { id: 1, text: "Sales", link: "/sales", svg: HomeIcon },
-  { id: 1, text: "Tasks", link: "/tasks", svg: HomeIcon },
+  { id: 1, text: "Invoices", link: "/invoices", svg: DocumentTextIcon },
+  { id: 1, text: "Sales", link: "/sales", svg: ChartBarIcon },
+  { id: 1, text: "Tasks", link: "/tasks", svg: RectangleStackIcon },
 ];
 
 const settingMenu = [

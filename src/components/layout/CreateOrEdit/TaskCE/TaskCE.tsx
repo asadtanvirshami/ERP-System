@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
-import { useQuery,useInfiniteQuery  } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 //Components Imports
 import Input from "@/src/components/shared/Form/Input";
 import Button from "@/src/components/shared/Buttons/Button";
@@ -19,7 +19,7 @@ import { tasksBaseValues } from "@/src/utils/baseValues";
 //Functions Import
 import { checkList } from "@/src/functions/isCheckList";
 //Provider
-import { User } from "../../User/UserProvider";
+import { useUser } from "../../User/UserProvider";
 //Utils
 import { CreateNewTask, UpdateTask } from "@/src/utils/api/tasks";
 import { GetAllAgents } from "@/src/utils/api/team";
@@ -37,7 +37,7 @@ const SignupSchema = yup.object().shape({
 type Props = {
   _data: Array<any>;
   setTasks: any;
-  options:any
+  options: any;
 };
 
 const TaskCE = ({ _data, setTasks, options }: Props) => {
@@ -45,7 +45,6 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
   const [message, setMessage] = useState<string>("");
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingData, setLoadingData] = useState<boolean>(false);
 
   const [isCheck, setIsCheck] = useState<any[]>([]);
 
@@ -62,7 +61,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
 
   const {
     user: { companyId: userCompanyId },
-  } = User();
+  } = useUser();
   const companyId = userCompanyId;
 
   const {
@@ -77,16 +76,16 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     defaultValues: task_data,
   });
 
-  
-
-
-
-  const fetchUsers = async (companyId:any, currentPage:any, pageSize:any) => {
+  const fetchUsers = async (
+    companyId: any,
+    currentPage: any,
+    pageSize: any
+  ) => {
     const Users = await GetAllAgents(companyId, currentPage, pageSize);
     if (Users?.error == null) {
       return Users?.agents;
     } else {
-      throw new Error('Error'); // Handle error using React Query's error handling
+      throw new Error("Error"); // Handle error using React Query's error handling
     }
   };
 
@@ -97,9 +96,9 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
   } = useInfiniteQuery(
-    ['users', companyId],
+    ["users", companyId],
     ({ pageParam = 1 }) => fetchUsers(companyId, pageParam, pageSize),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -110,13 +109,13 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
         return allPages.length + 1; // Increment page number
       },
     }
-  );  
+  );
 
-    useEffect(() => {
-      const pages:any = data?.pages.flatMap(x=>x)
-      setUsers(pages)
-    }, [data])
-      console.log(users)
+  useEffect(() => {
+    const pages: any = data?.pages.flatMap((x) => x);
+    setUsers(pages);
+  }, [data]);
+
   useEffect(() => {
     if (edit) {
       setTaskId(task_data.id);
@@ -151,7 +150,6 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
       reset(tasksBaseValues);
     }
   }, [edit]);
-
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -196,12 +194,11 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
     }
   };
 
-
   const onEdit = async (data: any) => {
     setLoading(true);
     const tempStateList = users;
     const asignees: any = [];
-    console.log(tempStateList,'puss')
+    console.log(tempStateList, "puss");
     tempStateList.forEach((y: any) => {
       if (isCheck.includes(y.id)) {
         asignees.push({
@@ -221,10 +218,10 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
       isCheck: isCheck,
       asignees: asignees,
     };
-    console.log(newData,'New')
+    console.log(newData, "New");
 
     const updatedTask = await UpdateTask(newData);
-    console.log(updatedTask?.assignedUsers)
+    console.log(updatedTask?.assignedUsers);
     if (updatedTask) {
       if (updatedTask.error == null) {
         setMessage("Task created successfully.");
@@ -234,7 +231,7 @@ const TaskCE = ({ _data, setTasks, options }: Props) => {
         const tempState: Array<any> = [..._data];
         const i = tempState.findIndex((item) => item.id === task_data.id);
         if (i !== -1) {
-          tempState[i] = {...data, asignees:asignees};
+          tempState[i] = { ...data, asignees: asignees };
           setLoading(false);
           return setTasks(tempState);
         }

@@ -24,8 +24,7 @@ const Index = ({ data, setData, options }: Props) => {
     client: "",
     invoice: "",
   });
-  console.log(state);
-  //redux initialize
+  console.log(state);    
 
   const renderStep = () => {
     switch (activeStep) {
@@ -87,7 +86,7 @@ const Index = ({ data, setData, options }: Props) => {
           setActiveStep={setActiveStep}
           items={SalesFormItems}
         />
-        {SalesFormItems[activeStep].status}
+        {/* {SalesFormItems[activeStep].status} */}
         {renderStep()}
       </Fragment>
     </div>

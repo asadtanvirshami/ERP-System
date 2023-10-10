@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 //reducers
 import userReducer from './reducers/userReducer';
 import formReducer from './reducers/formReducer';
+import invoiceReducer from './reducers/invoiceReducer';
 
 const persistConfig = {
   key: 'root',
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: persistReducer(persistConfig, userReducer),
   form: formReducer,
+  invoice: invoiceReducer,
 });
 
 const store = configureStore({

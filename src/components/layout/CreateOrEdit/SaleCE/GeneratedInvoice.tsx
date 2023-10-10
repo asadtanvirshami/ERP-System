@@ -5,6 +5,10 @@ import html2canvas from "html2canvas";
 
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 
+import { useDispatch, useSelector } from "react-redux";
+import { updateInvoiceData } from "@/src/redux/reducers/invoiceReducer";
+import { Spinner } from "@material-tailwind/react";
+
 type Props = {
   active: any;
   id: any;
@@ -15,9 +19,19 @@ const GeneratedInvoice = ({ id, active }: Props) => {
   const [loading, setLoading] = useState<any>(true);
 
   const [records, setRecords] = useState<any>({ prices: [], services: [] });
+  const newInvoiceDetails = {
+    sale: ["sale1", "sale2"],
+    client: ["client1", "client2"],
+    invoice: ["invoice1", "invoice2"],
+  };
+  const invoice = useSelector((state: any) => state) || {};
+  const Dispatch = useDispatch();
+
+  console.log(invoice, "SALE");
 
   const getInvoice = async () => {
     const InvoiceById = await GetInvoiceById(
+      // id
       "20dc8f5d-ac03-44d9-bd85-3bad8985c5be"
     );
     if (InvoiceById) {
@@ -29,6 +43,8 @@ const GeneratedInvoice = ({ id, active }: Props) => {
     }
   };
 
+  let data2 = invoice;
+  console.log(data2);
   const Calculation = (services: string[], prices: string[]) => {
     const taxRate = 0.07;
 
@@ -73,42 +89,45 @@ const GeneratedInvoice = ({ id, active }: Props) => {
 
   console.log(data);
 
-
   const downloadInvoice = () => {
     const element = document.getElementById("invoice");
 
     if (element) {
-        html2canvas(element).then(canvas => {
-          const imgData = canvas.toDataURL("image/png");
-          const imgWidth = 210;  // A4 dimensions in mm
-          const pageHeight = 295;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
-      
-          const pdf = new jsPDF('p', 'mm', 'a4');
-      
-          let position = 0;
-      
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 210; // A4 dimensions in mm
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
-      
-          while (heightLeft >= 0) {
-              position = heightLeft - imgHeight;
-              pdf.addPage();
-              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-              heightLeft -= pageHeight;
-          }
-          
-          pdf.save("invoice.pdf")
-        });
+        }
+
+        pdf.save("invoice.pdf");
+      });
     }
-};
+  };
 
   return (
     <>
-     <button onClick={downloadInvoice}>Download Invoice</button>
+      <button onClick={downloadInvoice}>Download Invoice</button>
+
       {!loading && data ? (
-        <div id="invoice" className="m-8 p-8 border border-gray-400 w-[70rem] mx-auto">
+        <div
+          id="invoice"
+          className="w-[10rem] m-8 p-8 border border-gray-400  lg:w-[70rem] mx-auto"
+        >
           <div className="m-1 flex justify-between items-center">
             <span className="font-bold text-2xl mb-5 text-red-500">
               Invoice{" "}
@@ -132,7 +151,9 @@ const GeneratedInvoice = ({ id, active }: Props) => {
                 className={
                   data.status === "Paid" ? "text-green-400" : "text-green-400"
                 }
-              >{data.status}</span>
+              >
+                {data.status}
+              </span>
             </span>
             <p className="font-bold">Payment Due: {data.date}</p>
           </div>
@@ -201,10 +222,15 @@ const GeneratedInvoice = ({ id, active }: Props) => {
           </p>
         </div>
       ) : (
-        <></>
-        )}
-
-       
+        <div
+          id="invoice"
+          className="p-8 border border-gray-400 w-[70rem] h-[30rem] m-auto"
+        >
+          <div className="m-1 flex items-center text-center">
+            <Spinner color="red" className="h-[20rem] w-[4rem] m-auto " />
+          </div>
+        </div>
+      )}
     </>
   );
 };

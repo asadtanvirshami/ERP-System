@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Admin from "./Admin/index";
 import Agent from "./Agent/index";
 
-import { User } from "../User/UserProvider";
+import { useUser } from "../User/UserProvider";
 
 import { useSelector } from "react-redux";
 
@@ -17,7 +17,7 @@ const Dashboard = (props: Props) => {
   const router = useRouter();
   const {
     user: { type },
-  } = User();
+  } = useUser();
 
   useEffect(() => {
     if (props.sessionData.isLoggedIn == false) {

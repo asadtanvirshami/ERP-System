@@ -17,7 +17,7 @@ import AgentCE from "@/src/components/layout/CreateOrEdit/AgentCE";
 import TaskCE from "@/src/components/layout/CreateOrEdit/TaskCE/TaskCE";
 import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
-import { User } from "../../User/UserProvider";
+import { useUser } from "../../User/UserProvider";
 import { GetAllAgents } from "@/src/utils/api/team";
 import { GetClientsData } from "@/src/utils/api/clients";
 import SalesCreation from "../../CreateOrEdit/SaleCE/Index";
@@ -53,7 +53,7 @@ const Index = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const {
     user: { companyId: userCompanyId },
-  } = User();
+  } = useUser();
   const companyId = userCompanyId;
 
   const getCompanyData = useCallback(async () => {

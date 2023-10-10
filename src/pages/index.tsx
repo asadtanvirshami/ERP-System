@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from "axios";
 //Component import
 import Dashboard from "../components/layout/Dashboard/";
 
-import { User } from "../components/layout/User/UserProvider";
+import { useUser } from "../components/layout/User/UserProvider";
 
 type Props = {
   sessionData: any;
@@ -15,7 +15,7 @@ type Props = {
 const MainDashboard = ({ sessionData }: Props) => {
   const {
     user: { type },
-  }: any = User();
+  }: any = useUser();
   const router = useRouter();
 
   useEffect(() => {
