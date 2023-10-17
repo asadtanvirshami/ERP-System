@@ -19,7 +19,6 @@ import CardLoader from "@/src/components/shared/Loader/CardLoader";
 
 import { useUser } from "../../User/UserProvider";
 import { GetAllAgents } from "@/src/utils/api/team";
-import { GetClientsData } from "@/src/utils/api/clients";
 import SalesCreation from "../../CreateOrEdit/SaleCE/Index";
 import ProjectCE from "../../CreateOrEdit/ProjectCE/ProjectCE";
 import InfoSection from "@/src/components/shared/DashboardLayout/InfoSection";
@@ -58,15 +57,12 @@ const Index = () => {
 
   const getCompanyData = useCallback(async () => {
     const AgentsData = await GetAllAgents(companyId, 1, 5);
-    const ClientsData = await GetClientsData(companyId, 1, 5);
-    //scroll table attach karna hai
-
-    if (AgentsData && ClientsData) {
-      if (ClientsData.error == null && AgentsData?.error == null) {
+    if (AgentsData) {
+      if (AgentsData?.error == null) {
         setData({
           agents: AgentsData?.agents,
           sales: [],
-          clients: ClientsData.clients,
+          clients: [],
         });
         setLoading(false);
       } else {

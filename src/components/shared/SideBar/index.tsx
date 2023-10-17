@@ -27,6 +27,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
   const currentMenu = type === "admin" ? adminMenu : agentMenu;
 
   return (
+    <div className="bg-theme-700 border border-none shadow-lg rounded-tr-2xl rounded-br-2xl text-white">
     <div
       className={classNames(
         "borderrounded-t-3xl fixed md:static md:translate-x-0 z-20",
@@ -39,7 +40,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
       <div className="flex flex-col justify-between h-screen sticky inset-0 w-full">
         <header className={classNames("flex items-center border-b border-b-white p-4", { "justify-between": !collapsed, "justify-center": collapsed })}>
           {!collapsed && (
-            <span className="flex items-center whitespace-nowrap">
+            <span className="flex items-center whitespace-nowrap font-body">
               <Avatar className="ml-2 mr-3 w-10 h-10" src={logo} />
               {companyName?.toUpperCase()}
             </span>
@@ -55,7 +56,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
         <nav className="flex-grow">
           <ul className="my-2 flex flex-col gap-2 items-stretch">
             {currentMenu.map((menu_) => (
-              <li className="font-body font-semibold" key={menu_.id}>
+              <li className="font-body font-semibold" key={menu_.text}>
                 <MenuItems collapsed={collapsed} menu_={menu_} />
               </li>
             ))}
@@ -107,6 +108,7 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
           </div>
         </footer>
       </div>
+    </div>
     </div>
   );
 };

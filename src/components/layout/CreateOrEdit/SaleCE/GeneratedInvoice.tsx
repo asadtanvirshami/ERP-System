@@ -121,12 +121,16 @@ const GeneratedInvoice = ({ id, active }: Props) => {
 
   return (
     <>
-      <button onClick={downloadInvoice}>Download Invoice</button>
-
+      <button
+        className="bg-red-400 text-sm mt-2 p-2 rounded text-white"
+        onClick={downloadInvoice}
+      >
+        Download Invoice
+      </button>
       {!loading && data ? (
         <div
           id="invoice"
-          className="w-[10rem] m-8 p-8 border border-gray-400  lg:w-[70rem] mx-auto"
+          className="w-[10rem] m-4 p-8 border border-gray-400  lg:w-[70rem] mx-auto"
         >
           <div className="m-1 flex justify-between items-center">
             <span className="font-bold text-2xl mb-5 text-red-500">
@@ -209,7 +213,7 @@ const GeneratedInvoice = ({ id, active }: Props) => {
                 {Calculation(records.services, records.prices).subtotal}
               </p>
               <p className="border-b py-2">
-                Tax (7%): +$
+                Tax ({data.tax}%): +$
                 {Calculation(records.services, records.prices).taxAmount}
               </p>
               <p className="font-bold py-2">
@@ -224,7 +228,7 @@ const GeneratedInvoice = ({ id, active }: Props) => {
       ) : (
         <div
           id="invoice"
-          className="p-8 border border-gray-400 w-[70rem] h-[30rem] m-auto"
+          className="p-8 m-3 border border-gray-400 w-[70rem] h-[30rem] "
         >
           <div className="m-1 flex items-center text-center">
             <Spinner color="red" className="h-[20rem] w-[4rem] m-auto " />

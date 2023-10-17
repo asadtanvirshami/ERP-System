@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import classNames from "classnames";
+
 //Components
 import Sidebar from "./SideBar";
 
 function Layout({ children }: { children: React.ReactNode }) {
-  const [collapsed, setSidebarCollapsed] = useState(false);
 
+  const [collapsed, setSidebarCollapsed] = useState(false);
+  
   return (
     <>
       <div
@@ -21,16 +23,16 @@ function Layout({ children }: { children: React.ReactNode }) {
       >
         {/* sidebar */}
         {/* <div className="bg-gradient-to-r border rounded-lg from-gray-300 to-white shadow-lg rounded-tr-2xl rounded-br-2xl text-red"> */}
-        <div className="bg-theme-700 border border-none shadow-lg rounded-tr-2xl rounded-br-2xl text-white">
-          <Sidebar
-            collapsed={collapsed}
-            setCollapsed={() => setSidebarCollapsed((prev) => !prev)}
-          />
-        </div>
+
+        <Sidebar
+          collapsed={collapsed}
+          setCollapsed={() => setSidebarCollapsed((prev) => !prev)}
+        />
+
         {/* content */}
-        <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex-wrap content-start p-2">
-          {children}
-        </div>
+        <main className=" h-screen flex-grow overflow-x-hidden overflow-auto flex-wrap content-start p-2">
+          <>{children}</>
+        </main>
       </div>
     </>
   );

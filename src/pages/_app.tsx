@@ -5,20 +5,21 @@ import {
   QueryClient,
   QueryClientProvider,
   useQuery,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 
-import MainLayout from "../components/shared/MainLayout";
 import ThreeDots from "../components/shared/Loader/ThreeDots";
 
-import { store } from "../redux/store";
+import { store, persistor } from "../redux/store";
 import { Provider } from "react-redux";
 
-import {UserProvider} from "../components/layout/User/UserProvider/index";
+import { UserProvider } from "../components/layout/User/UserProvider/index";
 
 //Styles Imports
 import "../../styles/globals.css";
+import Layout from "../components/shared/Layout";
+import { PersistGate } from "redux-persist/integration/react";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
@@ -33,27 +34,29 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      {router.pathname != "/auth" && (
+      {(router.pathname !== "/auth" &&  router.pathname !== "/") && (
         <Provider store={store}>
           <UserProvider>
-          <QueryClientProvider client={queryClient}>
-            <MainLayout>
-              {loading && <ThreeDots />}
-              {!loading && <Component {...pageProps} />}
-            </MainLayout>
-            </QueryClientProvider>
+            <PersistGate persistor={persistor}>
+              <QueryClientProvider client={queryClient}>
+                {loading && <ThreeDots />}
+                {!loading && (
+                  <Layout>
+                    <Component {...pageProps} />{" "}
+                  </Layout>
+                )}
+              </QueryClientProvider>
+            </PersistGate>
           </UserProvider>
         </Provider>
       )}
-      {router.pathname == "/auth" && (
-        <>
-          <Provider store={store}>
-            <UserProvider>
-              {loading && <ThreeDots />}
-              {!loading && <Component {...pageProps} />}
-            </UserProvider>
-          </Provider>
-        </>
+      {(router.pathname === "/auth" || router.pathname === "/") && (
+        <Provider store={store}>
+          <UserProvider>
+            {loading && <ThreeDots />}
+            {!loading && <Component {...pageProps} />}
+          </UserProvider>
+        </Provider>
       )}
     </>
   );

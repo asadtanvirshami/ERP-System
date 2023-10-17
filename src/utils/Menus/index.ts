@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 const adminMenu = [
-  { id: 0, text: "Dashboard", link: "/", svg: HomeIcon },
+  { id: 0, text: "Dashboard", link: "/dashboard", svg: HomeIcon },
   { id: 1, text: "Team", link: "/team", svg: UserGroupIcon },
   { id: 2, text: "Invoices", link: "/invoice", svg: DocumentTextIcon },
   { id: 3, text: "Sales", link: "/sales", svg: ChartBarIcon },
